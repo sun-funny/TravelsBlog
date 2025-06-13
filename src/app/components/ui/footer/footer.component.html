@@ -1,0 +1,26 @@
+<div class="footer-container">
+  <div class="footer-header">Наши недавние путешествия</div>
+  <div class="footer-carousel-container">
+    <div class="carousel">
+      <div
+        *ngFor="let dest of travelDestinations; let i = index"
+        class="carousel-item"
+        [class.active]="i === activeIndex"
+        (click)="setActive(i)"
+      >
+        <img
+          [src]="dest.backgroundImage"
+          [alt]="dest.title"
+          class="carousel-image"
+          [class.active-image]="i === activeIndex"
+        />
+        <img
+          class="icon"
+          [src]="i === activeIndex ? '/assets/group-3.png' : '/assets/group.png'"
+          alt="icon"
+        />
+        <div class="title">{{ dest.title }}</div>
+      </div>
+    </div>
+  </div>
+</div>

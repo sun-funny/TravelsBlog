@@ -11,6 +11,7 @@ import {
   CardContentComponent 
 } from './components/ui/card/card.component';
 import {HeaderComponent, HeaderListComponent, HeaderItemComponent, HeaderLinkComponent } from './components/ui/header/header.component';
+import { FooterComponent } from './components/ui/footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import {HeaderComponent, HeaderListComponent, HeaderItemComponent, HeaderLinkCom
     HeaderComponent,
     HeaderListComponent,
     HeaderItemComponent,
-    HeaderLinkComponent
+    HeaderLinkComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,
