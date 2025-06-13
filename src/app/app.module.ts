@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module'; 
 import { AppComponent } from './app.component';
-
+import { CardModule } from 'primeng/card';
 import { ButtonComponent } from './components/ui/button/button.component';
 import { MainComponent } from './components/main/main.component';
 import { 
@@ -29,7 +29,8 @@ import { FooterComponent } from './components/ui/footer/footer.component';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    CardModule
   ],
   providers: [],
   bootstrap: [AppComponent]

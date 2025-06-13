@@ -1,26 +1,19 @@
 <div class="footer-container">
   <div class="footer-header">Наши недавние путешествия</div>
-  <div class="footer-carousel-container">
-    <div class="carousel">
-      <div
-        *ngFor="let dest of travelDestinations; let i = index"
-        class="carousel-item"
-        [class.active]="i === activeIndex"
-        (click)="setActive(i)"
+  <div class="cards-container">
+    <div
+      class="ticket-item"
+      *ngFor="let item of filteredTickets"
+    >
+      <p-card
+        [header]="item.title"
+        styleClass="p-card-shadow"
       >
-        <img
-          [src]="dest.backgroundImage"
-          [alt]="dest.title"
-          class="carousel-image"
-          [class.active-image]="i === activeIndex"
-        />
-        <img
-          class="icon"
-          [src]="i === activeIndex ? '/assets/group-3.png' : '/assets/group.png'"
-          alt="icon"
-        />
-        <div class="title">{{ dest.title }}</div>
-      </div>
+        <ng-template pTemplate="header">
+          <img alt="Card" [src]="'/assets/img/' + item.img">
+        </ng-template>
+        <p>{{item.description}}</p>
+      </p-card>
     </div>
   </div>
 </div>
