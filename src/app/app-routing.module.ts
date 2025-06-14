@@ -20,14 +20,20 @@ const routes: Routes = [
   {
     path: 'main',
     loadChildren: () => import('./pages/main/main.module').then(m => {
-      console.log('Main Module is loading...');
       return m.MainModule;
     }
     ),
   },
   {
+    path: 'travels',
+    loadChildren: () => import('./pages/travels/travels.module').then(m => {
+      return m.TravelsModule;
+    }
+    ),
+  },
+  {
     path: '**',
-    redirectTo: 'main'
+    redirectTo: 'travels'
   }
 ];
 

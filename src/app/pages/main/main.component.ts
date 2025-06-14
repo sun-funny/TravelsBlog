@@ -11,7 +11,7 @@ import { TravelMock } from 'src/app/shared/mock/travel.mock';
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss']
 })
-export class MainComponent implements OnInit {
+export class MainComponent implements OnInit, OnDestroy {
   constructor(private travelService: TravelService ){}
 
   private _destroyer: Subscription;
@@ -20,5 +20,21 @@ export class MainComponent implements OnInit {
   locations = TravelMock;
     teamMembers = TeamMock;
 
-    ngOnInit(): void {}
+  ngOnInit(): void {
+
+    this.initTravels();
+
+    this._destroyer = this.travelService.groupTravels$.subscribe((data) => {
+      this.initTravels()
+    })
+  }
+
+    ngOnDestroy() {
+    this._destroyer.unsubscribe()
+  }
+
+  initTravels() {
+    this.travelsData$ = this.travelService.getTravel();
+  }
+
 }

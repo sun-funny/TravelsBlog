@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { MainComponent } from './main.component';
+import { TravelsComponent } from './travels.component';
 import { MenubarModule } from "primeng/menubar";
 import { CardModule} from 'primeng/card';
 import { ButtonModule } from "primeng/button";
@@ -17,11 +17,11 @@ import { DirectiveModule } from '../../directive/directive.module';
 
 @NgModule({
   declarations: [
-    MainComponent
+    TravelsComponent
   ],
   imports: [
     CommonModule,
-    RouterModule.forChild([{ path: '', component: MainComponent }]),
+    RouterModule.forChild([{ path: '', component: TravelsComponent}]),
     MenubarModule,
     CardModule,
     ButtonModule,
@@ -39,6 +39,6 @@ import { DirectiveModule } from '../../directive/directive.module';
     MessageService
   ]
 })
-export class MainModule {
+export class TravelsModule {
   constructor() { }
 }

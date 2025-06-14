@@ -7,7 +7,7 @@ export const TeamMock: ITeam[] =[
       image: "assets/img_team/Alex.png",
       position: { top: "215px", left: "1022px" },
       direction: "right",
-      vectorSrc: "assets/vector-2.svg",
+      vectorSrc: "assets/img_main/vector-2.svg",
     },
     {
       name: "Маша",
@@ -15,7 +15,7 @@ export const TeamMock: ITeam[] =[
       image: "assets/img_team/Marie.png",
       position: { top: "935px", left: "1008px" },
       direction: "left",
-      vectorSrc: "assets/vector-3.svg",
+      vectorSrc: "assets/img_main/vector-3.svg",
     },
     {
       name: "Настя",
@@ -23,6 +23,6 @@ export const TeamMock: ITeam[] =[
       image: "assets/img_team/Nastie.png",
       position: { top: "1678px", left: "520px" },
       direction: "right",
-      vectorSrc: "assets/vector-2.svg",
+      vectorSrc: "assets/img_main/vector-2.svg",
     },
   ];

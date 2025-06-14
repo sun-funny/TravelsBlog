@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { ITravel } from 'src/app/models/travel';
-import { environment } from 'src/environments/environment.prod';
+import { TravelMock } from 'src/app/shared/mock/travel.mock';
+import { TravelService } from 'src/app/services/travel/travel.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-travels',
@@ -9,37 +10,16 @@ import { environment } from 'src/environments/environment.prod';
   styleUrls: ['./travels.component.scss']
 })
 export class TravelsComponent implements OnInit {
-  travels: ITravel[] = [];
-  loading = true;
-  error = false;
-
-  constructor(private http: HttpClient) { }
+  travels: ITravel[] = TravelMock;
+  travelsData$: Observable<ITravel[]>;
+  
+  constructor(private travelService: TravelService) { }
 
   ngOnInit(): void {
-    this.fetchTravels();
+    this.initTravels();
   }
 
-  fetchTravels(): void {
-  this.http.get<any>(`${environment.apiUrl}/travels`).subscribe({
-    next: (data) => {
-      if (data && data.travels) {
-        this.travels = data.travels;
-      } else {
-        console.warn('Unexpected data format:', data);
-        this.error = true;
-      }
-      this.loading = false;
-    },
-    error: (err) => {
-      console.error('Error fetching main:', err);
-      this.error = true;
-      this.loading = false;
-      setTimeout(() => this.fetchTravels(), 5000);
-    }
-  });
-}
-
-  get filteredTravels(): ITravel[] {
-    return this.travels.filter(item => item.year === 2025);
+  initTravels() {
+    this.travelsData$ = this.travelService.getTravel();
   }
 }

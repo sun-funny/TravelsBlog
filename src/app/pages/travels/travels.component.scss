@@ -1,71 +1,105 @@
 .travels-container {
-  width: 100%;
-  height: auto;
-  min-height: 807px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   background-color: white;
-  padding: 40px 0;
-  margin: 0 auto;
-}
-
-.travels-header {
-  font-family: 'Dela Gothic One', Helvetica, sans-serif;
-  font-weight: 500;
-  background-color: #87b8df;
-  color: white;
-  font-size: 32px;
-  text-align: center;
-  width: 100%;
-  margin-bottom: 40px;
-  padding: 20px 0;
-}
-
-.cards-container {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: row;
   justify-content: center;
-  gap: 30px;
-  width: 90%;
-  max-width: 1600px;
-}
-
-.traves-item {
-  flex: 1 1 300px;
-  max-width: 400px;
-}
-
-::ng-deep .p-card {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  
-  .p-card-body {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .p-card-content {
-    flex: 1;
-  }
-
-  .loading-state, .error-state, .no-tours {
-  font-family: 'Montserrat', Helvetica, sans-serif;
-  font-size: 24px;
-  text-align: center;
-  padding: 40px;
-  color: #333;
-  }
-
-  .error-state {
-    color: #d00000;
-  }
-}
-
-::ng-deep .p-card-header img {
   width: 100%;
-  height: 250px;
-  object-fit: cover;
+
+  .travels-main {
+    background-color: white;
+    width: 1920px;
+    height: auto;
+    position: relative;
+    padding: 50px;
+
+    .travels-content {
+      margin-top: 20px;
+      background-color: transparent;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .travel-cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
+        width: 100%;
+
+        .travel-card {
+          background-color: #ffffff;
+          border-radius: 15px;
+          overflow: hidden;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+          &:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+          }
+
+          .travel-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+          }
+
+          .travel-info {
+            padding: 20px;
+
+            .travel-country {
+              color: #114967;
+              font-size: 24px;
+              font-weight: 700;
+              margin-bottom: 8px;
+              font-family: 'Montserrat', Helvetica, sans-serif;
+            }
+
+            .travel-city {
+              color: #d00000;
+              font-size: 18px;
+              font-weight: 600;
+              margin-bottom: 12px;
+              font-family: 'Montserrat', Helvetica, sans-serif;
+            }
+
+            .travel-description {
+              color: #333;
+              font-size: 16px;
+              margin-bottom: 15px;
+              line-height: 1.5;
+              font-family: 'Montserrat', Helvetica, sans-serif;
+            }
+
+            .travel-year {
+              color: #0015ff;
+              font-size: 14px;
+              font-weight: 600;
+              text-align: right;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 1200px) {
+  .travels-main {
+    width: 100% !important;
+    padding: 30px !important;
+
+    .travel-cards {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .travels-main {
+    padding: 20px !important;
+
+    .travel-cards {
+      grid-template-columns: 1fr !important;
+    }
+  }
 }
