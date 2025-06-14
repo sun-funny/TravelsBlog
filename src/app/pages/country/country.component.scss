@@ -1,53 +1,89 @@
-.country-container {
+.country-background {
+  position: relative;
+  min-height: 100vh;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   padding: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-
-  .country-header {
-    text-align: center;
-    margin-bottom: 2rem;
-
-    .country-image {
-      max-width: 100%;
-      height: auto;
-      border-radius: 8px;
-      margin-top: 1rem;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
+  
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 0;
   }
-
-  .points-container {
-    margin-top: 2rem;
-
-    h2 {
+  
+  .country-content {
+    position: relative;
+    z-index: 1;
+    color: white;
+    max-width: 1200px;
+    margin: 0 auto;
+    
+    .country-header {
       text-align: center;
-      margin-bottom: 1.5rem;
-      color: #114967;
-    }
-
-    .point-card {
-      background: white;
+      margin-bottom: 3rem;
+      padding: 2rem;
+      background-color: rgba(17, 73, 103, 0.8);
       border-radius: 8px;
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-      h3 {
-        color: #d00000;
-        margin-bottom: 0.5rem;
+      
+      h1 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        color: #ffffff;
       }
-
-      .point-images {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1rem;
-        margin-top: 1rem;
-
-        .point-image {
-          width: 200px;
-          height: 150px;
-          object-fit: cover;
-          border-radius: 4px;
+      
+      h2 {
+        font-size: 1.5rem;
+        color: #ffffff;
+      }
+    }
+    
+    .points-container {
+      display: grid;
+      gap: 2rem;
+      
+      .point-card {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 8px;
+        padding: 1.5rem;
+        color: #333;
+        
+        h3 {
+          color: #d00000;
+          font-size: 1.8rem;
+          margin-bottom: 0.5rem;
+        }
+        
+        p {
+          margin-bottom: 1.5rem;
+          font-size: 1.1rem;
+          line-height: 1.6;
+        }
+        
+        .carousel-image-container {
+          height: 400px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          
+          .carousel-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 4px;
+          }
+        }
+        
+        ::ng-deep .p-carousel .p-carousel-indicators .p-carousel-indicator button {
+          background-color: #114967;
+        }
+        
+        ::ng-deep .p-carousel .p-carousel-indicators .p-carousel-indicator.p-highlight button {
+          background-color: #d00000;
         }
       }
     }
@@ -58,4 +94,18 @@
   text-align: center;
   padding: 2rem;
   color: #d00000;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  
+  h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  p {
+    font-size: 1.2rem;
+  }
 }

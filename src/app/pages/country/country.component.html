@@ -1,19 +1,28 @@
-<div class="country-container" *ngIf="!isNotFound && country">
-  <div class="country-header">
-    <h1>{{country.country}} - {{country.city}}</h1>
-    <p>{{country.description}}</p>
-    <img [src]="'assets/img_countries/' + country.img" [alt]="country.country" class="country-image">
-  </div>
+<header class="navigation-bar">
+  <app-header></app-header>
+</header>
 
-  <div class="points-container">
-    <h2>Points of Interest</h2>
-    
-    <div *ngFor="let point of points" class="point-card">
-      <h3>{{point.name}}</h3>
-      <p>{{point.description}}</p>
-      
-      <div class="point-images">
-        <img *ngFor="let img of point.img" [src]="img" [alt]="point.name" class="point-image">
+<div class="country-background">
+  <div class="overlay"></div>
+  
+  <div class="country-content" *ngIf="!isNotFound && country">
+    <div class="country-header">
+      <h1>{{country.country}}</h1>
+      <h2>Столица страны: {{country.city}}</h2>
+    </div>
+
+    <div class="points-container">
+      <div *ngFor="let point of points" class="point-card">
+        <h3>{{point.name}}</h3>
+        <p>{{point.description}}</p>
+        
+        <p-carousel *ngIf="point.img?.length" [value]="point.img" [circular]="true" [autoplayInterval]="3000">
+          <ng-template let-image pTemplate="item">
+            <div class="carousel-image-container">
+              <img [src]="image" [alt]="point.name" class="carousel-image">
+            </div>
+          </ng-template>
+        </p-carousel>
       </div>
     </div>
   </div>

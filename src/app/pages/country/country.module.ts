@@ -7,6 +7,7 @@ import { ButtonModule } from "primeng/button";
 import { FormsModule } from "@angular/forms";
 import { InputTextModule } from "primeng/inputtext";
 import { CarouselModule } from "primeng/carousel";
+import { UiModule } from '../ui/ui.module';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { CarouselModule } from "primeng/carousel";
     ButtonModule,
     FormsModule,
     InputTextModule,
-    CarouselModule
+    CarouselModule,
+    UiModule,
   ]
 })
 export class CountryModule { }

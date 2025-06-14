@@ -12,7 +12,7 @@ import { TravelMock } from 'src/app/shared/mock/travel.mock';
   styleUrls: ['./country.component.scss']
 })
 export class CountryComponent implements OnInit {
-  country: ITravel;
+  country: ITravel | undefined;
   points: IPoint[] = [];
   isNotFound: boolean = false;
 
@@ -30,6 +30,7 @@ export class CountryComponent implements OnInit {
         this.isNotFound = true;
         return;
       }
+      
       this.points = PointMock.filter(point => point.id_country === id);
     }
   }
