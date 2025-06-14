@@ -1,38 +1,43 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { AppRoutingModule } from './app-routing.module'; 
 import { AppComponent } from './app.component';
+import { AppRoutingModule } from "./app-routing.module";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
+import { RestInterceptorsService } from "./services/interceptors/rest-interceptors.service";
 import { CardModule } from 'primeng/card';
-import { ButtonComponent } from './components/ui/button/button.component';
-import { MainComponent } from './components/main/main.component';
-import { 
-  CardComponent,
-  CardHeaderComponent,
-  CardContentComponent 
-} from './components/ui/card/card.component';
-import {HeaderComponent, HeaderListComponent, HeaderItemComponent, HeaderLinkComponent } from './components/ui/header/header.component';
-import { FooterComponent } from './components/ui/footer/footer.component';
+import { ConfigService } from "./services/config/config.service";
+import { DirectiveModule } from './directive/directive.module'; // Add this import
+import { UiModule } from './pages/ui/ui.module';
+
+function initializeApp(config: ConfigService) {
+  return () => config.loadPromise().then(() => {
+    console.log('---CONFIG LOADED--', ConfigService.config)
+  });
+}
 
 @NgModule({
   declarations: [
-    AppComponent,
-    ButtonComponent,
-    MainComponent,
-    CardComponent,
-    CardHeaderComponent,
-    CardContentComponent,
-    HeaderComponent,
-    HeaderListComponent,
-    HeaderItemComponent,
-    HeaderLinkComponent,
-    FooterComponent
+    AppComponent
   ],
   imports: [
     BrowserModule,
+    CardModule,
     AppRoutingModule,
-    CardModule
+    BrowserAnimationsModule,
+    HttpClientModule,
+    UiModule,
+    DirectiveModule
   ],
-  providers: [],
+  providers: [
+    ConfigService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeApp,
+      deps: [ConfigService], multi: true
+    },
+    {provide: HTTP_INTERCEPTORS, useClass: RestInterceptorsService, multi: true},
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

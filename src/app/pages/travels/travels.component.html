@@ -1,0 +1,32 @@
+<div class="travels-container">
+  <div class="travels-header">Наши путешествия 2025</div>
+  
+  <div *ngIf="loading" class="loading-state">
+    Загрузка данных...
+  </div>
+  
+  <div *ngIf="error" class="error-state">
+    Произошла ошибка при загрузке данных. Пожалуйста, попробуйте позже.
+  </div>
+  
+  <div class="cards-container" *ngIf="!loading && !error">
+    <div
+      class="travels-item"
+      *ngFor="let item of filteredTravels"
+    >
+      <p-card
+        [header]="item.country"
+        styleClass="p-card-shadow"
+      >
+        <ng-template pTemplate="header">
+          <img alt="Card" [src]="'/assets/img_countries/' + item.img">
+        </ng-template>
+        <p>{{item.description}}</p>
+      </p-card>
+    </div>
+    
+    <div *ngIf="filteredTravels.length === 0" class="no-travels">
+      Нет доступных туров на 2025 год.
+    </div>
+  </div>
+</div>

@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
+import {ObservableExampleService} from "./services/observable-example/observable-example.service";
+import {ConfigService} from "./services/config/config.service";
 
 @Component({
   selector: 'app-root',
@@ -6,5 +8,12 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'TourBlog'
+  title = 'toursBlog';
+
+  constructor(
+    private test: ObservableExampleService,
+    private configService: ConfigService
+  ) {
+
+  }
 }
