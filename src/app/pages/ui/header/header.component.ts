@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { Router } from '@angular/router';
 import { cn } from '../../lib/utils';
 
 @Component({
@@ -10,10 +11,16 @@ export class HeaderComponent {
   @Input() className = '';
   
   navItems = [
-    { text: "ГЛАВНАЯ", width: "165px" },
-    { text: "НАШИ ПУТЕШЕСТВИЯ", width: "390px" },
-    { text: "FAQ", width: "334px" },
+    { text: "ГЛАВНАЯ", width: "165px", route: "/main" },
+    { text: "НАШИ ПУТЕШЕСТВИЯ", width: "390px", route: "/travels" },
+    { text: "FAQ", width: "334px", route: "/faq" },
   ];
+
+  constructor(private router: Router) {}
+
+  navigateTo(route: string): void {
+    this.router.navigate([route]);
+  }
 
   get headerClasses(): string {
     return cn('max-w-none w-full flex justify-center', this.className);
@@ -54,6 +61,7 @@ export class HeaderItemComponent {
 export class HeaderLinkComponent {
   @Input() className = '';
   @Input() width = '';
+  @Input() route = '';
   
   get linkClasses(): string {
     return cn(
