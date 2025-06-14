@@ -1,39 +1,32 @@
 <div class="main-container">
   <div class="main-main">
-
     <header class="navigation-bar">
       <app-header></app-header>
-    </header>
-    
+    </header>  
     <div class="hero-section">
       <img
         class="hero-image"
         alt="Travel destination view"
         src="/assets/img_main/FonHeaderTravel.png"
       />
-
       <img
         class="main-title"
         alt="Time for travels"
         src="/assets/img_main/ToTravelText.svg"
       />
-
       <img
         class="vector-element"
         alt="Vector"
         src="/assets/img_main/vector-1.svg"
       />
-
-      <app-button class="cta-button">
+      <app-button class="cta-button" (click)="navigateToTravels()">
         <span class="button-text">
           К путешествиям!
         </span>
       </app-button>
     </div>
-
   </div>
 </div>
-
 <div class="content-section">
   <div class="content-background">
     <div class="content-container">
@@ -41,23 +34,18 @@
         <h1 class="about-title">
           Кто мы такие?
         </h1>
-
         <div class="map-section">
           <img
             class="map-image"
             alt="Pngtreedistance"
             src="/assets/img_main/Pngtreedistance.png"
           />
-
           <div class="locations-container">
-            <!-- Санкт-Петербург -->
             <div class="st-petersburg">
               <div class="st-petersburg-text">
                 St - Petersburg
               </div>
             </div>
-
-            <!-- Остальные места -->
             <div *ngFor="let location of locations; let i = index"
               class="location"
               [style.top]="location.top"
@@ -71,8 +59,6 @@
               </span>
             </div>
           </div>
-
-          <!-- Позиция команды -->
           <div *ngFor="let member of teamMembers.slice(0, 2); let i = index"
             class="team-member"
             [style.top]="member.position.top"
@@ -97,7 +83,6 @@
                 </app-card-content>
               </app-card>
             </ng-container>
-
             <ng-template #leftDirection>
               <img
                 class="member-image left"
@@ -122,8 +107,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Последняя карточка команды -->
       <div class="last-team-member">
         <img
           class="last-member-image"

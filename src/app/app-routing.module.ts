@@ -33,8 +33,12 @@ const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'travels'
-  }
+    redirectTo: 'main'
+  },
+  { path: '', 
+    redirectTo: 'main', 
+    pathMatch: 'full' 
+  },
 ];
 
 
