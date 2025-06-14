@@ -31,6 +31,10 @@ const routes: Routes = [
     }
     ),
   },
+  { 
+    path: 'travels/:id', 
+    loadChildren: () => import('./pages/country/country.module').then(m => m.CountryModule) 
+  },
   {
     path: '**',
     redirectTo: 'main'

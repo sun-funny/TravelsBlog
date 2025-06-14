@@ -1,0 +1,25 @@
+<div class="country-container" *ngIf="!isNotFound && country">
+  <div class="country-header">
+    <h1>{{country.country}} - {{country.city}}</h1>
+    <p>{{country.description}}</p>
+    <img [src]="'assets/img_countries/' + country.img" [alt]="country.country" class="country-image">
+  </div>
+
+  <div class="points-container">
+    <h2>Points of Interest</h2>
+    
+    <div *ngFor="let point of points" class="point-card">
+      <h3>{{point.name}}</h3>
+      <p>{{point.description}}</p>
+      
+      <div class="point-images">
+        <img *ngFor="let img of point.img" [src]="img" [alt]="point.name" class="point-image">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="isNotFound" class="not-found">
+  <h2>Country not found</h2>
+  <p>The country you're looking for doesn't exist or has been removed.</p>
+</div>
