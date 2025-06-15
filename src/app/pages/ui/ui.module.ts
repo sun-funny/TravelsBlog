@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { ButtonComponent } from './button/button.component';
 import { CardComponent, CardContentComponent, CardHeaderComponent } from './card/card.component';
 import { HeaderComponent, HeaderListComponent, HeaderItemComponent, HeaderLinkComponent } from './header/header.component';
+import { FooterComponent } from './footer/footer.component';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -13,10 +15,12 @@ import { HeaderComponent, HeaderListComponent, HeaderItemComponent, HeaderLinkCo
     HeaderComponent,
     HeaderListComponent,
     HeaderItemComponent,
-    HeaderLinkComponent
+    HeaderLinkComponent,
+    FooterComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    RouterModule
   ],
   exports: [
     ButtonComponent,
@@ -26,7 +30,8 @@ import { HeaderComponent, HeaderListComponent, HeaderItemComponent, HeaderLinkCo
     HeaderComponent,
     HeaderListComponent,
     HeaderItemComponent,
-    HeaderLinkComponent
+    HeaderLinkComponent,
+    FooterComponent
   ]
 })
 export class UiModule { }
