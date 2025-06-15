@@ -36,7 +36,7 @@ export class AuthorizationComponent implements OnInit {
     (data) => {
       console.log('Response:', data);
       const token: string = data.access_token;
-      this.router.navigate(['tickets/ticket-list']);
+      this.router.navigate(['faq']);
     },
       (error) => {
             console.error('Error:', error);

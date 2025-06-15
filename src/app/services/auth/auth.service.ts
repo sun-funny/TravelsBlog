@@ -52,17 +52,13 @@ export class AuthService {
     this.userBehaviorSubject.next(this.currentUser);
   }
 
-  addBasketToSubject(): void {
-    this.userBasketSubject.next('basket' +  Math.random());
-  }
-
   setUser(user: IUser): void {
     this.currentUser = user;
   }
 
   private authAndRedirect(user: IUser, isRememberMe?: boolean) {
     this.auth(user, isRememberMe);
-    this.router.navigate(['tickets']);
+    this.router.navigate(['faq']);
   }
 
   get isAuthenticated(): boolean  {

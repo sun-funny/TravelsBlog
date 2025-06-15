@@ -1,21 +1,20 @@
 import { Injectable } from '@angular/core';
-import { Observable } from "rxjs";
-import { HttpClient } from "@angular/common/http";
+import { Observable, of } from "rxjs";
 import { ITravel } from 'src/app/models/travel';
+import { TravelMock } from 'src/app/shared/mock/travel.mock';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TravelRestService {
 
-  constructor(private http: HttpClient) {
-  }
+  constructor() {}
 
   getTravels(): Observable<ITravel[]> {
-    return this.http.get<ITravel[]>('https://62b9e756ff109cd1dc9dae16.mockapi.io/apiv/v1/tours/');
+    return of(TravelMock);
   }
 
   sendTravelData(data: any) {
-    return this.http.post(`/`, data)
+    return of(data);
   }
 }

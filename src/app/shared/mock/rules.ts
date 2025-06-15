@@ -8,25 +8,18 @@ export interface IUserRules {
 
 export const UserRules: Readonly<IUserRules[]> = [
   {
-    path: 'tickets/ticket-list',
+    path: 'travels/faq',
     rules: {
       write: true,
       read: true
     }, 
   },
   {
-    path: '/tickets/settings/',
+    path: '/travels/settings/',
     rules: {
       write: true,
       read: true
     }
-  },
-  {
-    path: 'tickets/orders',
-    rules: {
-      write: true,
-      read: true
-    } 
   }
 ]
 

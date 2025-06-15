@@ -14,18 +14,17 @@ export class TravelService {
   }
 
   getTravel(): Observable<ITravel[]> {
-    return this.travelServiceRest.getTravels().pipe(map((items) => {
-      return items.concat(items);
-    }));
+    return this.travelServiceRest.getTravels().pipe(
+      map((items) => {
+        return items;
+      })
+    );
   }
 
   updateTravel() {
     this.travelSubject.next;
   }
-
   sendTourData(data: any) {
-    return this.travelServiceRest.sendTravelData(data)
+    return this.travelServiceRest.sendTravelData(data);
   }
 }
-
-

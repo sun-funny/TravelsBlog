@@ -5,9 +5,10 @@
 <div class="travels-container">
   <div class="travels-main">
     <div class="travels-content">
+      <app-nearest-travels></app-nearest-travels>
       <div class="travel-cards">
         <div *ngFor="let travel of travels" class="travel-card" [routerLink]="['/travels', travel.id]">
-          <img [src]="'assets/img_countries/' + travel.img" alt="{{travel.country}}" class="travel-image">
+          <img [src]="travel.img" alt="{{travel.country}}" class="travel-image">
           <div class="travel-info">
             <h3 class="travel-country">{{travel.country}}</h3>
             <h4 class="travel-city">{{travel.city}}</h4>

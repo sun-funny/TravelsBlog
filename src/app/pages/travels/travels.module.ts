@@ -14,10 +14,12 @@ import { MessageService } from "primeng/api";
 import { SharedModule } from "../../shared/shared.module";
 import { UiModule } from '../ui/ui.module';
 import { DirectiveModule } from '../../directive/directive.module';
+import { NearestTravelsComponent } from './nearest-travels.component';
 
 @NgModule({
   declarations: [
-    TravelsComponent
+    TravelsComponent,
+    NearestTravelsComponent
   ],
   imports: [
     CommonModule,
@@ -33,7 +35,7 @@ import { DirectiveModule } from '../../directive/directive.module';
     SharedModule,
     ReactiveFormsModule,
     UiModule,
-    DirectiveModule
+    DirectiveModule,
   ],
   providers: [
     MessageService
