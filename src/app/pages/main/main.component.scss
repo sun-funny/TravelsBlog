@@ -4,7 +4,7 @@
   flex-direction: row;
   justify-content: center;
   width: 100%;
-  padding-bottom: 82px;
+  padding-bottom: 5px;
 
   .main-main {
     background-color: white;
@@ -100,6 +100,7 @@
   flex-direction: row;
   justify-content: center;
   width: 100%;
+  padding-bottom: 100px;
 
   .content-background {
     background: url(/assets/img_main/FonMain.jpg) 50% 50%/cover;
@@ -127,7 +128,7 @@
           position: absolute;
           font-family: 'Montserrat', Helvetica, sans-serif;
           font-weight: 700;
-          color: black;
+          color:#062c50;
           letter-spacing: 0;
           line-height: normal;
         }
@@ -228,71 +229,74 @@
             }
 
             .member-card {
-              position: absolute;
-              width: 598px;
-              height: 673px;
-              top: 0;
-              background-color: white;
-              border-radius: 35px;
-              overflow: hidden;
-              box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  width: 598px;
+  height: 673px;
+  top: 0;
+  background-color: white;
+  border-radius: 35px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
-              &.right {
-                left: 268px;
-              }
+  &.right {
+    left: 268px;
+    
+    .card-content {
+      .member-greeting {
+        top: 28px; // Match Настя's card
+        left: 50px; // Match Настя's card
+        width: 500px; // Match Настя's card
+        white-space: nowrap; // Match Настя's card
+      }
+      
+      .card-vector {
+        top: 48px; // Match Настя's card
+        right: 30px; // Match Настя's card
+        left: auto; // Reset left position
+      }
+    }
+  }
 
-              &.left {
-                left: 0;
-              }
+  &.left {
+    left: 0;
+  }
 
-              .card-content {
-                padding: 0;
-                height: 100%;
-                position: relative;
+  .card-content {
+    padding: 0;
+    height: 100%;
+    position: relative;
 
-                .card-vector {
-                  position: absolute;
-                  width: 32px;
-                  height: 37px;
-                  z-index: 1;
+    .card-vector {
+      position: absolute;
+      width: 32px;
+      height: 37px;
+      z-index: 1;
 
-                  &.right {
-                    top: 30px;
-                    left: 237px;
-                  }
+      &.left {
+        top: 30px;
+        right: 237px;
+      }
+    }
 
-                  &.left {
-                    top: 30px;
-                    right: 237px;
-                  }
-                }
+    .member-greeting {
+      font-size: 32px;
+      position: absolute;
+      font-family: 'Montserrat', Helvetica, sans-serif;
+      font-weight: 700;
+      color: black;
+      letter-spacing: 0;
+      line-height: normal;
+      z-index: 2;
 
-                .member-greeting {
-                  font-size: 32px;
-                  position: absolute;
-                  font-family: 'Montserrat', Helvetica, sans-serif;
-                  font-weight: 700;
-                  color: black;
-                  letter-spacing: 0;
-                  line-height: normal;
-                  z-index: 2;
-
-                  &.right {
-                    top: 17px;
-                    left: 280px;
-                    width: 300px;
-                    white-space: nowrap;
-                  }
-
-                  &.left {
-                    top: 23px;
-                    left: 50px;
-                    width: 500px;
-                    white-space: nowrap;
-                  }
-                }
-              }
-            }
+      &.left {
+        top: 23px;
+        left: 50px;
+        width: 500px;
+        white-space: nowrap;
+      }
+    }
+  }
+}
 
             .left-card-container {
               position: absolute;
