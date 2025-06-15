@@ -7,8 +7,14 @@
   
   <div class="country-content" *ngIf="!isNotFound && country">
     <div class="country-header">
-      <h1>{{country.country}}</h1>
+      <div class="header-title">
+        <img [src]="country.flag" alt="{{country.country}} flag" class="country-flag">
+        <h1>{{country.country}}</h1>
+      </div>
       <h2>Столица страны: {{country.city}}</h2>
+    </div>
+    <div class="country-description">
+      <h1>{{country.description}}</h1>
     </div>
 
     <div class="points-container">

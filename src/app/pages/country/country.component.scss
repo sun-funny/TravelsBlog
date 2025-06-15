@@ -27,21 +27,42 @@
       text-align: center;
       margin-bottom: 3rem;
       padding: 2rem;
-      background-color: rgba(17, 73, 103, 0.8);
+      background-color: #114967;
       border-radius: 8px;
       
-      h1 {
-        font-size: 3rem;
-        margin-bottom: 1rem;
-        color: #ffffff;
+      .header-title {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        
+        .country-flag {
+          height: 2.5rem;
+          width: auto;
+          border: 1px solid #ffffff;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+          font-size: 3rem;
+          margin-bottom: 1rem;
+          color: #ffffff;
+          margin: 0;
+        }
       }
       
       h2 {
         font-size: 1.5rem;
         color: #ffffff;
+        margin-top: 1rem;
       }
     }
     
+    .country-description {
+      font-size: 1.5rem;
+      color: #062c50;
+    }
+
     .points-container {
       display: grid;
       gap: 2rem;
@@ -53,7 +74,7 @@
         color: #333;
         
         h3 {
-          color: #d00000;
+          color: #6d0404;
           font-size: 1.8rem;
           margin-bottom: 0.5rem;
         }
@@ -83,7 +104,7 @@
         }
         
         ::ng-deep .p-carousel .p-carousel-indicators .p-carousel-indicator.p-highlight button {
-          background-color: #d00000;
+          background-color: #6d0404;
         }
       }
     }
