@@ -12,6 +12,8 @@ import { Observable } from 'rxjs';
 export class TravelsComponent implements OnInit {
   travels: ITravel[] = TravelMock;
   travelsData$: Observable<ITravel[]>;
+  showAllCountries = false;
+  buttonText = 'Показать все страны';
   
   constructor(private travelService: TravelService) { }
 
@@ -21,5 +23,10 @@ export class TravelsComponent implements OnInit {
 
   initTravels() {
     this.travelsData$ = this.travelService.getTravel();
+  }
+
+  toggleCountries() {
+    this.showAllCountries = !this.showAllCountries;
+    this.buttonText = this.showAllCountries ? 'Скрыть' : 'Показать все страны';
   }
 }

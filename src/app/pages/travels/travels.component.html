@@ -6,7 +6,14 @@
   <div class="travels-main">
     <div class="travels-content">
       <app-nearest-travels></app-nearest-travels>
-      <div class="travel-cards">
+      
+      <div class="show-all-button-container">
+        <button class="show-all-button" (click)="toggleCountries()">
+          {{buttonText}}
+        </button>
+      </div>
+      
+      <div class="travel-cards" *ngIf="showAllCountries">
         <div *ngFor="let travel of travels" class="travel-card" [routerLink]="['/travels', travel.id]">
           <img [src]="travel.img" alt="{{travel.country}}" class="travel-image">
           <div class="travel-info">
