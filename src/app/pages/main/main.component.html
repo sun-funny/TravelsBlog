@@ -51,9 +51,9 @@
               [style.top]="location.top"
               [style.left]="location.left"
             >
-              <span class="country">
-                {{location.country}}
-              </span>
+               <span class="country" (click)="navigateToCountry(location.id)">
+                  {{location.country}}
+                </span>
               <span *ngIf="location.city" class="city">
                 {{location.city}}
               </span>

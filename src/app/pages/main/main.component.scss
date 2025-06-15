@@ -176,11 +176,18 @@
               text-align: center;
               font-family: 'Montserrat', Helvetica, sans-serif;
               font-weight: 700;
+              cursor: pointer;
 
               .country {
                 color: #0015ff;
                 font-size: 40px;
                 display: block;
+                transition: color 0.3s ease;
+
+                &:hover {
+                  color: #114967; // Change color on hover
+                  text-decoration: underline; // Add underline on hover
+                }
               }
 
               .city {

@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core'
 import { Router } from '@angular/router';
 import {Observable, Subscription} from "rxjs";
-import { TreeNode } from "primeng/api";
 import { ITravel } from 'src/app/models/travel';
 import { TravelService } from 'src/app/services/travel/travel.service';
 import { TeamMock } from 'src/app/shared/mock/team.mock';
@@ -42,4 +41,10 @@ export class MainComponent implements OnInit, OnDestroy {
   navigateToTravels() {
     this.router.navigate(['/travels']);
   }
+
+  navigateToCountry(countryId: string) {
+  this.router.navigate(['/travels', countryId]).then(() => {
+    window.scrollTo(0, 0);
+  });
+}
 }
