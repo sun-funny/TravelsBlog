@@ -190,8 +190,8 @@
                 transition: color 0.3s ease;
 
                 &:hover {
-                  color: #114967; // Change color on hover
-                  text-decoration: underline; // Add underline on hover
+                  color: #114967; 
+                  text-decoration: underline; 
                 }
               }
 
@@ -243,16 +243,16 @@
     
     .card-content {
       .member-greeting {
-        top: 28px; // Match Настя's card
-        left: 50px; // Match Настя's card
-        width: 500px; // Match Настя's card
-        white-space: nowrap; // Match Настя's card
+        top: 28px;
+        left: 50px;
+        width: 500px;
+        white-space: nowrap;
       }
       
       .card-vector {
-        top: 48px; // Match Настя's card
-        right: 30px; // Match Настя's card
-        left: auto; // Reset left position
+        top: 48px;
+        right: 30px;
+        left: auto;
       }
     }
   }
