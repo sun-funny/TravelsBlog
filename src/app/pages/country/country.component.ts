@@ -15,6 +15,9 @@ export class CountryComponent implements OnInit {
   country: ITravel | undefined;
   points: IPoint[] = [];
   isNotFound: boolean = false;
+  displayModal: boolean = false;
+  selectedImage: string;
+  currentPoint: IPoint;
 
   constructor(
     private route: ActivatedRoute,
@@ -33,5 +36,14 @@ export class CountryComponent implements OnInit {
       
       this.points = PointMock.filter(point => point.id_country === id);
     }
+  }
+
+  openImageModal(image: string) {
+    this.selectedImage = image;
+    this.displayModal = true;
+  }
+
+  onModalHide() {
+    this.selectedImage = null;
   }
 }

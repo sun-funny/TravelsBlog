@@ -28,9 +28,21 @@
           <ng-template let-image pTemplate="item">
             <div class="carousel-image-container">
               <img [src]="image" [alt]="point.name" class="carousel-image">
+              <div class="zoom-icon" (click)="openImageModal(image)">
+                <i class="pi pi-plus"></i>
+              </div>
             </div>
           </ng-template>
         </p-carousel>
+        <p-dialog 
+          [(visible)]="displayModal" 
+          [modal]="true" 
+          [style]="{width: '80vw', maxWidth: '1200px'}" 
+          [baseZIndex]="10000"
+          [dismissableMask]="true"
+          (onHide)="onModalHide()">
+          <img [src]="selectedImage" [alt]="'Enlarged ' + (point?.name || 'image')" class="modal-image">
+        </p-dialog>
       </div>
     </div>
   </div>

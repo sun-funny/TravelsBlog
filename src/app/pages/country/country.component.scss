@@ -100,6 +100,7 @@
       }
       
       .carousel-image-container {
+        position: relative;
         height: 400px;
         display: flex;
         justify-content: center;
@@ -111,6 +112,57 @@
           width: 100%;
           height: 100%;
           object-fit: cover;
+          transition: transform 0.3s ease;
+        }
+        &:hover {
+          transform: scale(1.02);
+        }
+
+        .zoom-icon {
+          position: absolute;
+          bottom: 20px;
+          right: 20px;
+          width: 40px;
+          height: 40px;
+          background-color: rgba(255, 255, 255, 0.8);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: all 0.3s ease;
+    
+          &:hover {
+            background-color: rgba(255, 255, 255, 1);
+            transform: scale(1.1);
+          }
+    
+          .pi {
+            color: #114967;
+            font-size: 1.2rem;
+          }
+        }
+      }
+      .modal-image {
+        width: 100%;
+        height: auto;
+        max-height: 80vh;
+        object-fit: contain;
+        border-radius: 8px;
+      }
+
+      @media (max-width: 768px) {
+        .carousel-image-container {
+          height: 250px;
+    
+          .zoom-icon {
+            width: 30px;
+            height: 30px;
+      
+            .pi {
+              font-size: 1rem;
+            }
+          }
         }
       }
     }

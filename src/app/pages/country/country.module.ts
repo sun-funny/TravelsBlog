@@ -8,6 +8,7 @@ import { FormsModule } from "@angular/forms";
 import { InputTextModule } from "primeng/inputtext";
 import { CarouselModule } from "primeng/carousel";
 import { UiModule } from '../ui/ui.module';
+import { DialogModule } from 'primeng/dialog';
 import { AsideComponent } from './aside/aside.component';
 
 @NgModule({
@@ -23,6 +24,7 @@ import { AsideComponent } from './aside/aside.component';
     FormsModule,
     InputTextModule,
     CarouselModule,
+    DialogModule,
     UiModule,
   ]
 })
