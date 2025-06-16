@@ -8,10 +8,12 @@ import { FormsModule } from "@angular/forms";
 import { InputTextModule } from "primeng/inputtext";
 import { CarouselModule } from "primeng/carousel";
 import { UiModule } from '../ui/ui.module';
+import { AsideComponent } from './aside/aside.component';
 
 @NgModule({
   declarations: [
-    CountryComponent
+    CountryComponent,
+    AsideComponent
   ],
   imports: [
     CommonModule,
