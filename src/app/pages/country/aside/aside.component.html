@@ -1,1 +1,14 @@
-<p>aside works!</p>
+<aside class="aside-container">
+  <div class="aside-header">
+    <h3>Оглавление</h3>
+  </div>
+  <nav class="aside-nav">
+    <ul class="point-list">
+      <li *ngFor="let point of points" class="point-item">
+        <a (click)="scrollToPoint(point.id)" class="point-link">
+          {{ point.name }}
+        </a>
+      </li>
+    </ul>
+  </nav>
+</aside>
