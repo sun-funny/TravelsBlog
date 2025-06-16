@@ -22,7 +22,7 @@
     <div class="points-container">
       <div *ngFor="let point of points" class="point-card" [id]="point.id">
         <h3>{{point.name}}</h3>
-        <p>{{point.description}}</p>
+        <div [innerHTML]="formatDescription(point.description)"></div>
         
         <p-carousel *ngIf="point.img?.length" [value]="point.img" [circular]="true" [autoplayInterval]="3000">
           <ng-template let-image pTemplate="item">
