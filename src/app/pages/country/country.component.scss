@@ -16,6 +16,7 @@
   background-repeat: no-repeat;
   padding: 2rem;
   padding-top: calc(2rem + 82px);
+  padding-bottom: 120px;
   
   .overlay {
     position: absolute;
@@ -72,11 +73,13 @@
     .country-description {
       font-size: 1.5rem;
       color: #062c50;
+      margin-bottom: 2rem;
     }
 
     .points-container {
       display: grid;
       gap: 2rem;
+      margin-bottom: 3rem;
       
       .point-card {
         background: rgba(255, 255, 255, 0.9);
@@ -131,6 +134,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding-bottom: 120px;
   
   h2 {
     font-size: 2rem;

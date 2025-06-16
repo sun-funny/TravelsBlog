@@ -5,7 +5,8 @@ export const TravelMock: ITravel[] = [
       "country": "Япония",
       "city": "Токио",
       "short_description": "Странная, но до жути интересная!",
-      "description": "Странная, но до жути интересная!",
+      "description": `Покемоны, самураи, кимоно, аниме, JDM, суши, рамен, моти, Фудзи, сакура, тяночки и вот это все, что возникает у вас в голове при упоминании Японии. 
+                      Да, это все правда.`,
       "flag": "/assets/img_flags/jp.png",
       "img": "assets/img_countries/foto1.jpg",
       "year": 2025,
