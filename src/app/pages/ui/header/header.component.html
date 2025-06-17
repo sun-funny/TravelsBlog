@@ -1,14 +1,13 @@
 <nav class="bg">
-  <app-header-list class="nav-list">
-    <app-header-item *ngFor="let item of navItems">
-      <app-header-link 
-        class="nav-link py-6 px-4"
-        [style.width]="item.width"
-        [route]="item.route"
-        (click)="navigateTo(item.route)"
-      >
-        {{item.text}}
-      </app-header-link>
-    </app-header-item>
-  </app-header-list>
+  <div class="nav-list">
+    <a 
+      *ngFor="let item of navItems"
+      class="nav-link"
+      [style.width]="item.width"
+      [routerLink]="item.route"
+      routerLinkActive="active"
+    >
+      {{item.text}}
+    </a>
+  </div>
 </nav>

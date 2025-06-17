@@ -36,6 +36,12 @@ nav {
   text-decoration: none;
 
   &:hover {
-    background-color: #6da7d3;
+    border-radius: 20px;
+    background-color: #114967;
+  }
+
+  &.active {
+    border-radius: 20px;
+    background-color: #114967;
   }
 }
