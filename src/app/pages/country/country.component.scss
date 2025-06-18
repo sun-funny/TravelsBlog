@@ -7,7 +7,6 @@
   display: flex;
   position: relative;
   min-height: 100vh;
-  padding-left: 290px;
 }
 
 .country-background {
@@ -16,6 +15,7 @@
   background-size: cover;
   background-position: center;
   padding: 20px;
+  padding-top: 102px;
   
   .overlay {
     position: absolute;

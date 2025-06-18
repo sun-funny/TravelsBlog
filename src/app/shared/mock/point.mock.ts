@@ -18,7 +18,7 @@ export const PointMock: IPoint[] = [
               "/assets/img_point_Japan/tokio/foto1.jpg",
               "/assets/img_point_Japan/tokio/foto2.jpg",
               "/assets/img_point_Japan/tokio/foto3.jpg",
-              "/assets/img_point_Japan/tokio/foto4.jpg",
+              "/assets/img_point_Japan/tokio/foto4.jpg"
             ],
       "id_country": "1"
     },
@@ -35,7 +35,7 @@ export const PointMock: IPoint[] = [
               "/assets/img_point_Japan/fudji/foto1.jpg",
               "/assets/img_point_Japan/fudji/foto2.jpg",
               "/assets/img_point_Japan/fudji/foto3.jpg",
-              "/assets/img_point_Japan/fudji/foto4.jpg",
+              "/assets/img_point_Japan/fudji/foto4.jpg"
             ],
       "id_country": "1"
     },
@@ -47,7 +47,7 @@ export const PointMock: IPoint[] = [
               "/assets/img_point_Japan/osaka/foto1.jpg",
               "/assets/img_point_Japan/osaka/foto2.jpg",
               "/assets/img_point_Japan/osaka/foto3.jpg",
-              "/assets/img_point_Japan/osaka/foto4.jpg",
+              "/assets/img_point_Japan/osaka/foto4.jpg"
             ],
       "id_country": "1"
     },
@@ -64,7 +64,7 @@ export const PointMock: IPoint[] = [
               "/assets/img_point_Japan/kioto/foto1.jpg",
               "/assets/img_point_Japan/kioto/foto2.jpg",
               "/assets/img_point_Japan/kioto/foto3.jpg",
-              "/assets/img_point_Japan/kioto/foto4.jpg",
+              "/assets/img_point_Japan/kioto/foto4.jpg"
             ],
       "id_country": "1"
     },
@@ -85,7 +85,17 @@ export const PointMock: IPoint[] = [
 
 И да, Синкансен, как и любой общественный транспорт в Японии, — достаточно дорогое удовольствие. Билет Осака - Токио (или обратно) стоит около 13 000 иен (~10 000 рублей).
 `,
-      "img": [],
+      "img": ["/assets/img_point_Japan/transport/foto1.jpg",
+              "/assets/img_point_Japan/transport/foto2.jpg",
+              "/assets/img_point_Japan/transport/foto3.jpg",
+              "/assets/img_point_Japan/transport/foto4.jpg",
+              "/assets/img_point_Japan/transport/foto5.jpg",
+              "/assets/img_point_Japan/transport/foto6.jpg",
+              "/assets/img_point_Japan/transport/foto7.jpg",
+              "/assets/img_point_Japan/transport/foto8.jpg",
+              "/assets/img_point_Japan/transport/foto9.jpg",
+              "/assets/img_point_Japan/transport/foto10.jpg",
+              "/assets/img_point_Japan/transport/foto11.jpg"],
       "id_country": "1"
     },
     {
