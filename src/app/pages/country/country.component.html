@@ -24,7 +24,12 @@
         <h3>{{point.name}}</h3>
         <div [innerHTML]="formatDescription(point.description)"></div>
         
-        <p-carousel *ngIf="point.img?.length" [value]="point.img" [circular]="true" [autoplayInterval]="3000">
+        <p-carousel *ngIf="point.img?.length" 
+          [value]="point.img" 
+          [circular]="true" 
+          [numVisible]="3" 
+          [numScroll]="3"
+          [autoplayInterval]="3000">
           <ng-template let-image pTemplate="item">
             <div class="carousel-image-container">
               <img [src]="image" [alt]="point.name" class="carousel-image">

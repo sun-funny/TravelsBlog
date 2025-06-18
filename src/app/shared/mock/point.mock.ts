@@ -93,7 +93,6 @@ export const PointMock: IPoint[] = [
               "/assets/img_point_Japan/transport/foto6.jpg",
               "/assets/img_point_Japan/transport/foto7.jpg",
               "/assets/img_point_Japan/transport/foto8.jpg",
-              "/assets/img_point_Japan/transport/foto9.jpg",
               "/assets/img_point_Japan/transport/foto10.jpg",
               "/assets/img_point_Japan/transport/foto11.jpg"],
       "id_country": "1"
