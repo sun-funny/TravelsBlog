@@ -15,15 +15,21 @@ import { SharedModule } from "../../shared/shared.module";
 import { UiModule } from '../ui/ui.module';
 import { DirectiveModule } from '../../directive/directive.module';
 import { NearestTravelsComponent } from './nearest-travels.component';
+import { AddTravelComponent } from './add-travel/add-travel.component';
+import { InputSwitchModule } from 'primeng/inputswitch';
 
 @NgModule({
   declarations: [
     TravelsComponent,
-    NearestTravelsComponent
+    NearestTravelsComponent,
+    AddTravelComponent
   ],
   imports: [
     CommonModule,
-    RouterModule.forChild([{ path: '', component: TravelsComponent}]),
+    RouterModule.forChild([
+      { path: '', component: TravelsComponent},
+      { path: 'add', component: AddTravelComponent }
+    ]),
     MenubarModule,
     CardModule,
     ButtonModule,
@@ -36,6 +42,7 @@ import { NearestTravelsComponent } from './nearest-travels.component';
     ReactiveFormsModule,
     UiModule,
     DirectiveModule,
+    InputSwitchModule
   ],
   providers: [
     MessageService

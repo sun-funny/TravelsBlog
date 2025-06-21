@@ -1,0 +1,108 @@
+<div class="p-fluid p-grid p-justify-center">
+  <div class="p-col-12 p-md-8">
+    <p-card header="Добавить новое путешествие">
+      <form [formGroup]="travelForm" (ngSubmit)="onSubmit()">
+        <div class="p-field p-grid">
+          <label for="country" class="p-col-12 p-md-3">Страна</label>
+          <div class="p-col-12 p-md-9">
+            <input id="country" type="text" pInputText formControlName="country" />
+            <small *ngIf="travelForm.get('country')?.invalid && submitted" class="p-error">
+              Страна обязательна для заполнения
+            </small>
+          </div>
+        </div>
+
+        <div class="p-field p-grid">
+          <label for="city" class="p-col-12 p-md-3">Город</label>
+          <div class="p-col-12 p-md-9">
+            <input id="city" type="text" pInputText formControlName="city" />
+            <small *ngIf="travelForm.get('city')?.invalid && submitted" class="p-error">
+              Город обязателен для заполнения
+            </small>
+          </div>
+        </div>
+
+        <div class="p-field p-grid">
+          <label for="short_description" class="p-col-12 p-md-3">Краткое описание</label>
+          <div class="p-col-12 p-md-9">
+            <textarea id="short_description" rows="3" pInputTextarea formControlName="short_description"></textarea>
+            <small *ngIf="travelForm.get('short_description')?.invalid && submitted" class="p-error">
+              Краткое описание обязательно для заполнения
+            </small>
+          </div>
+        </div>
+
+        <div class="p-field p-grid">
+          <label for="description" class="p-col-12 p-md-3">Полное описание</label>
+          <div class="p-col-12 p-md-9">
+            <textarea id="description" rows="5" pInputTextarea formControlName="description"></textarea>
+            <small *ngIf="travelForm.get('description')?.invalid && submitted" class="p-error">
+              Описание обязательно для заполнения
+            </small>
+          </div>
+        </div>
+
+        <div class="p-field p-grid">
+          <label for="flag" class="p-col-12 p-md-3">Флаг (URL)</label>
+          <div class="p-col-12 p-md-9">
+            <input id="flag" type="text" pInputText formControlName="flag" />
+            <small *ngIf="travelForm.get('flag')?.invalid && submitted" class="p-error">
+              Ссылка на флаг обязательна
+            </small>
+          </div>
+        </div>
+
+        <div class="p-field p-grid">
+          <label for="img" class="p-col-12 p-md-3">Изображение (URL)</label>
+          <div class="p-col-12 p-md-9">
+            <input id="img" type="text" pInputText formControlName="img" />
+            <small *ngIf="travelForm.get('img')?.invalid && submitted" class="p-error">
+              Ссылка на изображение обязательна
+            </small>
+          </div>
+        </div>
+
+        <div class="p-field p-grid">
+          <label for="year" class="p-col-12 p-md-3">Год посещения</label>
+          <div class="p-col-12 p-md-9">
+            <input id="year" type="number" pInputText formControlName="year" />
+            <small *ngIf="travelForm.get('year')?.invalid && submitted" class="p-error">
+              Год должен быть между 2000 и текущим годом
+            </small>
+          </div>
+        </div>
+
+        <div class="p-field p-grid">
+          <label for="featured" class="p-col-12 p-md-3">Рекомендуемое</label>
+          <div class="p-col-12 p-md-9">
+            <p-inputSwitch id="featured" formControlName="featured"></p-inputSwitch>
+          </div>
+        </div>
+
+        <div class="p-field p-grid">
+          <label for="top" class="p-col-12 p-md-3">Позиция сверху (px)</label>
+          <div class="p-col-12 p-md-9">
+            <input id="top" type="text" pInputText formControlName="top" />
+          </div>
+        </div>
+
+        <div class="p-field p-grid">
+          <label for="left" class="p-col-12 p-md-3">Позиция слева (px)</label>
+          <div class="p-col-12 p-md-9">
+            <input id="left" type="text" pInputText formControlName="left" />
+          </div>
+        </div>
+
+        <div class="p-grid p-justify-end">
+          <div class="p-col-12 p-md-3">
+            <button pButton type="submit" label="Сохранить" class="p-button-success"></button>
+          </div>
+          <div class="p-col-12 p-md-3">
+            <button pButton type="button" label="Отмена" class="p-button-secondary" 
+                    (click)="router.navigate(['/travels'])"></button>
+          </div>
+        </div>
+      </form>
+    </p-card>
+  </div>
+</div>
