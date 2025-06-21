@@ -17,14 +17,6 @@ export class TravelsComponent implements OnInit, OnDestroy {
   constructor(private travelService: TravelService) {}
 
   ngOnInit(): void {
-    this._destroyer = this.travelService.getTravel().subscribe({
-      next: (travels) => {
-        this.travels = travels;
-      },
-      error: (err) => {
-        console.error('Error fetching travels:', err);
-      }
-    });
   }
 
   ngOnDestroy() {
@@ -34,5 +26,25 @@ export class TravelsComponent implements OnInit, OnDestroy {
   toggleCountries() {
     this.showAllCountries = !this.showAllCountries;
     this.buttonText = this.showAllCountries ? 'Скрыть страны' : 'Показать все страны';
+    
+    if (this.showAllCountries && this.travels.length === 0) {
+      this._destroyer = this.travelService.getTravel().subscribe({
+        next: (travels) => {
+          this.travels = travels;
+        },
+        error: (err) => {
+          console.error('Error fetching travels:', err);
+        }
+      });
+    }
   }
 }
+
+    /*this._destroyer = this.travelService.getTravel().subscribe({
+      next: (travels) => {
+        this.travels = travels;
+      },
+      error: (err) => {
+        console.error('Error fetching travels:', err);
+      }
+    });*/
