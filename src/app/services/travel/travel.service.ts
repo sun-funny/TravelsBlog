@@ -1,41 +1,30 @@
 import { Injectable } from '@angular/core';
 import { TravelRestService } from '../travel-rest/travel-rest.service';
-import { map, Observable, Subject} from "rxjs";
+import { Observable, Subject} from "rxjs";
 import { ITravel } from 'src/app/models/travel';
-import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import { TravelMock } from 'src/app/shared/mock/travel.mock';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TravelService {
   private travelSubject = new Subject<ITravel>()
-  private apiUrl = `${environment.apiUrl}/travels`;
   readonly groupTravels$ = this.travelSubject.asObservable();
 
   constructor(
-    private travelServiceRest: TravelRestService,
-    private http: HttpClient
-  ) {
-  }
+    private travelServiceRest: TravelRestService
+  ) {}
 
   createTravel(travel: ITravel): Observable<ITravel> {
-    return this.http.post<ITravel>(this.apiUrl, travel);
+    return this.travelServiceRest.sendTravelData(travel);
   }
 
   getTravel(): Observable<ITravel[]> {
-    return this.travelServiceRest.getTravels().pipe(
-      map((items) => {
-        return items;
-      })
-    );
+    return this.travelServiceRest.getTravels();
   }
 
-  updateTravel() {
-    this.travelSubject.next;
+  updateTravel(travel: ITravel) {
+    this.travelSubject.next(travel);
   }
   
-  sendTravelData(data: ITravel): Observable<any> {
-    return this.http.post('/travels', data);
-  }
 }

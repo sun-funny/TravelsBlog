@@ -1,32 +1,38 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Observable, Subscription } from "rxjs";
 import { ITravel } from 'src/app/models/travel';
-import { TravelMock } from 'src/app/shared/mock/travel.mock';
 import { TravelService } from 'src/app/services/travel/travel.service';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-travels',
   templateUrl: './travels.component.html',
   styleUrls: ['./travels.component.scss']
 })
-export class TravelsComponent implements OnInit {
-  travels: ITravel[] = TravelMock;
-  travelsData$: Observable<ITravel[]>;
+export class TravelsComponent implements OnInit, OnDestroy {
+  travels: ITravel[] = [];
   showAllCountries = false;
   buttonText = 'Показать все страны';
-  
-  constructor(private travelService: TravelService) { }
+  private _destroyer: Subscription;
+
+  constructor(private travelService: TravelService) {}
 
   ngOnInit(): void {
-    this.initTravels();
+    this._destroyer = this.travelService.getTravel().subscribe({
+      next: (travels) => {
+        this.travels = travels;
+      },
+      error: (err) => {
+        console.error('Error fetching travels:', err);
+      }
+    });
   }
 
-  initTravels() {
-    this.travelsData$ = this.travelService.getTravel();
+  ngOnDestroy() {
+    this._destroyer?.unsubscribe();
   }
 
   toggleCountries() {
     this.showAllCountries = !this.showAllCountries;
-    this.buttonText = this.showAllCountries ? 'Скрыть' : 'Показать все страны';
+    this.buttonText = this.showAllCountries ? 'Скрыть страны' : 'Показать все страны';
   }
 }
