@@ -31,8 +31,8 @@
           [numScroll]="3">
           <ng-template let-image pTemplate="item">
             <div class="carousel-image-container">
-              <img [src]="image" [alt]="point.name" class="carousel-image">
-              <div class="zoom-icon" (click)="openImageModal(image)">
+              <img [src]="getImageUrl(image)" [alt]="point.name" class="carousel-image">
+              <div class="zoom-icon" (click)="openImageModal(getImageUrl(image))">
                 <i class="pi pi-plus"></i>
               </div>
             </div>

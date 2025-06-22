@@ -4,7 +4,6 @@ import {Observable, Subscription} from "rxjs";
 import { ITravel } from 'src/app/models/travel';
 import { TravelService } from 'src/app/services/travel/travel.service';
 import { TeamMock } from 'src/app/shared/mock/team.mock';
-import { TravelMock } from 'src/app/shared/mock/travel.mock';
 
 @Component({
   selector: 'app-main',
@@ -18,24 +17,27 @@ export class MainComponent implements OnInit, OnDestroy {
     ){}
 
   private _destroyer: Subscription;
-  travelsData$: Observable<ITravel[]>;
-
-  locations = TravelMock;
+  travels: ITravel[] = [];
   teamMembers = TeamMock;
 
   ngOnInit(): void {
     this.initTravels();
-    this._destroyer = this.travelService.groupTravels$.subscribe((data) => {
-      this.initTravels()
-    })
   }
 
-    ngOnDestroy() {
-    this._destroyer.unsubscribe()
+  ngOnDestroy() {
+    this._destroyer?.unsubscribe();
   }
 
   initTravels() {
-    this.travelsData$ = this.travelService.getTravel();
+    this._destroyer = this.travelService.getTravel().subscribe({
+      next: (travels) => {
+        this.travels = travels;
+        // Transform the travels data to match your location format if needed
+      },
+      error: (err) => {
+        console.error('Error fetching travels:', err);
+      }
+    });
   }
 
   navigateToTravels() {
@@ -43,8 +45,8 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   navigateToCountry(countryId: string) {
-  this.router.navigate(['/travels', countryId]).then(() => {
-    window.scrollTo(0, 0);
-  });
-}
+    this.router.navigate(['/travels', countryId]).then(() => {
+      window.scrollTo(0, 0);
+    });
+  }
 }

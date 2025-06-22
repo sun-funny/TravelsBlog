@@ -56,12 +56,3 @@ export class TravelsComponent implements OnInit, OnDestroy {
     }
   }
 }
-
-    /*this._destroyer = this.travelService.getTravel().subscribe({
-      next: (travels) => {
-        this.travels = travels;
-      },
-      error: (err) => {
-        console.error('Error fetching travels:', err);
-      }
-    });*/

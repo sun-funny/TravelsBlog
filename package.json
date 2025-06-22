@@ -22,6 +22,7 @@
     "angular-new-router": "github:angular/router",
     "bootstrap": "^5.3.3",
     "clsx": "^2.1.1",
+    "fileupload": "^1.0.0",
     "primeng": "^14.2.3",
     "rxjs": "~7.5.0",
     "tailwind-merge": "^3.3.1",

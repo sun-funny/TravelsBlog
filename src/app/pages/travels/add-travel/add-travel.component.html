@@ -95,6 +95,8 @@
         </div>
 
         <div class="button-group">
+          <button *ngIf="isEditMode" pButton type="button" label="Добавить контент" 
+              class="p-button-info" (click)="openAddPointForm()"></button>
           <button *ngIf="isEditMode" pButton type="button" label="Удалить" 
               class="p-button-danger" (click)="onDelete()"></button>
           <button pButton type="button" label="Отмена" 

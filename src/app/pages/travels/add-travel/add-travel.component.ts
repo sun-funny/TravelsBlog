@@ -4,11 +4,15 @@ import { ITravel } from 'src/app/models/travel';
 import { TravelService } from 'src/app/services/travel/travel.service';
 import { MessageService } from 'primeng/api';
 import { Router, ActivatedRoute } from '@angular/router';
+import { DialogService } from 'primeng/dynamicdialog';
+import { AddPointComponent } from '../../country/add-point/add-point.component';
+import { IPoint } from 'src/app/models/point';
 
 @Component({
   selector: 'app-add-travel',
   templateUrl: './add-travel.component.html',
-  styleUrls: ['./add-travel.component.scss']
+  styleUrls: ['./add-travel.component.scss'],
+  providers: [DialogService]
 })
 export class AddTravelComponent implements OnInit {
   travelForm: FormGroup;
@@ -21,7 +25,8 @@ export class AddTravelComponent implements OnInit {
     private travelService: TravelService,
     private messageService: MessageService,
     public router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private dialogService: DialogService
   ) {
     this.createForm();
   }
@@ -56,8 +61,6 @@ export class AddTravelComponent implements OnInit {
     const travel = travels.find(t => t.id === id);
     if (travel) {
       this.travelForm.patchValue(travel);
-      // Если сервер использует _id вместо id, используйте:
-      // this.currentTravelId = travel._id;
     }
   });
 }
@@ -117,8 +120,32 @@ export class AddTravelComponent implements OnInit {
       });
     }
   }
+  
 
   private generateId(): string {
     return Math.random().toString(36).substr(2, 9);
   }
+
+  openAddPointForm() {
+  if (!this.currentTravelId) return console.log('Нет id');
+
+  const ref = this.dialogService.open(AddPointComponent, {
+    width: '70%',
+    data: {
+      countryId: this.currentTravelId
+    },
+    header: 'Add New Point'
+  });
+
+  ref.onClose.subscribe((point: IPoint) => {
+    if (point) {
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Успешно',
+        detail: 'Контент добавлен'
+      });
+    }
+  });
+}
+
 }

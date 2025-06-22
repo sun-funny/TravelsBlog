@@ -20,7 +20,7 @@ export const PointMock: IPoint[] = [
               "/assets/img_point_Japan/tokio/foto3.jpg",
               "/assets/img_point_Japan/tokio/foto4.jpg"
             ],
-      "id_country": "1"
+      "id_country": "sc4da7lkd"
     },
      {
       "id": "2",
@@ -37,7 +37,7 @@ export const PointMock: IPoint[] = [
               "/assets/img_point_Japan/fudji/foto3.jpg",
               "/assets/img_point_Japan/fudji/foto4.jpg"
             ],
-      "id_country": "1"
+      "id_country": "sc4da7lkd"
     },
     {
       "id": "3",
@@ -49,7 +49,7 @@ export const PointMock: IPoint[] = [
               "/assets/img_point_Japan/osaka/foto3.jpg",
               "/assets/img_point_Japan/osaka/foto4.jpg"
             ],
-      "id_country": "1"
+      "id_country": "sc4da7lkd"
     },
     {
       "id": "4",
@@ -66,7 +66,7 @@ export const PointMock: IPoint[] = [
               "/assets/img_point_Japan/kioto/foto3.jpg",
               "/assets/img_point_Japan/kioto/foto4.jpg"
             ],
-      "id_country": "1"
+      "id_country": "sc4da7lkd"
     },
     {
       "id": "5",
@@ -95,7 +95,7 @@ export const PointMock: IPoint[] = [
               "/assets/img_point_Japan/transport/foto8.jpg",
               "/assets/img_point_Japan/transport/foto10.jpg",
               "/assets/img_point_Japan/transport/foto11.jpg"],
-      "id_country": "1"
+      "id_country": "sc4da7lkd"
     },
     {
       "id": "6",
@@ -107,7 +107,7 @@ export const PointMock: IPoint[] = [
 В целом можно сказать, что вся еда в Японии приготовлена так, чтобы никого не оставить равнодушным. Не важно, любите ли вы мясо, рыбу, лапшу или вы веган. Вы в любом случае без труда найдете то, что придется вам по вкусу. И кошельку, конечно. Цены и в заведениях, и в супермаркетах примерно сравнимы с нашими.
 `,
       "img": [],
-      "id_country": "1"
+      "id_country": "sc4da7lkd"
     },
     {
       "id": "7",
@@ -123,7 +123,7 @@ export const PointMock: IPoint[] = [
 Приятные моменты: виза выдается бесплатно, а срок рассмотрения заявления составляет 5 рабочих дней. По умолчанию в первый раз выдают однократную визу. Впрочем, в анкете можно запросить и многократную. В этом случае к пакету документов потребуется приложить обоснование необходимости получения такой визы.
 `,
       "img": [],
-      "id_country": "1"
+      "id_country": "sc4da7lkd"
     },
 
 ]

@@ -25,15 +25,11 @@ const routes: Routes = [
     ),
   },
   {
-    path: 'travels',
-    loadChildren: () => import('./pages/travels/travels.module').then(m => {
-      return m.TravelsModule;
-    }
-    ),
-  },
-  { 
-    path: 'travels/:id', 
-    loadChildren: () => import('./pages/country/country.module').then(m => m.CountryModule) 
+  path: 'travels',
+  children: [
+      { path: '', loadChildren: () => import('./pages/travels/travels.module').then(m => m.TravelsModule) },
+      { path: ':id', loadChildren: () => import('./pages/country/country.module').then(m => m.CountryModule) }
+    ]
   },
   {
     path: '**',

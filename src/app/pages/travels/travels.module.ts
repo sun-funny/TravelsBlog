@@ -17,12 +17,19 @@ import { DirectiveModule } from '../../directive/directive.module';
 import { NearestTravelsComponent } from './nearest-travels.component';
 import { AddTravelComponent } from './add-travel/add-travel.component';
 import { InputSwitchModule } from 'primeng/inputswitch';
+import { DialogModule } from 'primeng/dialog';
+import { DialogService } from 'primeng/dynamicdialog';
+import { AddPointComponent } from '../country/add-point/add-point.component';
+import { CountryComponent } from '../country/country.component';
+import { FileUploadModule } from 'primeng/fileupload';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 
 @NgModule({
   declarations: [
     TravelsComponent,
     NearestTravelsComponent,
-    AddTravelComponent
+    AddTravelComponent,
+    AddPointComponent
   ],
   imports: [
     CommonModule,
@@ -43,10 +50,15 @@ import { InputSwitchModule } from 'primeng/inputswitch';
     ReactiveFormsModule,
     UiModule,
     DirectiveModule,
-    InputSwitchModule
+    InputSwitchModule,
+    DialogModule,
+    FileUploadModule,
+    InputTextareaModule
   ],
   providers: [
-    MessageService
-  ]
+    MessageService,
+    DialogService
+  ],
+  entryComponents: [AddPointComponent]
 })
 export class TravelsModule {}
