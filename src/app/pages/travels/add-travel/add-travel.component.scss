@@ -1,12 +1,45 @@
 .p-card {
   margin: 1rem;
+  margin-bottom: 100px;
+  min-height: calc(33vh - 100px);
+}
+
+:host {
+  display: block;
+  min-height: calc(100vh - 100px);
+  position: relative;
+}
+
+footer {
+  display: none !important;
 }
 
 .p-field {
   margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
 }
 
 .p-error {
   display: block;
   margin-top: 0.5rem;
+}
+
+textarea {
+  width: 100%;
+}
+
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .p-field {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }

@@ -26,4 +26,12 @@ export class TravelRestService {
   sendTravelData(data: ITravel): Observable<ITravel> {
     return this.http.post<ITravel>(this.apiUrl, data);
   }
+
+  updateTravel(id: string, data: ITravel): Observable<ITravel> {
+    return this.http.put<ITravel>(`${this.apiUrl}/${id}`, data);
+  }
+
+  deleteTravel(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
+  }
 }

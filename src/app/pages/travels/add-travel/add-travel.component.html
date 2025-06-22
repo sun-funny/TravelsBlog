@@ -1,6 +1,7 @@
+<div class="content-wrapper">
 <div class="p-fluid p-grid p-justify-center">
   <div class="p-col-12 p-md-8">
-    <p-card header="Добавить новое путешествие">
+    <p-card [header]="isEditMode ? 'Редактировать путешествие' : 'Добавить новое путешествие'">
       <form [formGroup]="travelForm" (ngSubmit)="onSubmit()">
         <div class="p-field p-grid">
           <label for="country" class="p-col-12 p-md-3">Страна</label>
@@ -93,16 +94,17 @@
           </div>
         </div>
 
-        <div class="p-grid p-justify-end">
-          <div class="p-col-12 p-md-3">
-            <button pButton type="submit" label="Сохранить" class="p-button-success"></button>
-          </div>
-          <div class="p-col-12 p-md-3">
-            <button pButton type="button" label="Отмена" class="p-button-secondary" 
-                    (click)="router.navigate(['/travels'])"></button>
-          </div>
+        <div class="button-group">
+          <button *ngIf="isEditMode" pButton type="button" label="Удалить" 
+              class="p-button-danger" (click)="onDelete()"></button>
+          <button pButton type="button" label="Отмена" 
+              class="p-button-secondary" (click)="router.navigate(['/travels'])"></button>
+          <button pButton type="submit" 
+              [label]="isEditMode ? 'Обновить' : 'Сохранить'" 
+              class="p-button-success"></button>
         </div>
       </form>
     </p-card>
   </div>
+</div>
 </div>

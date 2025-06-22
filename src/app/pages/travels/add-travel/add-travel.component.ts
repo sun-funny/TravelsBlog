@@ -1,27 +1,40 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ITravel } from 'src/app/models/travel';
 import { TravelService } from 'src/app/services/travel/travel.service';
 import { MessageService } from 'primeng/api';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-add-travel',
   templateUrl: './add-travel.component.html',
   styleUrls: ['./add-travel.component.scss']
 })
-export class AddTravelComponent {
+export class AddTravelComponent implements OnInit {
   travelForm: FormGroup;
   submitted = false;
+  isEditMode = false;
+  currentTravelId: string;
 
   constructor(
     private fb: FormBuilder,
     private travelService: TravelService,
     private messageService: MessageService,
-    public router: Router
+    public router: Router,
+    private route: ActivatedRoute
   ) {
     this.createForm();
   }
+
+  ngOnInit() {
+  this.route.params.subscribe(params => {
+    if (params['id']) {
+      this.isEditMode = true;
+      this.currentTravelId = params['id'];
+      this.loadTravelData(this.currentTravelId);
+    }
+  });
+}
 
   createForm() {
     this.travelForm = this.fb.group({
@@ -38,29 +51,67 @@ export class AddTravelComponent {
     });
   }
 
+  loadTravelData(id: string) {
+  this.travelService.getTravel().subscribe(travels => {
+    const travel = travels.find(t => t.id === id);
+    if (travel) {
+      this.travelForm.patchValue(travel);
+      // Если сервер использует _id вместо id, используйте:
+      // this.currentTravelId = travel._id;
+    }
+  });
+}
+
   onSubmit() {
     this.submitted = true;
     if (this.travelForm.valid) {
-      const newTravel: ITravel = {
-        id: this.generateId(),
+      const travelData: ITravel = {
+        id: this.isEditMode ? this.currentTravelId : this.generateId(),
         ...this.travelForm.value
       };
-      
-      this.travelService.createTravel(newTravel).subscribe({
+
+      const operation = this.isEditMode 
+        ? this.travelService.updateTravel(this.currentTravelId, travelData)
+        : this.travelService.createTravel(travelData);
+
+      operation.subscribe({
         next: () => {
           this.messageService.add({
             severity: 'success',
             summary: 'Успешно',
-            detail: 'Путешествие добавлено'
+            detail: this.isEditMode ? 'Путешествие обновлено' : 'Путешествие добавлено'
           });
           this.router.navigate(['/travels']);
         },
         error: (err) => {
-          console.error('Ошибка при добавлении:', err);
+          console.error('Ошибка:', err);
           this.messageService.add({
             severity: 'error',
             summary: 'Ошибка',
-            detail: 'Не удалось добавить путешествие'
+            detail: this.isEditMode ? 'Не удалось обновить путешествие' : 'Не удалось добавить путешествие'
+          });
+        }
+      });
+    }
+  }
+
+  onDelete() {
+    if (confirm('Вы уверены, что хотите удалить это путешествие?')) {
+      this.travelService.deleteTravel(this.currentTravelId).subscribe({
+        next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Успешно',
+            detail: 'Путешествие удалено'
+          });
+          this.router.navigate(['/travels']);
+        },
+        error: (err) => {
+          console.error('Ошибка при удалении:', err);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Ошибка',
+            detail: 'Не удалось удалить путешествие'
           });
         }
       });

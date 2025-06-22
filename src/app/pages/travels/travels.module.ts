@@ -28,7 +28,8 @@ import { InputSwitchModule } from 'primeng/inputswitch';
     CommonModule,
     RouterModule.forChild([
       { path: '', component: TravelsComponent},
-      { path: 'add', component: AddTravelComponent }
+      { path: 'add', component: AddTravelComponent },
+      { path: 'edit/:id', component: AddTravelComponent }
     ]),
     MenubarModule,
     CardModule,
@@ -48,6 +49,4 @@ import { InputSwitchModule } from 'primeng/inputswitch';
     MessageService
   ]
 })
-export class TravelsModule {
-  constructor() { }
-}
+export class TravelsModule {}

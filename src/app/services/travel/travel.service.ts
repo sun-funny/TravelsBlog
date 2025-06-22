@@ -23,8 +23,15 @@ export class TravelService {
     return this.travelServiceRest.getTravels();
   }
 
-  updateTravel(travel: ITravel) {
-    this.travelSubject.next(travel);
+  updateTravel(id: string, travel: ITravel): Observable<ITravel> {
+    return this.travelServiceRest.updateTravel(id, travel);
+  }
+
+  deleteTravel(id: string): Observable<any> {
+    return this.travelServiceRest.deleteTravel(id);
   }
   
+  updateTravelSubject(travel: ITravel) {
+    this.travelSubject.next(travel);
+  }
 }
