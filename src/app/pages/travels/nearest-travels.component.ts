@@ -11,6 +11,8 @@ import { Router } from '@angular/router';
 export class NearestTravelsComponent implements OnInit {
   nearestTravels: ITravel[] = [];
   currentYear = new Date().getFullYear();
+  loading = true;
+  error = false;
 
   constructor(
     private travelService: TravelService,
@@ -18,17 +20,40 @@ export class NearestTravelsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.travelService.getTravel().subscribe(travels => {
-      this.nearestTravels = [...travels]
-        .sort((a, b) => Math.abs(a.year - this.currentYear) - Math.abs(b.year - this.currentYear))
-        .slice(0, 5)
-        .map(travel => ({
-        ...travel,
-        img: travel.img.startsWith('assets/') ? travel.img : 
-            travel.img.startsWith('/assets/') ? travel.img.substring(1) :
-       `assets/img_countries/${travel.img}`
-        }));
+    this.loadNearestTravels();
+  }
+
+  loadNearestTravels(): void {
+    this.loading = true;
+    this.error = false;
+    
+    this.travelService.getTravel().subscribe({
+      next: (travels) => {
+        this.nearestTravels = [...travels]
+          .sort((a, b) => Math.abs(a.year - this.currentYear) - Math.abs(b.year - this.currentYear))
+          .slice(0, 5)
+          .map(travel => ({
+            ...travel,
+            img: this.processImagePath(travel.img)
+          }));
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error fetching travels:', err);
+        this.error = true;
+        this.loading = false;
+      }
     });
+  }
+
+  private processImagePath(imgPath: string): string {
+    if (imgPath.startsWith('assets/')) {
+      return imgPath;
+    }
+    if (imgPath.startsWith('/assets/')) {
+      return imgPath.substring(1);
+    }
+    return `assets/img_countries/${imgPath}`;
   }
 
   navigateToTravel(id: string) {
