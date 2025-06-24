@@ -67,4 +67,9 @@ export class TravelsComponent implements OnInit, OnDestroy {
       });
     }
   }
+
+  openCountry(travelId: string): void {
+    this.router.navigate(['/travels', travelId]);
+  }
+
 }

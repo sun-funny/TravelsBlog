@@ -99,10 +99,7 @@ export class CountryComponent implements OnInit {
   }
 
   getImageUrl(path: string): string {
-    // Если путь уже полный (http://), возвращаем как есть
     if (path.startsWith('http')) return path;
-  
-    // Иначе формируем URL относительно API
     return `${environment.apiUrl}/uploads/${path.replace('assets/uploads/', '')}`;
   }
 }

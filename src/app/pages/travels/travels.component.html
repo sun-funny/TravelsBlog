@@ -20,7 +20,7 @@
       </div>
       
       <div class="travel-cards" *ngIf="showAllCountries">
-        <div *ngFor="let travel of filteredTravels" class="travel-card">
+        <div *ngFor="let travel of filteredTravels" class="travel-card" (click)="openCountry(travel.id)">
           <img [src]="travel.img" alt="{{travel.country}}" class="travel-image">
           <div class="travel-info">
             <h3 class="travel-country">{{travel.country}}</h3>
@@ -29,8 +29,11 @@
             <div class="travel-year">{{travel.year}}</div>
           </div>
           <div class="travel-actions">
-            <button pButton type="button" icon="pi pi-pencil" class="p-button-rounded p-button-info"
-                    [routerLink]="['/travels/edit', travel.id]"></button>
+            <button pButton type="button" 
+                    icon="pi pi-pencil" 
+                    class="p-button-rounded p-button-info"
+                    [routerLink]="['/travels/edit', travel.id]">
+            </button>
           </div>
         </div>
       </div>
