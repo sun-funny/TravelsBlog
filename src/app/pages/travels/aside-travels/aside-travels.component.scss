@@ -1,8 +1,9 @@
 .aside-travels-container {
   padding: 1rem;
-  background-color: #f8f9fa;
-  border-radius: 4px;
+  background-color: #114967;
+  border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
 
   .settings-section {
     margin-bottom: 1.5rem;
@@ -10,6 +11,7 @@
     .travels-settings-button {
       margin-left: auto;
       display: block;
+      color:aliceblue;
     }
   }
 
@@ -25,7 +27,7 @@
       label {
         display: block;
         margin-bottom: 0.5rem;
-        font-weight: 500;
+        font-weight: 600;
       }
     }
 
