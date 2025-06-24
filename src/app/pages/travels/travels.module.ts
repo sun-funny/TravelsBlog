@@ -23,13 +23,17 @@ import { AddPointComponent } from '../country/add-point/add-point.component';
 import { CountryComponent } from '../country/country.component';
 import { FileUploadModule } from 'primeng/fileupload';
 import { InputTextareaModule } from 'primeng/inputtextarea';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { AsideTravelsComponent } from './aside-travels/aside-travels.component';
 
 @NgModule({
   declarations: [
     TravelsComponent,
     NearestTravelsComponent,
     AddTravelComponent,
-    AddPointComponent
+    AddPointComponent,
+    AsideTravelsComponent 
+
   ],
   imports: [
     CommonModule,
@@ -53,7 +57,8 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
     InputSwitchModule,
     DialogModule,
     FileUploadModule,
-    InputTextareaModule
+    InputTextareaModule,
+    MultiSelectModule
   ],
   providers: [
     MessageService,

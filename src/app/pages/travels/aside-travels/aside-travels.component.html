@@ -1,0 +1,28 @@
+<div class="aside-travels-container">
+  <div class="settings-section">
+    <button 
+        pButton type="button" 
+        icon="pi pi-cog" 
+        class="p-button-rounded p-button-text travels-settings-button" 
+        [routerLink]="['/travels/add']">
+     Добавить страну</button>
+  </div>
+
+  <div class="filter-section">
+    
+    <div class="year-filter">
+      <p-dropdown [options]="years" 
+                  [(ngModel)]="selectedYear" 
+                  optionLabel="" 
+                  placeholder="Год" 
+                  (onChange)="onYearChange()" 
+                  [showClear]="true">
+      </p-dropdown>
+    </div>
+
+    <button pButton type="button" label="Сбросить фильтр" 
+            class="p-button-secondary reset-button" 
+            (click)="resetFilter()">
+    </button>
+  </div>
+</div>

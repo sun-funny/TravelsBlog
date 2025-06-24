@@ -12,7 +12,9 @@ import { filter } from 'rxjs/operators';
 })
 export class TravelsComponent implements OnInit, OnDestroy {
   travels: ITravel[] = [];
+  filteredTravels: ITravel[] = [];
   showAllCountries = false;
+  showAside = false;
   buttonText = 'Показать все страны';
   isTravelsPage = true;
   private _destroyer: Subscription;
@@ -36,18 +38,28 @@ export class TravelsComponent implements OnInit, OnDestroy {
     this.isTravelsPage = this.router.url.includes('/travels');
   }
 
+  filterByYear(year: number | null): void {
+    if (year === null) {
+      this.filteredTravels = [...this.travels];
+    } else {
+      this.filteredTravels = this.travels.filter(travel => travel.year === year);
+    }
+  }
+
   ngOnDestroy() {
     this._destroyer?.unsubscribe();
   }
 
   toggleCountries() {
     this.showAllCountries = !this.showAllCountries;
+    this.showAside = this.showAllCountries;
     this.buttonText = this.showAllCountries ? 'Скрыть страны' : 'Показать все страны';
     
     if (this.showAllCountries && this.travels.length === 0) {
       this._destroyer = this.travelService.getTravel().subscribe({
         next: (travels) => {
           this.travels = travels;
+          this.filteredTravels = [...travels];
         },
         error: (err) => {
           console.error('Error fetching travels:', err);

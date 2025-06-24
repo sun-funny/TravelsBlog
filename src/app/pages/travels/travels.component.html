@@ -2,14 +2,14 @@
   <app-header></app-header>
 </header>
 
-<button *ngIf="isTravelsPage" 
-          pButton type="button" icon="pi pi-cog" 
-          class="p-button-rounded p-button-text travels-settings-button" 
-          [routerLink]="['/travels/add']">
-</button>
-
-<div class="travels-container  main-content">
+<div class="travels-container main-content">
   <div class="travels-main">
+    <app-aside-travels 
+      *ngIf="showAside" 
+      (yearFilterChange)="filterByYear($event)"
+      [class.hidden]="!showAside">
+    </app-aside-travels>
+    
     <div class="travels-content">
       <app-nearest-travels></app-nearest-travels>
       
@@ -20,7 +20,7 @@
       </div>
       
       <div class="travel-cards" *ngIf="showAllCountries">
-        <div *ngFor="let travel of travels" class="travel-card">
+        <div *ngFor="let travel of filteredTravels" class="travel-card">
           <img [src]="travel.img" alt="{{travel.country}}" class="travel-image">
           <div class="travel-info">
             <h3 class="travel-country">{{travel.country}}</h3>
