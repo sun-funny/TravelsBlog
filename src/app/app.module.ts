@@ -9,6 +9,7 @@ import { CardModule } from 'primeng/card';
 import { ConfigService } from "./services/config/config.service";
 import { DirectiveModule } from './directive/directive.module'; // Add this import
 import { UiModule } from './pages/ui/ui.module';
+import { ReactiveFormsModule } from '@angular/forms';
 
 function initializeApp(config: ConfigService) {
   return () => config.loadPromise().then(() => {
@@ -27,7 +28,8 @@ function initializeApp(config: ConfigService) {
     BrowserAnimationsModule,
     HttpClientModule,
     UiModule,
-    DirectiveModule
+    DirectiveModule,
+    ReactiveFormsModule
   ],
   providers: [
     ConfigService,

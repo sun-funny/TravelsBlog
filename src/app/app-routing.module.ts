@@ -33,8 +33,8 @@ const routes: Routes = [
   },
   {
     path: 'faq',
-    loadChildren: () => import('./pages/auth/auth.module').then(m => m.AuthModule),
-    canActivate: [AuthGuard]
+    loadChildren: () => import('./pages/faq/faq.module').then(m => m.FaqModule),
+    //canActivate: [AuthGuard]
   },
   {
     path: '**',

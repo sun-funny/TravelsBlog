@@ -58,7 +58,8 @@ export class AuthService {
 
   private authAndRedirect(user: IUser, isRememberMe?: boolean) {
     this.auth(user, isRememberMe);
-    this.router.navigate(['faq']);
+    const returnUrl = this.router.parseUrl(this.router.url).queryParams['returnUrl'] || 'faq';
+    this.router.navigateByUrl(returnUrl);
   }
 
   get isAuthenticated(): boolean  {
@@ -80,10 +81,10 @@ export class AuthService {
   authUser(login: string, psw: string, isRememberMe: boolean): true | string {
     const user = this.getUser(login);
     if (!user) {
-      return 'User not found';
+      return 'Пользователь не найден';
     }
     if (user.psw !== psw) {
-      return 'Wrong password';
+      return 'Неверный пароль';
     }
     this.authAndRedirect(user, isRememberMe)
     return true;

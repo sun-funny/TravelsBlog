@@ -1,1 +1,25 @@
+<div class="faq-container">
+  <h2>Frequently Asked Questions</h2>
+  
+  <div class="faq-content">
+    <!-- Your FAQ content goes here -->
+  </div>
 
+  <div class="comments-section" *ngIf="authService.isAuthenticated">
+    <h3>Leave your comment</h3>
+    <form [formGroup]="commentForm" (ngSubmit)="submitComment()">
+      <textarea formControlName="comment" placeholder="Your comment..."></textarea>
+      <button type="submit" [disabled]="!commentForm.valid">Submit</button>
+    </form>
+
+    <div class="comments-list">
+      <div class="comment" *ngFor="let comment of comments">
+        <div class="comment-header">
+          <span class="user">{{comment.user}}</span>
+          <span class="date">{{comment.date | date}}</span>
+        </div>
+        <div class="comment-text">{{comment.text}}</div>
+      </div>
+    </div>
+  </div>
+</div>
