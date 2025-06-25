@@ -12,9 +12,6 @@ import { IUser } from "../../../models/users";
 export class AuthorizationComponent implements OnInit {
   login: string;
   password: string;
-  cardNumber: string = '';
-  isRememberMe: boolean;
-  isHaveCard: boolean;
 
   constructor(
     private http: HttpClient,
@@ -29,7 +26,6 @@ export class AuthorizationComponent implements OnInit {
   const authUser: IUser ={
     login: this.login,
     psw: this.password,
-    cardNumber: this.cardNumber,
     email: ''
   };
     this.http.post<{access_token: string}>('http://localhost:3000/auth/login', authUser).subscribe(

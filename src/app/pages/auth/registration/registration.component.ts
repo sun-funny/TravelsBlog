@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { IUser } from "../../../models/users";
-import { ConfigService } from "../../../services/config/config.service";
 import { ServerError } from 'src/app/models/error';
 import { AuthService } from 'src/app/services/auth/auth.service';
 
@@ -15,10 +14,7 @@ export class RegistrationComponent implements OnInit {
   login: string;
   password: string;
   repeatPassword: string;
-  cardNumber: string = '';
   email: string;
-  isRemember: boolean;
-  isShowCardNumber: boolean;
 
   constructor(
     private http: HttpClient,
@@ -27,7 +23,6 @@ export class RegistrationComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.isShowCardNumber = ConfigService.config.useUserCard;
   }
 
   onAuth(): void {
@@ -38,7 +33,6 @@ export class RegistrationComponent implements OnInit {
 
     const userObj: IUser = {
       login: this.login,
-      cardNumber: this.cardNumber,
       psw: this.password,
       email: this.email,
       id: ''
@@ -47,10 +41,6 @@ export class RegistrationComponent implements OnInit {
     this.http.post('http://localhost:3000/users/', userObj).subscribe(
   (data: Object) => {
     this.messageService.add({severity:'success', summary:'Регистрация прошла успешно'});
-    if (this.isRemember) {
-      const objUserJsonStr = JSON.stringify(userObj);
-      window.localStorage.setItem('user_'+userObj.login, objUserJsonStr);
-    }
   },
   (error: HttpErrorResponse) => {
     console.log('error', error);
