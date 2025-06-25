@@ -32,6 +32,11 @@ const routes: Routes = [
     ]
   },
   {
+    path: 'faq',
+    loadChildren: () => import('./pages/auth/auth.module').then(m => m.AuthModule),
+    canActivate: [AuthGuard]
+  },
+  {
     path: '**',
     redirectTo: 'main'
   },

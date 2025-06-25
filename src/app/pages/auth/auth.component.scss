@@ -1,0 +1,42 @@
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+  
+.auth-tabview {
+  width: 100%;
+  max-width: 800px;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  
+  .p-tabview-nav {
+    font-size: 1.2rem;
+  }
+  
+  .p-tabview-panels {
+    font-size: 1rem;
+    padding: 1rem 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .auth-container {
+    padding: 10px;
+    align-items: flex-start;
+  }
+  
+  .auth-tabview {
+    padding: 10px;
+    
+    .p-tabview-nav {
+      font-size: 1rem;
+    }
+  }
+}
