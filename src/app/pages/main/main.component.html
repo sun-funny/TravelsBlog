@@ -46,11 +46,11 @@
                 St - Petersburg
               </div>
             </div>
-            <div *ngFor="let travel of travels; let i = index"
-  class="location"
-  [style.top]="travel.top" 
-  [style.left]="travel.left"
->
+            <div *ngFor="let travel of featuredTravels; let i = index"
+              class="location"
+              [style.top]="travel.top" 
+              [style.left]="travel.left"
+            >
                 <span class="country" (click)="navigateToCountry(travel.id)">
                   {{travel.country}}
                 </span>
