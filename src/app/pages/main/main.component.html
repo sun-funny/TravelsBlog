@@ -1,134 +1,137 @@
-<div class="main-container  main-content">
-  <div class="main-main">
-    <header class="navigation-bar">
-      <app-header></app-header>
-    </header>  
-    <div class="hero-section" style="margin-top: 82px;">
-      <img
-        class="hero-image"
-        alt="Travel destination view"
-        src="/assets/img_main/FonHeaderTravel.png"
-      />
-      <img
-        class="main-title"
-        alt="Time for travels"
-        src="/assets/img_main/ToTravelText.svg"
-      />
-      <img
-        class="vector-element"
-        alt="Vector"
-        src="/assets/img_main/vector-1.svg"
-      />
-      <app-button class="cta-button" (click)="navigateToTravels()">
-        <span class="button-text">
-          К путешествиям!
-        </span>
-      </app-button>
+<div class = "main-content">
+
+  <app-header></app-header>
+  
+  <div class="main-container">
+    <div class="main-main">
+      <div class="hero-section" style="margin-top: 82px;">
+        <img
+          class="hero-image"
+          alt="Travel destination view"
+          src="/assets/img_main/FonHeaderTravel.png"
+        />
+        <img
+          class="main-title"
+          alt="Time for travels"
+          src="/assets/img_main/ToTravelText.svg"
+        />
+        <img
+          class="vector-element"
+          alt="Vector"
+          src="/assets/img_main/vector-1.svg"
+        />
+        <app-button class="cta-button" (click)="navigateToTravels()">
+          <span class="button-text">
+            К путешествиям!
+          </span>
+        </app-button>
+      </div>
     </div>
   </div>
-</div>
-<div class="content-section">
-  <div class="content-background">
-    <div class="content-container">
-      <div class="about-section">
-        <h1 class="about-title">
-          Кто мы такие?
-        </h1>
-        <div class="map-section">
-          <img
-            class="map-image"
-            alt="Pngtreedistance"
-            src="/assets/img_main/Pngtreedistance.png"
-          />
-          <div class="locations-container">
-            <div class="st-petersburg">
-              <div class="st-petersburg-text">
-                St - Petersburg
+  <div class="content-section">
+    <div class="content-background">
+      <div class="content-container">
+        <div class="about-section">
+          <h1 class="about-title">
+            Кто мы такие?
+          </h1>
+          <div class="map-section">
+            <img
+              class="map-image"
+              alt="Pngtreedistance"
+              src="/assets/img_main/Pngtreedistance.png"
+            />
+            <div class="locations-container">
+              <div class="st-petersburg">
+                <div class="st-petersburg-text">
+                  St - Petersburg
+                </div>
               </div>
-            </div>
-            <div *ngFor="let travel of featuredTravels; let i = index"
-              class="location"
-              [style.top]="travel.top" 
-              [style.left]="travel.left"
-            >
+              <div *ngFor="let travel of featuredTravels; let i = index"
+                class="location"
+                [style.top]="travel.top" 
+                [style.left]="travel.left"
+              >
                 <span class="country" (click)="navigateToCountry(travel.id)">
                   {{travel.country}}
                 </span>
-              <span *ngIf="travel.city" class="city">
-                {{travel.city}}
-              </span>
+                <span *ngIf="travel.city" class="city">
+                  {{travel.city}}
+                </span>
+              </div>
             </div>
-          </div>
-          <div *ngFor="let member of teamMembers.slice(0, 2); let i = index"
-            class="team-member"
-            [style.top]="member.position.top"
-            [style.left]="member.position.left"
-          >
-            <ng-container *ngIf="member.direction === 'right'; else leftDirection">
-              <img
-                class="member-image right"
-                [alt]="member.name + ' profile'"
-                [src]="member.image"
-              />
-              <app-card class="member-card right">
-                <app-card-content class="card-content">
-                  <img
-                    class="card-vector"
-                    alt="Vector"
-                    [src]="member.vectorSrc"
-                  />
-                  <div class="member-greeting">
-                    {{member.greeting}}
-                  </div>
-                </app-card-content>
-              </app-card>
-            </ng-container>
-            <ng-template #leftDirection>
-              <img
-                class="member-image left"
-                [alt]="member.name + ' profile'"
-                [src]="member.image"
-              />
-              <div class="left-card-container">
-                <app-card class="member-card left">
+            <div *ngFor="let member of teamMembers.slice(0, 2); let i = index"
+              class="team-member"
+              [style.top]="member.position.top"
+              [style.left]="member.position.left"
+            >
+              <ng-container *ngIf="member.direction === 'right'; else leftDirection">
+                <img
+                  class="member-image right"
+                  [alt]="member.name + ' profile'"
+                  [src]="member.image"
+                />
+                <app-card class="member-card right">
                   <app-card-content class="card-content">
                     <img
-                      class="card-vector left"
+                      class="card-vector"
                       alt="Vector"
                       [src]="member.vectorSrc"
                     />
-                    <div class="member-greeting left">
+                    <div class="member-greeting">
                       {{member.greeting}}
                     </div>
                   </app-card-content>
                 </app-card>
-              </div>
-            </ng-template>
+              </ng-container>
+              <ng-template #leftDirection>
+                <img
+                  class="member-image left"
+                  [alt]="member.name + ' profile'"
+                  [src]="member.image"
+                />
+                <div class="left-card-container">
+                  <app-card class="member-card left">
+                    <app-card-content class="card-content">
+                      <img
+                        class="card-vector left"
+                        alt="Vector"
+                        [src]="member.vectorSrc"
+                      />
+                      <div class="member-greeting left">
+                        {{member.greeting}}
+                      </div>
+                    </app-card-content>
+                  </app-card>
+                </div>
+              </ng-template>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="last-team-member">
-        <img
-          class="last-member-image"
-          alt="Nastya profile"
-          src="/assets/img_team/Nastie.png"
-        />
-        <div class="last-member-card-container">
-          <app-card class="last-member-card">
-            <app-card-content class="card-content">
-              <div class="last-member-greeting">
-                Прив, я Настя!
-              </div>
-              <img
-                class="last-card-vector"
-                alt="Vector"
-                src="/assets/img_main/vector-2.svg"
-              />
-            </app-card-content>
-          </app-card>
+        <div class="last-team-member">
+          <img
+            class="last-member-image"
+            alt="Nastya profile"
+            src="/assets/img_team/Nastie.png"
+          />
+          <div class="last-member-card-container">
+            <app-card class="last-member-card">
+              <app-card-content class="card-content">
+                <div class="last-member-greeting">
+                  Прив, я Настя!
+                </div>
+                <img
+                  class="last-card-vector"
+                  alt="Vector"
+                  src="/assets/img_main/vector-2.svg"
+                />
+              </app-card-content>
+            </app-card>
+          </div>
         </div>
       </div>
     </div>
   </div>
+
+  <app-footer></app-footer>
 </div>
-<app-footer></app-footer>
