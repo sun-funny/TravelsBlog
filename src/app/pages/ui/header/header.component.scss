@@ -24,18 +24,41 @@
   text-decoration: none;
   white-space: nowrap;
   height: 100%;
+  position: relative;
 
   &:hover {
-    border-radius: 3px;
-    background-color: #114967;
+    background-color: transparent;
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 20px);
+      height: 2px;
+      background-color: #00b4ff;
+    }
   }
 
   &.active {
-    border-radius: 3px;
-    background-color: #114967;
+    background-color: transparent;
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 20px);
+      height: 2px;
+      background-color: #00b4ff;
+    }
   }
 
   @media (max-width: 480px) {
     padding: 8px 12px;
+    &:hover::after,
+    &.active::after {
+      width: calc(100% - 24px);
+    }
   }
 }
