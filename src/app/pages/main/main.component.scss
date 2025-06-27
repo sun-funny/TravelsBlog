@@ -187,7 +187,7 @@
             .description {
               font-family: 'Montserrat', Helvetica, sans-serif;
               font-size: clamp(14px, 1.3vw, 16px);
-              color: #333;
+              color: black;
               line-height: 1.4;
               text-align: center;
               overflow: hidden;
@@ -195,6 +195,12 @@
               display: -webkit-box;
               -webkit-line-clamp: 5;
               -webkit-box-orient: vertical;
+              display: -moz-box;
+              -moz-line-clamp: 5;
+              -moz-box-orient: vertical;
+              display: box;
+              line-clamp: 5;
+              box-orient: vertical;
             }
           }
         }
