@@ -1,6 +1,11 @@
 @import 'general.scss';
 @import 'primeng-custom';
 
+:root{
+  --icon-gap: 10px;
+  --icon-size: 30px;
+}
+
 * {
   margin: 0;
   padding: 0;
