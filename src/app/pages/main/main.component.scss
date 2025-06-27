@@ -1,378 +1,378 @@
-.main-container {
-  background-color: white;
+.main-content {
+  flex: 1;
   display: flex;
-  flex-direction: row;
-  justify-content: center;
+  flex-direction: column;
   width: 100%;
-  padding-bottom: 5px;
-  padding-top: 20px;
+  min-height: calc(100vh - var(--header-height) - var(--footer-height));
+}
 
-  .main-main {
-    background-color: white;
-    width: 1920px;
-    height: auto;
+.section-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  align-items: center;
+  width: 100%;
+  padding: 0 20px;
+
+  .hero-section {
+    height: 20vh;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     position: relative;
+    width: 100%;
+    max-width: 1535px;
+    box-sizing: border-box;
+    margin: 20px auto 0;
+    aspect-ratio: 1535/807;
+    background-image: url(/assets/img_main/ToTravels.jpg);
+    background-size: cover;
+    background-position: center;
+    border-radius: 5rem;
 
-    .hero-section {
-      position: relative;
-      width: 1535px;
-      height: 807px;
-      margin: 100px auto 0;
-      background-image: url(/assets/img_main/ImgToTravel.png);
-      background-size: 100% 100%;
+    .main-title {
+      position: absolute;
+      width: 90%;
+      max-width: 1438px;
+      height: auto;
+      top: 12%;
+      left: 50%;
+      transform: translateX(-50%);
+    }
 
-      .hero-image {
-        position: absolute;
-        width: 1535px;
-        height: 807px;
-        top: 0;
-        left: 0;
+    .vector-element {
+      position: absolute;
+      width: 7%;
+      max-width: 113px;
+      height: auto;
+      top: 18%;
+      right: 5%;
+    }
+
+    .cta-button {
+      position: absolute;
+      width: 25%;
+      min-width: 250px;
+      max-width: 407px;
+      height: auto;
+      min-height: 60px;
+      bottom: 10%;
+      left: 2%;
+      background-color: #114967;
+      border: 1px solid transparent;
+      border-radius: 50px;
+      transition: background-color 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &:hover {
+        background-color: #0d3a52;
       }
 
+      .button-text {
+        font-family: 'Montserrat', Helvetica, sans-serif;
+        font-weight: 500;
+        color: white;
+        font-size: clamp(16px, 1.5vw, 24px);
+        white-space: nowrap;
+        padding: 10px 0;
+      }
+    }
+  }
+
+  .content-background {
+    flex: 1;
+    min-height: 60vh;
+    background: url(/assets/img_main/FonMain.jpg) 50% 50%/cover;
+    width: 100%;
+    max-width: 1920px;
+    margin: 20px auto 40px;
+    border-radius: 2rem;
+    
+    .content-container {
+      display: flex;
+      flex-wrap: wrap;
+      width: 100%;
+      height: 100%;
+      padding: 20px;
+      box-sizing: border-box;
+      
+      .about-section {
+        flex: 1;
+        min-width: 50%;
+        padding: 20px;
+        box-sizing: border-box;
+        
+        .about-title {
+          color: white;
+          font-family: 'Montserrat', Helvetica, sans-serif;
+          font-size: clamp(24px, 2.5vw, 36px);
+          margin-bottom: 20px;
+        }
+      
+        .team-container {
+          position: relative;
+          min-height: 800px;
+          width: 100%;
+          margin-top: 30px;
+      
+          .team-member {
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 20px;
+            width: 300px;
+            height: 300px;
+            position: absolute;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+      
+            &:hover {
+              transform: translateY(-5px) scale(1.03);
+            }
+      
+            &:nth-child(1) {
+              top: 0;
+              left: 0;
+              transform: translateY(0);
+            }
+            
+            &:nth-child(2) {
+              top: 50%;
+              left: 50%;
+              transform: translate(-100%, -50%);
+            }
+            
+            &:nth-child(3) {
+              bottom: 0;
+              left: 0;
+              transform: translateY(-100%);
+            }
+      
+            .member-header {
+              display: flex;
+              align-items: center;
+              margin-bottom: 15px;
+      
+              &.direction-left {
+                flex-direction: row;
+              }
+      
+              &.direction-right {
+                flex-direction: row-reverse;
+              }
+      
+              .greeting {
+                flex: 1;
+                font-family: 'Montserrat', Helvetica, sans-serif;
+                font-weight: 600;
+                font-size: clamp(16px, 1.5vw, 20px);
+                color: #080808;
+                margin: 0 15px;
+                word-break: break-word;
+              }
+      
+              .member-image {
+                width: 100px;
+                height: 100px;
+                border-radius: 50%;
+                object-fit: cover;
+              }
+            }
+      
+            .description {
+              font-family: 'Montserrat', Helvetica, sans-serif;
+              font-size: clamp(14px, 1.3vw, 16px);
+              color: #333;
+              line-height: 1.4;
+              text-align: center;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              display: -webkit-box;
+              -webkit-line-clamp: 5;
+              -webkit-box-orient: vertical;
+            }
+          }
+        }
+      }
+      
+      .map-section {
+        flex: 1;
+        min-width: 50%;
+        padding: 20px;
+        box-sizing: border-box;
+        position: relative;
+        display: flex; 
+        flex-direction: column;
+        
+        .map-image {
+          width: 100%;
+          height: 100%; 
+          object-fit: cover; 
+          flex: 1;
+        }
+        
+        .locations-container {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          
+          .location {
+            position: absolute;
+            cursor: pointer;
+            transform: translate(-50%, -50%);
+            white-space: nowrap;
+            padding: 8px 16px;
+            background-color: rgba(17, 73, 103, 0.7);
+            border-radius: 15px;
+            transition: all 0.3s;
+            max-width: 90%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin: 10px; 
+            min-width: 100px; 
+            
+            &:hover {
+              background-color: rgba(17, 73, 103, 0.9);
+              transform: translate(-50%, -50%) scale(1.05);
+              z-index: 10;
+            }
+            
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            
+            .country, .city {
+              display: block;
+              text-align: center;
+            }
+            
+            .country {
+              font-family: 'Montserrat', Helvetica, sans-serif;
+              color: white;
+              font-weight: bold;
+              font-size: clamp(14px, 1.2vw, 18px);
+              text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+              margin-bottom: 4px;
+              
+              &:hover {
+                text-decoration: underline;
+              }
+            }
+            
+            .city {
+              font-family: 'Montserrat', Helvetica, sans-serif;
+              color: white;
+              font-size: clamp(12px, 1vw, 16px);
+              text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+            }
+          }
+          
+          .st-petersburg {
+            position: absolute;
+            transform: translate(0, -100%);
+            padding: 5px 10px;
+            background-color: rgba(17, 73, 103, 0.7);
+            border-radius: 15px;
+            max-width: 90%;
+            
+            .st-petersburg-text {
+              font-family: 'Montserrat', Helvetica, sans-serif;
+              color: white;
+              font-weight: bold;
+              font-size: clamp(14px, 1.2vw, 18px);
+              text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @media (max-width: 1200px) {
+    .hero-section {
+      border-radius: 3rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 0 15px;
+
+    .hero-section {
+      border-radius: 2rem;
+      min-height: 150px;
+
+      .cta-button {
+        min-width: 200px;
+        min-height: 50px;
+      }
+    }
+
+    .content-background {
+      min-height: 50vh;
+      margin: 15px auto 30px;
+      
+      .content-container {
+        flex-direction: column;
+        padding: 15px;
+        
+        .about-section, .map-section {
+          min-width: 100%;
+          padding: 15px;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 0 10px;
+    margin-bottom: var(--footer-height);
+
+    .hero-section {
+      height: 25vh;
+      min-height: 120px;
+      margin: 10px auto 0;
+      border-radius: 1.5rem;
+      aspect-ratio: unset;
+
       .main-title {
-        position: absolute;
-        width: 1438px;
-        height: 198px;
-        top: 98px;
-        left: 46px;
+        top: 8%;
       }
 
       .vector-element {
-        position: absolute;
-        width: 113px;
-        height: 28px;
-        top: 150px;
-        left: 1370px;
+        top: 15%;
       }
 
       .cta-button {
-        position: absolute;
-        width: 407px;
-        height: 100px;
-        top: 707px;
-        left: 29px;
-        background-color: #114967;
-        border: 1px solid transparent;
-        border-radius: 50px;
-        transition: background-color 0.3s;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        &:hover {
-          background-color: #0d3a52;
-        }
-
-        .button-text {
-          font-family: 'Montserrat', Helvetica, sans-serif;
-          font-weight: 500;
-          left: 50%;
-          color: white;
-          font-size: 24px;
-        }
+        width: 80%;
+        min-width: unset;
+        max-width: unset;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 5%;
       }
     }
 
-    .navigation-bar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      width: 100%;
-      height: 82px;
-      z-index: 1000; 
-      background-color: #87b8df;
-    }
-
-    .footer-wrapper {
-      background-color: white;
-      display: flex;
-      justify-content: center;
-      width: 100%; 
-      margin-top: 20px;
-    }
-  }
-}
-
-.content-section {
-  margin-top: 20px;
-  background-color: transparent;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  width: 100%;
-  padding-bottom: 100px;
-
-  .content-background {
-    background: url(/assets/img_main/FonMain.jpg) 50% 50%/cover;
-    width: 1920px;
-    height: auto;
-    min-height: 2400px;
-    padding-bottom: 100px;
-
-    .content-container {
-      position: relative;
-      height: auto;
-      padding-top: 50px;
-
-      .about-section {
-        position: absolute;
-        width: 1890px;
-        height: 1608px;
-        top: 0;
-        left: 0;
-
-        .about-title {
-          top: 64px;
-          left: 1256px;
-          font-size: 64px;
-          position: absolute;
-          font-family: 'Montserrat', Helvetica, sans-serif;
-          font-weight: 700;
-          color:#062c50;
-          letter-spacing: 0;
-          line-height: normal;
-        }
-
-        .map-section {
-          position: absolute;
-          width: 1890px;
-          height: 1608px;
-          top: 0;
-          left: 0;
-
-          .map-image {
-            position: absolute;
-            width: 1148px;
-            height: 1191px;
-            top: 0;
-            left: 0;
-            object-fit: cover;
-          }
-
-          .locations-container {
-            position: absolute;
-            width: 1016px;
-            height: 1092px;
-            top: 53px;
-            left: 28px;
-
-            .st-petersburg {
-              position: absolute;
-              width: 659px;
-              height: 148px;
-              top: 944px;
-              left: 0;
-
-              .st-petersburg-text {
-                position: absolute;
-                top: 70px;
-                left: 0;
-                font-family: 'Montserrat', Helvetica, sans-serif;
-                font-weight: 700;
-                color: #d00000;
-                font-size: 48px;
-                letter-spacing: 0;
-                line-height: normal;
-              }
-            }
-
-            .location {
-              position: absolute;
-              text-align: center;
-              font-family: 'Montserrat', Helvetica, sans-serif;
-              font-weight: 700;
-              cursor: pointer;
-
-              .country {
-                color: #0015ff;
-                font-size: 40px;
-                display: block;
-                transition: color 0.3s ease;
-
-                &:hover {
-                  color: #114967; 
-                  text-decoration: underline; 
-                }
-              }
-
-              .city {
-                color: #ff0000;
-                font-size: 24px;
-                display: block;
-              }
-            }
-          }
-
-          .team-member {
-            position: absolute;
-            width: 882px;
-            height: 673px;
-
-            .member-image {
-              &.right {
-                position: absolute;
-                width: 251px;
-                height: 251px;
-                top: 9px;
-                left: 0;
-                z-index: 2;
-              }
-
-              &.left {
-                top: 10px;
-                left: 629px;
-                position: absolute;
-                width: 251px;
-                height: 251px;
-                z-index: 2;
-              }
-            }
-
-            .member-card {
-  position: absolute;
-  width: 598px;
-  height: 673px;
-  top: 0;
-  background-color: white;
-  border-radius: 35px;
-  overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-
-  &.right {
-    left: 268px;
-    
-    .card-content {
-      .member-greeting {
-        top: 28px;
-        left: 50px;
-        width: 500px;
-        white-space: nowrap;
-      }
+    .content-background {
+      min-height: 40vh;
+      margin: 10px auto 20px;
+      border-radius: 1rem;
       
-      .card-vector {
-        top: 48px;
-        right: 30px;
-        left: auto;
-      }
-    }
-  }
-
-  &.left {
-    left: 0;
-  }
-
-  .card-content {
-    padding: 0;
-    height: 100%;
-    position: relative;
-
-    .card-vector {
-      position: absolute;
-      width: 32px;
-      height: 37px;
-      z-index: 1;
-
-      &.left {
-        top: 30px;
-        right: 237px;
-      }
-    }
-
-    .member-greeting {
-      font-size: 32px;
-      position: absolute;
-      font-family: 'Montserrat', Helvetica, sans-serif;
-      font-weight: 700;
-      color: black;
-      letter-spacing: 0;
-      line-height: normal;
-      z-index: 2;
-
-      &.left {
-        top: 23px;
-        left: 50px;
-        width: 500px;
-        white-space: nowrap;
-      }
-    }
-  }
-}
-
-            .left-card-container {
-              position: absolute;
-              width: 629px;
-              height: 673px;
-              top: 0;
-              left: 0;
-            }
-          }
+      .content-container {
+        padding: 10px;
+        
+        .about-section, .map-section {
+          padding: 10px;
         }
-      }
-
-      .last-team-member {
-        position: absolute;
-        width: 882px;
-        height: 673px;
-        top: 1678px;
-        left: 520px;
-
-        .last-member-image {
-          top: 13px;
-          left: 0;
-          position: absolute;
-          width: 251px;
-          height: 251px;
-          z-index: 2;
-        }
-
-        .last-member-card-container {
-          position: absolute;
-          width: 629px;
-          height: 673px;
-          top: 0;
-          left: 251px;
-
-          .last-member-card {
-            left: 31px;
-            position: absolute;
-            width: 598px;
-            height: 673px;
-            top: 0;
-            background-color: white;
-            border-radius: 35px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-
-            .card-content {
-              padding: 0;
-              height: 100%;
-              position: relative;
-
-              .last-member-greeting {
-                top: 28px;
-                left: 50px;
-                width: 500px;
-                font-size: 32px;
-                position: absolute;
-                font-family: 'Montserrat', Helvetica, sans-serif;
-                font-weight: 700;
-                color: black;
-                letter-spacing: 0;
-                line-height: normal;
-                z-index: 2;
-                white-space: nowrap;
-              }
-
-              .last-card-vector {
-                top: 48px;
-                right: 30px;
-                position: absolute;
-                width: 32px;
-                height: 37px;
-                z-index: 1;
-              }
-            }
+        
+        .about-section {
+          .about-title {
+            margin-bottom: 10px;
           }
         }
       }

@@ -1,52 +1,29 @@
-:host {
-  display: block;
-  width: 100%;
-}
-
-.header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 82px;
-  background-color: #87b8df;
-  position: fixed;
-  top: 0;  // Измените с bottom: 0 на top: 0
-  left: 0;
-  z-index: 1000;
-}
-
-nav {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 82px;
-  background-color: #87b8df;
-}
-
 .nav-list {
   display: flex;
-  gap: 16px;
+  gap: var(--nav-gap);
   justify-content: center;
-  max-width: 1920px;
+  align-items: center;
   width: 100%;
-  margin: 0 auto;
+  max-width: 100%;
+  padding: 0 10px;
+  box-sizing: border-box;
 }
 
 .nav-link {
-  padding: 24px 16px;
+  padding: calc(var(--header-height) * 0.3) calc(var(--header-height) * 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: 'Dela Gothic One', Helvetica, sans-serif;
   font-weight: 400;
   color: white;
-  font-size: 24px;
+  font-size: var(--nav-link-font-size);
   letter-spacing: 0;
   line-height: normal;
-  transition: background-color 0.3s;
+  transition: all 0.3s;
   text-decoration: none;
+  white-space: nowrap;
+  height: 100%;
 
   &:hover {
     border-radius: 20px;
@@ -56,5 +33,9 @@ nav {
   &.active {
     border-radius: 20px;
     background-color: #114967;
+  }
+
+  @media (max-width: 480px) {
+    padding: 8px 12px;
   }
 }

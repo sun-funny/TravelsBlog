@@ -1,137 +1,65 @@
-<div class = "main-content">
-
-  <app-header></app-header>
-  
-  <div class="main-container">
-    <div class="main-main">
-      <div class="hero-section" style="margin-top: 82px;">
-        <img
-          class="hero-image"
-          alt="Travel destination view"
-          src="/assets/img_main/FonHeaderTravel.png"
-        />
-        <img
-          class="main-title"
-          alt="Time for travels"
-          src="/assets/img_main/ToTravelText.svg"
-        />
-        <img
-          class="vector-element"
-          alt="Vector"
-          src="/assets/img_main/vector-1.svg"
-        />
+<div class="main-content">
+  <div class="section-wrapper">
+    <div class="hero-section">
+      <div class="hero-image"></div>
+      <img class="main-title" alt="Time for travels" src="/assets/img_main/ToTravelText.svg" />
+      <img class="vector-element" alt="Vector" src="/assets/img_main/vector-1.svg" />
+      <div class="cta-container">
         <app-button class="cta-button" (click)="navigateToTravels()">
-          <span class="button-text">
-            К путешествиям!
-          </span>
+          <span class="button-text">К путешествиям!</span>
         </app-button>
       </div>
     </div>
-  </div>
-  <div class="content-section">
+
     <div class="content-background">
       <div class="content-container">
         <div class="about-section">
           <h1 class="about-title">
             Кто мы такие?
           </h1>
-          <div class="map-section">
-            <img
-              class="map-image"
-              alt="Pngtreedistance"
-              src="/assets/img_main/Pngtreedistance.png"
-            />
-            <div class="locations-container">
-              <div class="st-petersburg">
-                <div class="st-petersburg-text">
-                  St - Petersburg
-                </div>
+          <div class="team-container">
+            <div *ngFor="let member of teamMembers; let i = index" class="team-member"
+                 [style.top]="member.position.top"
+                 [style.left]="member.position.left"
+                 [style.transform]="i === 1 ? 'translate(-100%, -50%)' : i === 2 ? 'translateY(-100%)' : 'translateY(0)'">
+              <div class="member-header" [class.direction-left]="member.direction === 'left'" 
+                                        [class.direction-right]="member.direction === 'right'">
+                <h2 class="greeting">{{ member.greeting }}</h2>
+                <img class="member-image" [src]="member.image" [alt]="member.name">
               </div>
-              <div *ngFor="let travel of featuredTravels; let i = index"
-                class="location"
-                [style.top]="travel.top" 
-                [style.left]="travel.left"
-              >
-                <span class="country" (click)="navigateToCountry(travel.id)">
-                  {{travel.country}}
-                </span>
-                <span *ngIf="travel.city" class="city">
-                  {{travel.city}}
-                </span>
-              </div>
-            </div>
-            <div *ngFor="let member of teamMembers.slice(0, 2); let i = index"
-              class="team-member"
-              [style.top]="member.position.top"
-              [style.left]="member.position.left"
-            >
-              <ng-container *ngIf="member.direction === 'right'; else leftDirection">
-                <img
-                  class="member-image right"
-                  [alt]="member.name + ' profile'"
-                  [src]="member.image"
-                />
-                <app-card class="member-card right">
-                  <app-card-content class="card-content">
-                    <img
-                      class="card-vector"
-                      alt="Vector"
-                      [src]="member.vectorSrc"
-                    />
-                    <div class="member-greeting">
-                      {{member.greeting}}
-                    </div>
-                  </app-card-content>
-                </app-card>
-              </ng-container>
-              <ng-template #leftDirection>
-                <img
-                  class="member-image left"
-                  [alt]="member.name + ' profile'"
-                  [src]="member.image"
-                />
-                <div class="left-card-container">
-                  <app-card class="member-card left">
-                    <app-card-content class="card-content">
-                      <img
-                        class="card-vector left"
-                        alt="Vector"
-                        [src]="member.vectorSrc"
-                      />
-                      <div class="member-greeting left">
-                        {{member.greeting}}
-                      </div>
-                    </app-card-content>
-                  </app-card>
-                </div>
-              </ng-template>
+              <p class="description">{{ member.description }}</p>
             </div>
           </div>
         </div>
-        <div class="last-team-member">
+        <div class="map-section">
           <img
-            class="last-member-image"
-            alt="Nastya profile"
-            src="/assets/img_team/Nastie.png"
+            class="map-image"
+            alt="Pngtreedistance"
+            src="/assets/img_main/Pngtreedistance.png"
           />
-          <div class="last-member-card-container">
-            <app-card class="last-member-card">
-              <app-card-content class="card-content">
-                <div class="last-member-greeting">
-                  Прив, я Настя!
-                </div>
-                <img
-                  class="last-card-vector"
-                  alt="Vector"
-                  src="/assets/img_main/vector-2.svg"
-                />
-              </app-card-content>
-            </app-card>
+          <div class="locations-container">
+            <div class="st-petersburg" 
+              [style.top]="imageHeight - 10 + 'px'" 
+              [style.left]="'10px'">
+              <div class="st-petersburg-text">
+                St - Petersburg
+              </div>
+            </div>
+            <div *ngFor="let travel of featuredTravels; let i = index"
+              class="location"
+              [style.top.%]="calculateTopPosition(i) / containerHeight * 100" 
+              [style.left.%]="calculateLeftPosition(i) / containerWidth * 100"
+            >
+              <span class="country" (click)="navigateToCountry(travel.id)">
+                {{travel.country}}
+              </span>
+              <span *ngIf="travel.city" class="city">
+                {{travel.city}}
+              </span>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-
-  <app-footer></app-footer>
 </div>

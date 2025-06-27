@@ -10,36 +10,22 @@ import { TeamMock } from 'src/app/shared/mock/team.mock';
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss']
 })
+
 export class MainComponent implements OnInit, OnDestroy {
   constructor(
     private travelService: TravelService,
     private router: Router
     ){}
-
   private _destroyer: Subscription;
   travels: ITravel[] = [];
   featuredTravels: ITravel[] = [];
   teamMembers = TeamMock;
 
-  private featuredCoordinates = [
-    { top: "0", left: "780px" },
-    { top: "397px", left: "868px" },
-    { top: "432px", left: "640px" },
-    { top: "404px", left: "163px" },
-    { top: "231px", left: "568px" },
-    { top: "338px", left: "432px" },
-    { top: "548px", left: "475px" },
-    { top: "578px", left: "146px" },
-    { top: "704px", left: "399px" },
-    { top: "505px", left: "944px" }
-  ];
+  public imageWidth = 1140;
+  public imageHeight = 800;
 
   ngOnInit(): void {
     this.initTravels();
-  }
-
-  ngOnDestroy() {
-    this._destroyer?.unsubscribe();
   }
 
   initTravels() {
@@ -47,18 +33,68 @@ export class MainComponent implements OnInit, OnDestroy {
       next: (travels) => {
         this.travels = travels;
         this.featuredTravels = travels
-        .filter(travel => travel.featured)
-        .slice(0, 10) // Take only first 10 featured travels
-        .map((travel, index) => ({
-          ...travel,
-          top: this.featuredCoordinates[index]?.top || '',
-          left: this.featuredCoordinates[index]?.left || ''
-        }));
+          .filter(travel => travel.featured)
+          .slice(0, 10);
       },
       error: (err) => {
         console.error('Error fetching travels:', err);
       }
     });
+  }
+
+  public containerWidth = 0;
+  public containerHeight = 0;
+
+  calculateTopPosition(index: number): number {
+    const step = index / 9;
+    let position = 50 + (this.containerHeight - 100) * step;
+  
+    const verticalOffset = this.containerHeight * 0.04;
+    
+    if (index % 2 === 0) { 
+      position += verticalOffset;
+    } else {
+      position -= verticalOffset;
+    }
+  
+    if (index === 0 || index === 1) {
+      position += 40; 
+    }
+  
+    if (index === 8 || index === 9) {
+      position -= 40;
+    }
+
+    return Math.max(30, Math.min(this.containerHeight - 30, position));
+  }
+
+  calculateLeftPosition(index: number): number {
+    const step = index / 9;
+    const basePosition = this.containerWidth - 100 - (this.containerWidth - 200) * step;
+    let offset = index % 2 === 0 ? -50 : 50;
+    
+    if (index === 0 || index === 1) {
+      offset += -20;
+    }
+  
+    if (index === 8 || index === 9) {
+      offset += 20;
+    }
+    
+    return Math.max(30, Math.min(this.containerWidth - 30, basePosition + offset));
+  }
+
+  ngAfterViewInit() {
+    this.updateContainerSize();
+    window.addEventListener('resize', this.updateContainerSize.bind(this));
+  }
+
+  updateContainerSize() {
+    const container = document.querySelector('.locations-container');
+    if (container) {
+      this.containerWidth = container.clientWidth;
+      this.containerHeight = container.clientHeight;
+    }
   }
 
   navigateToTravels() {
@@ -69,5 +105,10 @@ export class MainComponent implements OnInit, OnDestroy {
     this.router.navigate(['/travels', countryId]).then(() => {
       window.scrollTo(0, 0);
     });
+  }
+
+  ngOnDestroy() {
+    window.removeEventListener('resize', this.updateContainerSize.bind(this));
+    this._destroyer?.unsubscribe();
   }
 }

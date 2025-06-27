@@ -1,26 +1,11 @@
-:host {
-  display: block;
-  width: 100%;
-}
-
-.footer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 82px;
-  background-color: #87b8df;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  z-index: 1000;
-}
-
 .social-icons {
   display: flex;
-  gap: 32px;
+  gap: var(--icon-gap);
   justify-content: center;
   align-items: center;
+  height: 100%;
+  width: 100%;
+  padding: 0 var(--main-padding);
 }
 
 .icon-link {
@@ -35,7 +20,7 @@
 }
 
 .icon {
-  width: 40px;
-  height: 40px;
-  filter: brightness(0) invert(1); // Makes icons white
+  width: var(--icon-size);
+  height: var(--icon-size);
+  filter: brightness(0) invert(1);
 }

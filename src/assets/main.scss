@@ -1,2 +1,77 @@
 @import 'general.scss';
 @import 'primeng-custom';
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.header, footer {
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.header {
+  display: flex;
+  background-color: #1a6b9a;
+  gap: var(--nav-gap);
+  justify-content: center;
+  align-items: center;
+  padding: 0 10px;
+  min-height: 5vh;
+}
+
+footer {
+  display: flex;
+  background-color: #1a6b9a;
+  gap: var(--nav-gap);
+  justify-content: center;
+  align-items: center;
+  padding: 0 10px;
+  min-height: 5vh;
+}
+
+@media (max-width: 1200px) {
+  :root {
+    --main-padding: 20px;
+    --header-height: 70px;
+    --footer-height: 70px;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --main-padding: 15px;
+    --header-height: 60px;
+    --footer-height: 60px;
+    --nav-gap: 15px;
+    --icon-gap: 15px;
+    --icon-size: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --main-padding: 10px;
+    --header-height: 50px;
+    --footer-height: 50px;
+    --nav-gap: 10px;
+    --icon-gap: 10px;
+    --icon-size: 24px;
+    --nav-link-font-size: 14px;
+  }
+}

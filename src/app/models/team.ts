@@ -8,4 +8,5 @@ export interface ITeam {
             };
   direction: string;
   vectorSrc: string;
+  description: string;
 }
