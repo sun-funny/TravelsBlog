@@ -48,7 +48,7 @@ export class MainComponent implements OnInit, OnDestroy {
   calculateTopPosition(index: number): number {
     const step = index / 9;
     let position = 50 + (this.containerHeight - 100) * step;
-  
+    
     const verticalOffset = this.containerHeight * 0.04;
     
     if (index % 2 === 0) { 
@@ -56,15 +56,19 @@ export class MainComponent implements OnInit, OnDestroy {
     } else {
       position -= verticalOffset;
     }
-  
-    if (index === 0 || index === 1) {
-      position += 40; 
-    }
-  
-    if (index === 8 || index === 9) {
+    
+    if (index === 0) {
+      position += 80;
+    } else if (index === 1) {
+      position -= 30; // Второй элемент смещаем вверх
+    } else if (index === 2) {
+      position += 120; // Третий элемент смещаем вниз
+    } else if (index === 3) {
+      position -= 20; // Четвертый элемент смещаем вверх
+    } else if (index === 8 || index === 9) {
       position -= 40;
     }
-
+  
     return Math.max(30, Math.min(this.containerHeight - 30, position));
   }
 
@@ -73,11 +77,14 @@ export class MainComponent implements OnInit, OnDestroy {
     const basePosition = this.containerWidth - 100 - (this.containerWidth - 200) * step;
     let offset = index % 2 === 0 ? -50 : 50;
     
-    if (index === 0 || index === 1) {
+    if (index === 0 ) {
+      offset += 30;
+    } else if (index === 1) {
       offset += -20;
-    }
-  
-    if (index === 8 || index === 9) {
+
+    } else if (index === 2 || index === 3) {
+      offset += -20;
+    } else if (index === 8 || index === 9) {
       offset += 20;
     }
     
