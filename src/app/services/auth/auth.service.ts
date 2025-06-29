@@ -52,7 +52,7 @@ export class AuthService {
     this.userBehaviorSubject.next(this.currentUser);
   }
 
-  setUser(user: IUser): void {
+  setUser(user: any): void {
     this.currentUser = user;
   }
 
@@ -113,5 +113,13 @@ export class AuthService {
     this.currentUser.psw = psw;
     const dbUser = this.userStorage.find(({login}) => login === this.currentUser?.login)!;
     dbUser.psw = psw
+  }
+
+  getUserId(): string {
+    return this.user?.id || '';
+  }
+
+  getUserName(): string {
+    return this.user?.login || '';
   }
 }

@@ -60,11 +60,15 @@ export class MainComponent implements OnInit, OnDestroy {
     if (index === 0) {
       position += 80;
     } else if (index === 1) {
-      position -= 30; // Второй элемент смещаем вверх
+      position -= 30;
     } else if (index === 2) {
-      position += 120; // Третий элемент смещаем вниз
+      position += 120;
     } else if (index === 3) {
-      position -= 20; // Четвертый элемент смещаем вверх
+      position -= 20;
+    } else if (index === 4) {
+      position += 70;
+    } else if (index === 5) {
+      position -= 20;
     } else if (index === 8 || index === 9) {
       position -= 40;
     }
@@ -83,6 +87,14 @@ export class MainComponent implements OnInit, OnDestroy {
       offset += -20;
 
     } else if (index === 2 || index === 3) {
+      offset += -20;
+    } else if (index === 4) {
+      offset += -100;
+    } else if (index === 5) {
+      offset += -100;
+    } else if (index === 6) {
+      offset += -100;
+    } else if (index === 7) {
       offset += -20;
     } else if (index === 8 || index === 9) {
       offset += 20;

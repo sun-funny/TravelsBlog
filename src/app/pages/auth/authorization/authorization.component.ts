@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { IUser } from "../../../models/users";
+import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
   selector: 'app-authorization',
@@ -16,7 +17,8 @@ export class AuthorizationComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private router: Router,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -32,7 +34,9 @@ export class AuthorizationComponent implements OnInit {
     (data) => {
       console.log('Response:', data);
       const token: string = data.access_token;
-      this.router.navigate(['faq']);
+      this.authService.setUser(data)
+
+      this.router.navigate(['/faq']);
     },
       (error) => {
             console.error('Error:', error);

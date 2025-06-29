@@ -1,0 +1,38 @@
+<div class="comments-container p-4">
+  <p-toast></p-toast>
+  
+  <h1 class="text-center mb-5">Отзывы</h1>
+  <div class="mb-5" *ngIf="authService.isAuthenticated">
+    <p-card>
+      <h3>Добавить отзыв</h3>
+      <textarea 
+        pInputTextarea 
+        [(ngModel)]="newCommentText" 
+        rows="3" 
+        class="w-full mb-3"
+        placeholder="Ваш отзыв...">
+      </textarea>
+      <button 
+        pButton 
+        label="Отправить" 
+        icon="pi pi-send" 
+        (click)="addComment()"
+        [disabled]="!newCommentText.trim()">
+      </button>
+    </p-card>
+  </div>
+  
+  <div *ngFor="let comment of comments" class="mb-3">
+    <p-card>
+      <div class="flex justify-content-between align-items-center mb-2">
+        <h3 class="m-0">{{comment.userName}}</h3>
+        <span class="text-color-secondary">{{comment.date | date:'medium'}}</span>
+      </div>
+      <p class="m-0">{{comment.text}}</p>
+    </p-card>
+  </div>
+  
+  <div *ngIf="!comments.length" class="text-center">
+    <p>Пока нет комментариев. Будьте первым!</p>
+  </div>
+</div>

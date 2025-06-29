@@ -32,9 +32,9 @@ const routes: Routes = [
     ]
   },
   {
-    path: 'faq',
-    loadChildren: () => import('./pages/faq/faq.module').then(m => m.FaqModule),
-    //canActivate: [AuthGuard]
+  path: 'comments',
+  loadChildren: () => import('./pages/comments/comments.module').then(m => m.CommentsModule),
+  canActivate: [authGuardFunc]
   },
   {
     path: '**',

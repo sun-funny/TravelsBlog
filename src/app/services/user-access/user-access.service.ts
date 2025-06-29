@@ -6,7 +6,7 @@ import {debounce, debounceTime, Observable, of, timer} from "rxjs";
   providedIn: 'root'
 })
 export class UserAccessService {
-  private accessMap = new Map()  // TODO создать тип для accessMap
+  private accessMap = new Map()
   constructor() { }
 
   initAccess(rules: Readonly<IUserRules[]>): void {

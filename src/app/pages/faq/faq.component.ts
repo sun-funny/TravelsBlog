@@ -24,7 +24,7 @@ export class FaqComponent implements OnInit {
 
   ngOnInit(): void {
     if (!this.authService.isAuthenticated) {
-      this.router.navigate(['/auth'], { queryParams: { returnUrl: '/faq' } });
+     // this.router.navigate(['/auth']);
     }
   }
 

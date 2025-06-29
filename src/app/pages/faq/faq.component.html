@@ -4,7 +4,7 @@
   <div class="faq-content">
   </div>
 
-  <div class="comments-section" *ngIf="authService.isAuthenticated">
+  <div class="comments-section">
     <h3>Оставьте свой комментарий</h3>
     <form [formGroup]="commentForm" (ngSubmit)="submitComment()">
       <textarea formControlName="comment" placeholder="Your comment..."></textarea>

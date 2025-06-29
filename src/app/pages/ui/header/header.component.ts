@@ -9,6 +9,7 @@ export class HeaderComponent {
   navItems = [
     { text: "ГЛАВНАЯ", width: "165px", route: "/main" },
     { text: "НАШИ ПУТЕШЕСТВИЯ", width: "390px", route: "/travels" },
-    { text: "ОТЗЫВЫ", width: "334px", route: "/faq" },
+    { text: "КОММЕНТАРИИ", width: "334px", route: "/comments" },
+    { text: "Авторизоваться", width: "334px", route: "/auth" },
   ];
 }

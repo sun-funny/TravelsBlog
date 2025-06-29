@@ -7,9 +7,10 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
 import { RestInterceptorsService } from "./services/interceptors/rest-interceptors.service";
 import { CardModule } from 'primeng/card';
 import { ConfigService } from "./services/config/config.service";
-import { DirectiveModule } from './directive/directive.module'; // Add this import
+import { DirectiveModule } from './directive/directive.module';
 import { UiModule } from './pages/ui/ui.module';
 import { ReactiveFormsModule } from '@angular/forms';
+import { CommentsComponent } from './pages/comments/comments.component';
 
 function initializeApp(config: ConfigService) {
   return () => config.loadPromise().then(() => {

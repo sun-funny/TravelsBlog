@@ -30,7 +30,6 @@ export class ConfigService {
           ConfigService.config = response;
           const config = ConfigService.config;
           if (config) {
-            // set origin host
             resolve(config);
           } else {
             reject('Ошибка при инициализации конфига - неверный формат ' + config);
