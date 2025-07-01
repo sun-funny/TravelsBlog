@@ -5,20 +5,24 @@
   <div class="mb-5" *ngIf="authService.isAuthenticated">
     <p-card>
       <h3>Добавить комментарий</h3>
-      <textarea 
-        pInputTextarea 
-        [(ngModel)]="newCommentText" 
-        rows="3" 
-        class="w-full mb-3"
-        placeholder="Ваш комментарий...">
-      </textarea>
-      <button 
-        pButton 
-        label="Отправить" 
-        icon="pi pi-send" 
-        (click)="addComment()"
-        [disabled]="!newCommentText.trim()">
-      </button>
+      <div class="flex flex-column">
+        <textarea 
+          pInputTextarea 
+          [(ngModel)]="newCommentText" 
+          rows="5" 
+          class="w-full mb-3"
+          style="width: 100%; min-width: 100%;"
+          placeholder="Ваш комментарий...">
+        </textarea>
+        <button 
+          pButton 
+          label="Отправить" 
+          icon="pi pi-send" 
+          (click)="addComment()"
+          [disabled]="!newCommentText.trim()"
+          class="align-self-end">
+        </button>
+      </div>
     </p-card>
   </div>
   

@@ -11,6 +11,7 @@ import { DirectiveModule } from './directive/directive.module';
 import { UiModule } from './pages/ui/ui.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommentsComponent } from './pages/comments/comments.component';
+import { AuthInterceptor } from './services/interceptors/auth.interceptor';
 
 function initializeApp(config: ConfigService) {
   return () => config.loadPromise().then(() => {
@@ -39,7 +40,9 @@ function initializeApp(config: ConfigService) {
       useFactory: initializeApp,
       deps: [ConfigService], multi: true
     },
-    {provide: HTTP_INTERCEPTORS, useClass: RestInterceptorsService, multi: true},
+    {provide: HTTP_INTERCEPTORS, 
+      useClass: AuthInterceptor, 
+      multi: true},
   ],
   bootstrap: [AppComponent]
 })

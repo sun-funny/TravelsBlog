@@ -39,32 +39,51 @@ export class CommentsComponent implements OnInit {
   }
 
   addComment(): void {
-  if (!this.newCommentText.trim()) return;
-
-  const newComment: Partial<Comment> = {
-    text: this.newCommentText,
-    userId: this.authService.getUserId(),
-    userName: this.authService.getUserName(),
-    date: new Date() // Add current date
-  };
-
-  this.commentsService.addComment(newComment).subscribe({
-    next: () => {
-      this.newCommentText = '';
-      this.loadComments();
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Успех',
-        detail: 'Комментарий добавлен'
-      });
-    },
-    error: (err) => {
+    if (!this.newCommentText.trim()) return;
+  
+    // Check if user is authenticated
+    if (!this.authService.isAuthenticated) {
       this.messageService.add({
         severity: 'error',
         summary: 'Ошибка',
-        detail: 'Не удалось добавить комментарий'
+        detail: 'Необходимо авторизоваться'
       });
+      return;
     }
-  });
-}
+  
+    const newComment: Partial<Comment> = {
+      text: this.newCommentText,
+      userId: this.authService.getUserId(),
+      userName: this.authService.getUserName(),
+      date: new Date()
+    };
+  
+    this.commentsService.addComment(newComment).subscribe({
+      next: () => {
+        this.newCommentText = '';
+        this.loadComments();
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Успех',
+          detail: 'Комментарий добавлен'
+        });
+      },
+      error: (err) => {
+        if (err.status === 401) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Ошибка',
+            detail: 'Сессия истекла. Пожалуйста, войдите снова.'
+          });
+          this.authService.logout();
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Ошибка',
+            detail: 'Не удалось добавить комментарий'
+          });
+        }
+      }
+    });
+  }
 }
