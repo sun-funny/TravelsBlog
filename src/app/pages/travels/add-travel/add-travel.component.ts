@@ -7,6 +7,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { DialogService } from 'primeng/dynamicdialog';
 import { AddPointComponent } from '../../country/add-point/add-point.component';
 import { IPoint } from 'src/app/models/point';
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-add-travel',
@@ -19,6 +21,7 @@ export class AddTravelComponent implements OnInit {
   submitted = false;
   isEditMode = false;
   currentTravelId: string;
+  uploadedFile: any;
 
   constructor(
     private fb: FormBuilder,
@@ -26,20 +29,21 @@ export class AddTravelComponent implements OnInit {
     private messageService: MessageService,
     public router: Router,
     private route: ActivatedRoute,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private http: HttpClient
   ) {
     this.createForm();
   }
 
   ngOnInit() {
-  this.route.params.subscribe(params => {
-    if (params['id']) {
-      this.isEditMode = true;
-      this.currentTravelId = params['id'];
-      this.loadTravelData(this.currentTravelId);
-    }
-  });
-}
+    this.route.params.subscribe(params => {
+      if (params['id']) {
+        this.isEditMode = true;
+        this.currentTravelId = params['id'];
+        this.loadTravelData(this.currentTravelId);
+      }
+    });
+  }
 
   createForm() {
     this.travelForm = this.fb.group({
@@ -56,14 +60,45 @@ export class AddTravelComponent implements OnInit {
     });
   }
 
-  loadTravelData(id: string) {
-  this.travelService.getTravel().subscribe(travels => {
-    const travel = travels.find(t => t.id === id);
-    if (travel) {
-      this.travelForm.patchValue(travel);
+  async onUpload(event: any) {
+    if (event.files && event.files.length > 0) {
+      this.uploadedFile = event.files[0];
+      
+      try {
+        const formData = new FormData();
+        formData.append('image', this.uploadedFile);
+
+        const uploadResponse: any = await this.http.post(`${environment.apiUrl}/travels/upload`, formData).toPromise();
+        const imageUrl = uploadResponse.url;
+
+        this.travelForm.patchValue({
+          img: imageUrl
+        });
+
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Image uploaded successfully'
+        });
+      } catch (error) {
+        console.error('Error uploading file:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to upload image'
+        });
+      }
     }
-  });
-}
+  }
+
+  loadTravelData(id: string) {
+    this.travelService.getTravel().subscribe(travels => {
+      const travel = travels.find(t => t.id === id);
+      if (travel) {
+        this.travelForm.patchValue(travel);
+      }
+    });
+  }
 
   onSubmit() {
     this.submitted = true;
@@ -120,32 +155,30 @@ export class AddTravelComponent implements OnInit {
       });
     }
   }
-  
 
   private generateId(): string {
     return Math.random().toString(36).substr(2, 9);
   }
 
   openAddPointForm() {
-  if (!this.currentTravelId) return console.log('Нет id');
+    if (!this.currentTravelId) return console.log('Нет id');
 
-  const ref = this.dialogService.open(AddPointComponent, {
-    width: '70%',
-    data: {
-      countryId: this.currentTravelId
-    },
-    header: 'Add New Point'
-  });
+    const ref = this.dialogService.open(AddPointComponent, {
+      width: '70%',
+      data: {
+        countryId: this.currentTravelId
+      },
+      header: 'Add New Point'
+    });
 
-  ref.onClose.subscribe((point: IPoint) => {
-    if (point) {
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Успешно',
-        detail: 'Контент добавлен'
-      });
-    }
-  });
-}
-
+    ref.onClose.subscribe((point: IPoint) => {
+      if (point) {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Успешно',
+          detail: 'Контент добавлен'
+        });
+      }
+    });
+  }
 }

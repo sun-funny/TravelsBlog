@@ -113,7 +113,7 @@ export class AddPointComponent implements OnInit {
           detail: 'Point added successfully'
         });
         this.pointAdded.emit(point);
-        this.resetForm();
+        //this.resetForm();
       },
       error: (err) => {
         console.error('Error adding point:', err);
