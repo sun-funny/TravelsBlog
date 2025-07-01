@@ -13,6 +13,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 export class AuthorizationComponent implements OnInit {
   login: string;
   password: string;
+  rememberMe: boolean = false;
 
   constructor(
     private http: HttpClient,
@@ -31,21 +32,21 @@ export class AuthorizationComponent implements OnInit {
       email: ''
     };
     console.log('login', this.login);
-    this.http.post<{access_token: string, id: string, role: string}>(
-      'http://localhost:3000/users/' + this.login, 
+    this.http.post<{access_token: string, refresh_token: string, id: string, role: string}>(
+      'http://localhost:3000/users/' + this.login,
       authUser
     ).subscribe(
       (data) => {
-        console.log('Response:', data);
-        const token: string = data.access_token;
         const userData = {
           login: this.login,
           _id: data.id,
           role: data.role,
-          access_token: token
+          access_token: data.access_token,
+          refresh_token: data.refresh_token
         };
-        this.authService.setUser(userData);
+        this.authService.setUser(userData, this.rememberMe);
         this.router.navigate(['/comments']);
+
       },
       (error) => {
         console.error('Error:', error);

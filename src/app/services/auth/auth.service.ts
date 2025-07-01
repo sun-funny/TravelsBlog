@@ -4,6 +4,7 @@ import {Router} from "@angular/router";
 import {UserAccessService} from "../user-access/user-access.service";
 import {UserRules} from "../../shared/mock/rules";
 import {BehaviorSubject, Subject} from "rxjs";
+import { HttpClient } from '@angular/common/http';
 
 export const LOCAL_STORAGE_NAME = 'currentUser';
 
@@ -24,7 +25,8 @@ export class AuthService {
 
   constructor(
     private router: Router,
-    private accessService: UserAccessService
+    private accessService: UserAccessService,
+    private http: HttpClient
   ) {
 
     const storedUser: IUser | null = JSON.parse(localStorage.getItem(LOCAL_STORAGE_NAME) || 'null');
@@ -38,13 +40,41 @@ export class AuthService {
   }
 
   private auth(user: IUser, isRememberMe?: boolean) {
-    console.log('user', user)
     this.currentUser = user;
     this.accessService.initAccess(UserRules);
-
-    localStorage.setItem(LOCAL_STORAGE_NAME, JSON.stringify(user));
-
+  
+    if (isRememberMe) {
+      localStorage.setItem(LOCAL_STORAGE_NAME, JSON.stringify(user));
+    } else {
+      sessionStorage.setItem(LOCAL_STORAGE_NAME, JSON.stringify(user));
+    }
+  
     this.userSubject.next(this.currentUser);
+  }
+
+  async refreshToken(): Promise<boolean> {
+    const storedUser: IUser | null = JSON.parse(localStorage.getItem(LOCAL_STORAGE_NAME) || 'null');
+    if (storedUser) {
+      this.auth(storedUser)
+    }
+  
+    try {
+      const response = await this.http.post<{access_token: string}>(
+        'http://localhost:3000/users/refresh',
+        { refresh_token: storedUser.refresh_token }
+      ).toPromise();
+      
+      storedUser.access_token = response.access_token;
+      if (localStorage.getItem(LOCAL_STORAGE_NAME)) {
+        localStorage.setItem(LOCAL_STORAGE_NAME, JSON.stringify(storedUser));
+      } else {
+        sessionStorage.setItem(LOCAL_STORAGE_NAME, JSON.stringify(storedUser));
+      }
+      return true;
+    } catch (e) {
+      this.logout();
+      return false;
+    }
   }
 
   initUserToSubject(): void {
@@ -52,8 +82,14 @@ export class AuthService {
     this.userBehaviorSubject.next(this.currentUser);
   }
 
-  setUser(user: any): void {
+  setUser(user: any, rememberMe: boolean = false): void {
     this.currentUser = user;
+    if (rememberMe) {
+      localStorage.setItem(LOCAL_STORAGE_NAME, JSON.stringify(user));
+    } else {
+      sessionStorage.setItem(LOCAL_STORAGE_NAME, JSON.stringify(user));
+    }
+    this.userSubject.next(this.currentUser);
   }
 
   private authAndRedirect(user: IUser, isRememberMe?: boolean) {
@@ -122,4 +158,5 @@ export class AuthService {
   getUserName(): string {
     return this.user?.login || '';
   }
+
 }

@@ -1,16 +1,16 @@
 <div class="comments-container p-4">
   <p-toast></p-toast>
   
-  <h1 class="text-center mb-5">Отзывы</h1>
+  <h1 class="text-center mb-5">Комментарии</h1>
   <div class="mb-5" *ngIf="authService.isAuthenticated">
     <p-card>
-      <h3>Добавить отзыв</h3>
+      <h3>Добавить комментарий</h3>
       <textarea 
         pInputTextarea 
         [(ngModel)]="newCommentText" 
         rows="3" 
         class="w-full mb-3"
-        placeholder="Ваш отзыв...">
+        placeholder="Ваш комментарий...">
       </textarea>
       <button 
         pButton 
