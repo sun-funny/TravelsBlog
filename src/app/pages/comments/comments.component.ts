@@ -41,7 +41,6 @@ export class CommentsComponent implements OnInit {
   addComment(): void {
     if (!this.newCommentText.trim()) return;
   
-    // Check if user is authenticated
     if (!this.authService.isAuthenticated) {
       this.messageService.add({
         severity: 'error',
