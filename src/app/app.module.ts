@@ -12,6 +12,7 @@ import { UiModule } from './pages/ui/ui.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommentsComponent } from './pages/comments/comments.component';
 import { AuthInterceptor } from './services/interceptors/auth.interceptor';
+import { PrimeIcons } from 'primeng/api';
 
 function initializeApp(config: ConfigService) {
   return () => config.loadPromise().then(() => {

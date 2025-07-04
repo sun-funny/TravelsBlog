@@ -1,3 +1,34 @@
+.user-icon-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.user-icon-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.user-name {
+  font-size: 14px;
+  color: white;
+}
+
+.user-tooltip {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  color: black;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 1000;
+}
+
+
 .nav-list {
   display: flex;
   gap: var(--nav-gap);

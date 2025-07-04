@@ -9,5 +9,14 @@
     >
       {{item.text}}
     </a>
+    <div class="user-icon-container" (mouseenter)="showTooltip = true" (mouseleave)="showTooltip = false">
+      <a [routerLink]="isAuthenticated ? null : '/auth'" class="user-icon-link">
+        <i [class]="isAuthenticated ? 'pi pi-user' : 'pi pi-sign-in'"></i>
+        <span *ngIf="isAuthenticated" class="user-name">{{userName}}</span>
+      </a>
+      <div *ngIf="showTooltip && isAuthenticated" class="user-tooltip">
+        {{userName}}
+      </div>
+    </div>
   </div>
 </nav>

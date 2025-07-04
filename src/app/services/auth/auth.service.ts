@@ -90,6 +90,7 @@ export class AuthService {
       sessionStorage.setItem(LOCAL_STORAGE_NAME, JSON.stringify(user));
     }
     this.userSubject.next(this.currentUser);
+    this.userBehaviorSubject.next(this.currentUser);
   }
 
   private authAndRedirect(user: IUser, isRememberMe?: boolean) {
@@ -139,6 +140,8 @@ export class AuthService {
     this.userStorage = this.userStorage.filter(({login}) => login === this.currentUser?.login);
     this.currentUser = null;
     localStorage.removeItem(LOCAL_STORAGE_NAME);
+    sessionStorage.removeItem(LOCAL_STORAGE_NAME);
+    this.userBehaviorSubject.next(null);
     this.router.navigate(['auth']);
   }
 
@@ -158,5 +161,13 @@ export class AuthService {
   getUserName(): string {
     return this.user?.login || '';
   }
-
+  
+  private getStoredUser(): IUser | null {
+  try {
+    const user = JSON.parse(localStorage.getItem(LOCAL_STORAGE_NAME) || sessionStorage.getItem(LOCAL_STORAGE_NAME) || 'null');
+    return user && user.login && (user.access_token || user.psw) ? user : null;
+  } catch {
+    return null;
+  }
+}
 }
