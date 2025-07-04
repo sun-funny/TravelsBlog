@@ -3,6 +3,11 @@
   margin-bottom: 1em;
 }
 
+.aside-country{
+  position: relative;
+  width: 312px;
+}
+
 .country-content-wrapper {
   display: flex;
   position: relative;
@@ -14,8 +19,6 @@
   position: relative;
   background-size: cover;
   background-position: center;
-  padding: 20px;
-  padding-top: 102px;
   
   .overlay {
     position: absolute;
@@ -32,11 +35,12 @@
   position: relative;
   z-index: 1;
   max-width: 1200px;
-  margin: 0 auto;
   padding: 20px;
   background-color: #114967;
   border-radius: 8px;
   box-shadow: 0 4px 12px white;
+  margin-top: 2vh;
+  margin-inline: auto;
 
   .country-header {
     text-align: center;
