@@ -56,17 +56,7 @@
         <div class="p-field p-grid">
           <label for="img" class="p-col-12 p-md-3">Изображение</label>
           <div class="p-col-12 p-md-9">
-            <p-fileUpload 
-              name="image" 
-              [multiple]="false" 
-              accept="image/*" 
-              [maxFileSize]="10000000"
-              (onSelect)="onUpload($event)"
-              [customUpload]="true"
-              chooseLabel="Выбрать изображение"
-              uploadLabel="Загрузить"
-              cancelLabel="Отмена">
-            </p-fileUpload>
+            <input id="img" type="text" pInputText formControlName="img" />
             <small *ngIf="travelForm.get('img')?.invalid && submitted" class="p-error">
               Изображение обязательно
             </small>

@@ -8,6 +8,4 @@ export interface ITravel {
   img: string;
   year: number;
   featured: boolean;
-  top?: string;
-  left?: string;
 }

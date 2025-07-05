@@ -23,6 +23,10 @@ export class TravelRestService {
     );
   }
 
+  createTravel(data: ITravel): Observable<ITravel> {
+    return this.http.post<ITravel>(this.apiUrl, data);
+  }
+
   sendTravelData(data: ITravel): Observable<ITravel> {
     return this.http.post<ITravel>(this.apiUrl, data);
   }

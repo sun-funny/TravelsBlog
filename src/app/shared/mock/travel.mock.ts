@@ -10,9 +10,7 @@ export const TravelMock: ITravel[] = [
       "flag": "/assets/img_flags/jp.png",
       "img": "assets/img_countries/foto1.jpg",
       "year": 2025,
-      "featured": true,
-      "top": "397px",
-      "left": "868px"
+      "featured": true
     },
 
     {
@@ -24,9 +22,7 @@ export const TravelMock: ITravel[] = [
       "flag": "/assets/img_flags/gb.png",
       "img": "assets/img_countries/foto2.jpg",
       "year": 2024,
-      "featured": true,
-      "top": "0",
-      "left": "780px"
+      "featured": true
     },
     {
       "id": "3",
@@ -37,9 +33,7 @@ export const TravelMock: ITravel[] = [
       "flag": "/assets/img_flags/ae.png",
       "img": "assets/img_countries/foto3.jpg",
       "year": 2023,
-      "featured": true,
-      "top": "432px",
-      "left": "640px"
+      "featured": true
     },
     {
       "id": "4",
@@ -50,9 +44,7 @@ export const TravelMock: ITravel[] = [
       "flag": "/assets/img_flags/sc.png",
       "img": "assets/img_countries/foto4.jpg",
       "year": 2022,
-      "featured": true,
-      "top": "404px",
-      "left": "163px"
+      "featured": true
     },
     {
       "id": "5",
@@ -63,9 +55,7 @@ export const TravelMock: ITravel[] = [
       "flag": "/assets/img_flags/mu.png",
       "img": "assets/img_countries/foto5.jpg",
       "year": 2023,
-      "featured": true,
-      "top": "231px",
-      "left": "568px"
+      "featured": true
     },
     {
       "id": "6",
@@ -76,9 +66,7 @@ export const TravelMock: ITravel[] = [
       "flag": "/assets/img_flags/es.png",
       "img": "assets/img_countries/foto6.jpg",
       "year": 2018,
-      "featured": true,
-      "top": "338px",
-      "left": "432px"
+      "featured": true
     },
     {
       "id": "7",
@@ -89,9 +77,7 @@ export const TravelMock: ITravel[] = [
       "flag": "/assets/img_flags/us.png",
       "img": "assets/img_countries/foto7.jpg",
       "year": 2019,
-      "featured": true,
-      "top": "548px",
-      "left": "475px"
+      "featured": true
     },
     {
       "id": "8",
@@ -102,9 +88,7 @@ export const TravelMock: ITravel[] = [
       "flag": "/assets/img_flags/tr.png",
       "img": "assets/img_countries/foto8.jpg",
       "year": 2020,
-      "featured": true,
-      "top": "578px",
-      "left": "146px"
+      "featured": true
     },
     {
       "id": "9",
@@ -115,9 +99,7 @@ export const TravelMock: ITravel[] = [
       "flag": "/assets/img_flags/eg.png",
       "img": "assets/img_countries/foto9.jpg",
       "year": 2022,
-      "featured": true,
-      "top": "704px",
-      "left": "399px"
+      "featured": true
     },
     {
       "id": "10",
@@ -128,9 +110,7 @@ export const TravelMock: ITravel[] = [
       "flag": "/assets/img_flags/is.png",
       "img": "assets/img_countries/foto10.jpg",
       "year": 2018,
-      "featured": true,
-      "top": "505px",
-      "left": "944px"
+      "featured": true
     },
     {
       "id": "11",
@@ -141,8 +121,6 @@ export const TravelMock: ITravel[] = [
       "flag": "/assets/img_flags/lk.png",
       "img": "assets/img_countries/foto11.jpg",
       "year": 2024,
-      "featured": true,
-      "top": "505px",
-      "left": "944px"
+      "featured": true
     },
  ]

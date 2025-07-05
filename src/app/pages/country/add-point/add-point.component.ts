@@ -41,7 +41,6 @@ export class AddPointComponent implements OnInit {
 
   ngOnInit(): void {
     this.countryId = this.config.data.countryId;
-    console.log('Received countryId:', this.countryId);
   }
 
   async onUpload(event: any) {
