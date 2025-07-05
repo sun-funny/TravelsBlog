@@ -22,6 +22,7 @@ export class AddPointComponent implements OnInit {
   uploadedFiles: any[] = [];
   submitted = false;
   isLoading = false;
+  img = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -44,6 +45,7 @@ export class AddPointComponent implements OnInit {
   }
 
   async onUpload(event: any) {
+    this.img = 0;
     this.isLoading = true;
     this.submitted = true;
     
@@ -77,9 +79,10 @@ export class AddPointComponent implements OnInit {
             detail: 'Point added successfully'
           });
           this.pointAdded.emit(point);
-          this.resetForm();
-          this.ref.close(point); 
+          //this.resetForm();
+          //this.ref.close(point); 
           this.isLoading = false;
+          this.img = 1;
         },
         error: (err) => {
           console.error('Error adding point:', err);
@@ -104,8 +107,10 @@ export class AddPointComponent implements OnInit {
 
   onSubmit() {
     this.submitted = true;
-    
+    console.log('img', this.img)
     try {
+
+      if (this.img === 0) {
       const pointData: IPoint = {
         id: this.generateId(),
         name: this.pointForm.value.name,
@@ -123,7 +128,7 @@ export class AddPointComponent implements OnInit {
           });
           this.pointAdded.emit(point);
           this.resetForm();
-          this.ref.close(point); 
+          //this.ref.close(point); 
           this.isLoading = false;
         },
         error: (err) => {
@@ -135,7 +140,7 @@ export class AddPointComponent implements OnInit {
           });
           this.isLoading = false;
         }
-      });
+      });}
     }catch (error) {
       console.error('Error:', error);
       this.messageService.add({
