@@ -25,22 +25,20 @@
         <div class="p-field p-grid">
           <label for="images" class="p-col-12 p-md-2">Фотографии</label>
           <div class="p-col-12 p-md-10">
-            <p-fileUpload name="images" 
+            <p-fileUpload #fileUpload name="images" 
              [multiple]="true" 
              accept="image/*" 
              [maxFileSize]="10000000"
              (onSelect)="onUpload($event)"
-             [customUpload]="true">
+             [showUploadButton]="false"
+             chooseLabel="Выбрать файл">
             </p-fileUpload>
           </div>
         </div>
 
         <div class="button-group">
-          <button 
-            pButton type="submit" 
-            label="Добавить" 
-            class="p-button-success">
-          </button>
+          <button pButton type="submit" label="Добавить" class="p-button-success"></button>
+          <button pButton type="button" label="Очистить форму" class="p-button-secondary" (click)="clearForm()" style="margin-left: 10px;"></button>
         </div>
       </form>
     </p-card>
