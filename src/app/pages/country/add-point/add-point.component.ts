@@ -103,8 +103,47 @@ export class AddPointComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.fileUpload) {
-      this.fileUpload.upload();
+    this.submitted = true;
+    
+    try {
+      const pointData: IPoint = {
+        id: this.generateId(),
+        name: this.pointForm.value.name,
+        description: this.pointForm.value.description,
+        img: [],
+        id_country: this.countryId
+      };
+
+      this.pointRestService.createPoint(pointData).subscribe({
+        next: (point) => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Point added successfully'
+          });
+          this.pointAdded.emit(point);
+          this.resetForm();
+          this.ref.close(point); 
+          this.isLoading = false;
+        },
+        error: (err) => {
+          console.error('Error adding point:', err);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to add point'
+          });
+          this.isLoading = false;
+        }
+      });
+    }catch (error) {
+      console.error('Error:', error);
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Не удалось добавить контент'
+      });
+      this.isLoading = false;
     }
   }
 

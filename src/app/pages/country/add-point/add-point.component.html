@@ -31,6 +31,7 @@
              [maxFileSize]="10000000"
              (onSelect)="onUpload($event)"
              [showUploadButton]="false"
+             [showCancelButton]="false"
              chooseLabel="Выбрать файл">
             </p-fileUpload>
           </div>
@@ -38,7 +39,6 @@
 
         <div class="button-group">
           <button pButton type="submit" label="Добавить" class="p-button-success"></button>
-          <button pButton type="button" label="Очистить форму" class="p-button-secondary" (click)="clearForm()" style="margin-left: 10px;"></button>
         </div>
       </form>
     </p-card>
