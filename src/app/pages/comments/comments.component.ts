@@ -39,50 +39,51 @@ export class CommentsComponent implements OnInit {
   }
 
   addComment(): void {
-    if (!this.newCommentText.trim()) return;
-  
-    if (!this.authService.isAuthenticated) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Ошибка',
-        detail: 'Необходимо авторизоваться'
-      });
-      return;
-    }
-  
-    const newComment: Partial<Comment> = {
-      text: this.newCommentText,
-      userId: this.authService.getUserId(),
-      userName: this.authService.getUserName(),
-      date: new Date()
-    };
-  
-    this.commentsService.addComment(newComment).subscribe({
-      next: () => {
-        this.newCommentText = '';
-        this.loadComments();
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Успех',
-          detail: 'Комментарий добавлен'
-        });
-      },
-      error: (err) => {
-        if (err.status === 401) {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Ошибка',
-            detail: 'Сессия истекла. Пожалуйста, войдите снова.'
-          });
-          this.authService.logout();
-        } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Ошибка',
-            detail: 'Не удалось добавить комментарий'
-          });
-        }
-      }
+  if (!this.newCommentText.trim()) return;
+
+  if (!this.authService.isAuthenticated) {
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Ошибка',
+      detail: 'Необходимо авторизоваться'
     });
+    return;
   }
+
+  const newComment: Partial<Comment> = {
+    text: this.newCommentText,
+    userId: this.authService.getUserId(),
+    userName: this.authService.getUserName(),
+    date: new Date()
+  };
+
+  this.commentsService.addComment(newComment).subscribe({
+    next: (comment) => {
+      this.newCommentText = '';
+      this.comments.unshift(comment); // Add new comment to the beginning of the array
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Успех',
+        detail: 'Комментарий добавлен'
+      });
+    },
+    error: (err) => {
+      console.error('Error adding comment:', err);
+      if (err.status === 401) {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Ошибка',
+          detail: 'Сессия истекла. Пожалуйста, войдите снова.'
+        });
+        this.authService.logout();
+      } else {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Ошибка',
+          detail: 'Не удалось добавить комментарий'
+        });
+      }
+    }
+  });
+}
 }

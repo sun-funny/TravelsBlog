@@ -17,6 +17,9 @@ export class CommentsService {
   }
 
   addComment(comment: Partial<Comment>): Observable<Comment> {
-    return this.http.post<Comment>(this.apiUrl, comment);
+    const userName = comment.userName || '';
+    return this.http.post<Comment>(`${this.apiUrl}/${userName}`, {
+      text: comment.text
+    });
   }
 }

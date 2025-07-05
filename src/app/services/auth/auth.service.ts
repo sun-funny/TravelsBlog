@@ -155,7 +155,7 @@ export class AuthService {
   }
 
   getUserId(): string {
-    return this.user?.id || '';
+    return this.user?._id || '';
   }
 
   getUserName(): string {
