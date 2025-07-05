@@ -1,5 +1,6 @@
 <div class="comments-container p-4">
   <p-toast></p-toast>
+  <p-confirmDialog></p-confirmDialog>
   
   <div class="mb-5" *ngIf="authService.isAuthenticated">
     <p-card>
@@ -28,11 +29,27 @@
   <div *ngFor="let comment of comments" class="mb-3">
     <p-card>
       <div class="flex justify-content-between align-items-center mb-2">
-        <h3 class="m-0">{{comment.userName}}</h3>
+        <div class="flex align-items-center gap-2">
+          <h3 class="m-0">{{comment.userName}}</h3>
+          <span *ngIf="authService.getUserId() === comment.userId || authService.user?.role === 'user'" 
+                class="pi pi-trash text-red-500 cursor-pointer" 
+                (click)="confirmDeleteComment(comment._id)"
+                pTooltip="Удалить комментарий" tooltipPosition="top">
+          </span>
+        </div>
         <span class="text-color-secondary">{{comment.date | date:'medium'}}</span>
       </div>
       <p class="m-0">{{comment.text}}</p>
     </p-card>
+  </div>
+
+  <div *ngIf="authService.user?.role === 'user' && comments.length" class="mt-4">
+    <button pButton 
+            label="Удалить все комментарии" 
+            icon="pi pi-trash" 
+            class="p-button-danger"
+            (click)="confirmDeleteAllComments()">
+    </button>
   </div>
   
   <div *ngIf="!comments.length" class="text-center">

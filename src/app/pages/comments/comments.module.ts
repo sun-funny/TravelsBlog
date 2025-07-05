@@ -8,6 +8,8 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { FormsModule } from '@angular/forms';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { TooltipModule } from 'primeng/tooltip';
 
 const routes = [
   { path: '', component: CommentsComponent }
@@ -22,7 +24,9 @@ const routes = [
     ButtonModule,
     InputTextareaModule,
     FormsModule,
-    ToastModule
+    ToastModule,
+    ConfirmDialogModule,
+    TooltipModule
   ],
   providers: [MessageService]
 })

@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Comment } from 'src/app/models/comment';
 import { environment } from '../../../environments/environment';
+import { MessageService } from 'primeng/api';
 
 @Injectable({
   providedIn: 'root'
@@ -21,5 +22,13 @@ export class CommentsService {
     return this.http.post<Comment>(`${this.apiUrl}/${userName}`, {
       text: comment.text
     });
+  }
+
+  deleteComment(id: string): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(`${this.apiUrl}/${id}`);
+  }
+
+  deleteAllComments(): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(this.apiUrl);
   }
 }
