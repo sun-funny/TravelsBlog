@@ -63,7 +63,7 @@ export class CommentsComponent implements OnInit {
   this.commentsService.addComment(newComment).subscribe({
     next: (comment) => {
       this.newCommentText = '';
-      this.comments.unshift(comment); // Add new comment to the beginning of the array
+      this.comments.unshift(comment);
       this.messageService.add({
         severity: 'success',
         summary: 'Успех',
@@ -120,7 +120,7 @@ confirmDeleteComment(commentId: string): void {
         this.comments = this.comments.filter(c => c._id !== commentId);
         this.messageService.add({
           severity: 'success',
-          summary: 'Успех',
+          summary: 'Успешно',
           detail: 'Комментарий удален'
         });
       },
@@ -140,7 +140,7 @@ private deleteAllComments(): void {
         this.comments = [];
         this.messageService.add({
           severity: 'success',
-          summary: 'Успех',
+          summary: 'Успешно',
           detail: response.message || 'Все комментарии удалены'
         });
       },

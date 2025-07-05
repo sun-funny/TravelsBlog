@@ -31,7 +31,7 @@
       <div class="flex justify-content-between align-items-center mb-2">
         <div class="flex align-items-center gap-2">
           <h3 class="m-0">{{comment.userName}}</h3>
-          <span *ngIf="authService.getUserId() === comment.userId || authService.user?.role === 'user'" 
+          <span *ngIf="authService.getUserId() === comment.userId" 
                 class="pi pi-trash text-red-500 cursor-pointer" 
                 (click)="confirmDeleteComment(comment._id)"
                 pTooltip="Удалить комментарий" tooltipPosition="top">
