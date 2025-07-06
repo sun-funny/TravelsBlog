@@ -4,6 +4,7 @@ import { ITravel } from 'src/app/models/travel';
 import { TravelService } from 'src/app/services/travel/travel.service';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-travels',
@@ -71,5 +72,18 @@ export class TravelsComponent implements OnInit, OnDestroy {
   openCountry(travelId: string): void {
     this.router.navigate(['/travels', travelId]);
   }
+
+  getImageUrl(path: string): string {
+
+    if (!path) return '';
+  if (path.startsWith('http')) {
+    return path;
+  }
+
+  if (path.startsWith('/')) {
+    return `${environment.apiUrl}${path}`;
+  }
+  return `${environment.apiUrl}/uploads/${path}`;
+}
 
 }

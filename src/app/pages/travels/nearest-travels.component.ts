@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ITravel } from 'src/app/models/travel';
 import { TravelService } from 'src/app/services/travel/travel.service';
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-nearest-travels',
@@ -31,11 +32,7 @@ export class NearestTravelsComponent implements OnInit {
       next: (travels) => {
         this.nearestTravels = [...travels]
           .sort((a, b) => Math.abs(a.year - this.currentYear) - Math.abs(b.year - this.currentYear))
-          .slice(0, 5)
-          .map(travel => ({
-            ...travel,
-            img: this.processImagePath(travel.img)
-          }));
+          .slice(0, 5);
         this.loading = false;
       },
       error: (err) => {
@@ -46,17 +43,19 @@ export class NearestTravelsComponent implements OnInit {
     });
   }
 
-  private processImagePath(imgPath: string): string {
-    if (imgPath.startsWith('assets/')) {
-      return imgPath;
-    }
-    if (imgPath.startsWith('/assets/')) {
-      return imgPath.substring(1);
-    }
-    return `assets/img_countries/${imgPath}`;
-  }
-
   navigateToTravel(id: string) {
     this.router.navigate(['/travels', id]);
+  }
+
+  getImageUrl(path: string): string {
+    if (!path) return '';
+    if (path.startsWith('http')) {
+      return path;
+    }
+  
+    if (path.startsWith('/')) {
+      return `${environment.apiUrl}${path}`;
+    }
+    return `${environment.apiUrl}/uploads/${path}`;
   }
 }

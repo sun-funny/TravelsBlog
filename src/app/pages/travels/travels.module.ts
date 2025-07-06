@@ -25,6 +25,7 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { AsideTravelsComponent } from './aside-travels/aside-travels.component';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @NgModule({
   declarations: [
@@ -56,9 +57,10 @@ import { AsideTravelsComponent } from './aside-travels/aside-travels.component';
     DirectiveModule,
     InputSwitchModule,
     DialogModule,
-    FileUploadModule,
     InputTextareaModule,
-    MultiSelectModule
+    MultiSelectModule,
+    FileUploadModule,
+    ProgressSpinnerModule
   ],
   providers: [
     MessageService,

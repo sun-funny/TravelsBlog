@@ -18,7 +18,7 @@
       
       <div class="travel-cards" *ngIf="showAllCountries">
         <div *ngFor="let travel of filteredTravels" class="travel-card" (click)="openCountry(travel.id)">
-          <img [src]="travel.img" alt="{{travel.country}}" class="travel-image">
+          <img [src]="getImageUrl(travel.img)" alt="{{travel.country}}" class="travel-image">
           <div class="travel-info">
             <h3 class="travel-country">{{travel.country}}</h3>
             <h4 class="travel-city">{{travel.city}}</h4>

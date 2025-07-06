@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ITravel } from 'src/app/models/travel';
 import { TravelService } from 'src/app/services/travel/travel.service';
@@ -9,6 +9,7 @@ import { AddPointComponent } from '../../country/add-point/add-point.component';
 import { IPoint } from 'src/app/models/point';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { FileUpload } from 'primeng/fileupload';
 
 @Component({
   selector: 'app-add-travel',
@@ -21,7 +22,10 @@ export class AddTravelComponent implements OnInit {
   submitted = false;
   isEditMode = false;
   currentTravelId: string;
-  uploadedFile: any;
+  isLoading = false;
+
+  @ViewChild('flagUpload') flagUpload!: FileUpload;
+  @ViewChild('imageUpload') imageUpload!: FileUpload;
 
   constructor(
     private fb: FormBuilder,
@@ -60,19 +64,48 @@ export class AddTravelComponent implements OnInit {
     });
   }
 
-  async onUpload(event: any) {
+  async onFlagUpload(event: any) {
     if (event.files && event.files.length > 0) {
-      this.uploadedFile = event.files[0];
-      
+      this.isLoading = true;
       try {
         const formData = new FormData();
-        formData.append('image', this.uploadedFile);
+        formData.append('image', event.files[0]);
 
         const uploadResponse: any = await this.http.post(`${environment.apiUrl}/travels/upload`, formData).toPromise();
-        const imageUrl = uploadResponse.url;
-
+        
         this.travelForm.patchValue({
-          img: imageUrl
+          flag: uploadResponse.url
+        });
+
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Flag uploaded successfully'
+        });
+      } catch (error) {
+        console.error('Error uploading flag:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to upload flag'
+        });
+      } finally {
+        this.isLoading = false;
+      }
+    }
+  }
+
+  async onImageUpload(event: any) {
+    if (event.files && event.files.length > 0) {
+      this.isLoading = true;
+      try {
+        const formData = new FormData();
+        formData.append('image', event.files[0]);
+
+        const uploadResponse: any = await this.http.post(`${environment.apiUrl}/travels/upload`, formData).toPromise();
+        
+        this.travelForm.patchValue({
+          img: uploadResponse.url
         });
 
         this.messageService.add({
@@ -81,12 +114,14 @@ export class AddTravelComponent implements OnInit {
           detail: 'Image uploaded successfully'
         });
       } catch (error) {
-        console.error('Error uploading file:', error);
+        console.error('Error uploading image:', error);
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
           detail: 'Failed to upload image'
         });
+      } finally {
+        this.isLoading = false;
       }
     }
   }

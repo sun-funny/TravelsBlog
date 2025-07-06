@@ -99,7 +99,14 @@ export class CountryComponent implements OnInit {
   }
 
   getImageUrl(path: string): string {
-    if (path.startsWith('http')) return path;
-    return `${environment.apiUrl}/uploads/${path.replace('assets/uploads/', '')}`;
+  if (!path) return '';
+  if (path.startsWith('http')) {
+    return path;
   }
+
+  if (path.startsWith('/')) {
+    return `${environment.apiUrl}${path}`;
+  }
+  return `${environment.apiUrl}/uploads/${path}`;
+}
 }

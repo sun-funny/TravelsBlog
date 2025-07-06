@@ -11,7 +11,7 @@
   
   <div *ngIf="!loading && !error" class="nearest-travels-cards">
     <div *ngFor="let travel of nearestTravels" class="nearest-travel-card" (click)="navigateToTravel(travel.id)">
-      <img [src]="travel?.img" alt="{{travel?.country}}" class="travel-image">
+      <img [src]="getImageUrl(travel.img)" alt="{{travel?.country}}" class="travel-image">
       <div class="travel-info">
         <div class="travel-country">{{travel?.country}}</div>
         <div class="travel-city">{{travel?.city}}</div>
