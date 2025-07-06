@@ -99,7 +99,8 @@ export class CountryComponent implements OnInit {
   }
 
   getImageUrl(path: string): string {
-  if (!path) return '';
+
+    if (!path) return '';
   if (path.startsWith('http')) {
     return path;
   }
