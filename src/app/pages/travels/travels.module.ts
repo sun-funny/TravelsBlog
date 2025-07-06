@@ -33,8 +33,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     NearestTravelsComponent,
     AddTravelComponent,
     AddPointComponent,
-    AsideTravelsComponent 
-
+    AsideTravelsComponent
   ],
   imports: [
     CommonModule,

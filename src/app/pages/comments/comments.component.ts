@@ -14,6 +14,7 @@ import { ConfirmationService } from 'primeng/api';
 export class CommentsComponent implements OnInit {
   comments: Comment[] = [];
   newCommentText: string = '';
+  isAdmin = false;
 
   constructor(
     private commentsService: CommentsService,
@@ -24,6 +25,9 @@ export class CommentsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadComments();
+    this.authService.userBehavior$.subscribe(user => {
+      this.isAdmin = user?.login === 'admin';
+    });
   }
 
   loadComments(): void {

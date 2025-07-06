@@ -31,7 +31,7 @@
       <div class="flex justify-content-between align-items-center mb-2">
         <div class="flex align-items-center gap-2">
           <h3 class="m-0">{{comment.userName}}</h3>
-          <span *ngIf="authService.getUserId() === comment.userId" 
+          <span *ngIf="isAdmin" 
                 class="pi pi-trash text-red-500 cursor-pointer" 
                 (click)="confirmDeleteComment(comment._id)"
                 pTooltip="Удалить комментарий" tooltipPosition="top">
@@ -43,7 +43,7 @@
     </p-card>
   </div>
 
-  <div *ngIf="authService.user?.role === 'user' && comments.length" class="mt-4">
+  <div *ngIf="isAdmin && comments.length" class="mt-4">
     <button pButton 
             label="Удалить все комментарии" 
             icon="pi pi-trash" 

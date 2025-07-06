@@ -2,6 +2,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { ITravel } from 'src/app/models/travel';
 import { TravelService } from 'src/app/services/travel/travel.service';
 import { Subscription } from 'rxjs';
+import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
   selector: 'app-aside-travels',
@@ -13,9 +14,11 @@ export class AsideTravelsComponent {
   travels: ITravel[] = [];
   years: number[] = [];
   selectedYear: number | null = null;
+  isAdmin: boolean = false;
   private _destroyer: Subscription;
 
-  constructor(private travelService: TravelService) {}
+  constructor(private travelService: TravelService,
+              private authService: AuthService) {}
 
   ngOnInit(): void {
     this._destroyer = this.travelService.getTravel().subscribe({
@@ -27,6 +30,11 @@ export class AsideTravelsComponent {
         console.error('Error fetching travels:', err);
       }
     });
+
+    this.authService.userBehavior$.subscribe((user) => {
+      this.isAdmin = user?.login === 'admin';
+    });
+    
   }
 
   private extractUniqueYears(): void {

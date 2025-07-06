@@ -5,6 +5,7 @@ import { TravelService } from 'src/app/services/travel/travel.service';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
   selector: 'app-travels',
@@ -18,15 +19,21 @@ export class TravelsComponent implements OnInit, OnDestroy {
   showAside = false;
   buttonText = 'Показать все страны';
   isTravelsPage = true;
+  isAdmin = false;
   private _destroyer: Subscription;
 
   constructor(
     private travelService: TravelService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
     this.checkIfTravelsPage();
+    
+    this.authService.userBehavior$.subscribe(user => {
+      this.isAdmin = user?.login === 'admin';
+    });
     
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
