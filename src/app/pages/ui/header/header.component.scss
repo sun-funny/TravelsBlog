@@ -8,6 +8,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  color: white;
 }
 
 .user-name {
@@ -67,7 +68,7 @@
       transform: translateX(-50%);
       width: calc(100% - 20px);
       height: 2px;
-      background-color: #00b4ff;
+      background-color: white;
     }
   }
 
@@ -81,7 +82,7 @@
       transform: translateX(-50%);
       width: calc(100% - 20px);
       height: 2px;
-      background-color: #00b4ff;
+      background-color: white;
     }
   }
 
