@@ -35,10 +35,13 @@ body {
   display: flex;
   background-color: #87b8df;
   gap: var(--nav-gap);
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  padding: 0 10px;
+  padding: 0 5px;
+  height: var(--header-height);
   min-height: 5vh;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 footer {

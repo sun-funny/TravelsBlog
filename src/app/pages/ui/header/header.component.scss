@@ -39,24 +39,25 @@
   max-width: 100%;
   padding: 0 10px;
   box-sizing: border-box;
+  flex-wrap: nowrap;
 }
 
 .nav-link {
+  flex: 1 1 0;
+  min-width: 0;
+  text-align: center;
   padding: calc(var(--header-height) * 0.3) calc(var(--header-height) * 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   font-family: 'Dela Gothic One', Helvetica, sans-serif;
   font-weight: 400;
   color: white;
   font-size: var(--nav-link-font-size);
-  letter-spacing: 0;
   line-height: normal;
   transition: all 0.3s;
-  text-decoration: none;
   white-space: nowrap;
+  overflow: hidden;
   height: 100%;
   position: relative;
+  text-overflow: ellipsis;
 
   &:hover {
     background-color: transparent;
