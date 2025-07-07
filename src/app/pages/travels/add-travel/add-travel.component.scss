@@ -1,17 +1,20 @@
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 100px);
+  padding-bottom: 100px;
+  position: relative;
+}
+
 .p-card {
-  margin: 1rem;
-  margin-bottom: 100px;
+  margin: 1rem auto;
+  max-width: 1200px;
   min-height: calc(33vh - 100px);
 }
 
 :host {
   display: block;
-  min-height: calc(100vh - 100px);
   position: relative;
-}
-
-footer {
-  display: none !important;
 }
 
 .p-field {
@@ -30,16 +33,38 @@ textarea {
 }
 
 .button-group {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 1rem;
-  flex-wrap: wrap;
+  margin-top: 2rem;
+  width: 100%;
+  
+  .p-d-flex {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    
+    button {
+      flex: 1 1 auto;
+      min-width: 160px;
+      max-width: 200px;
+    }
+  }
 }
 
 @media (max-width: 768px) {
+  .p-card {
+    margin: 0.5rem;
+  }
+  
   .p-field {
     flex-direction: column;
     align-items: flex-start;
+  }
+  
+  .button-group .p-d-flex {
+    flex-direction: column;
+    
+    button {
+      width: 100%;
+      max-width: 100%;
+    }
   }
 }
