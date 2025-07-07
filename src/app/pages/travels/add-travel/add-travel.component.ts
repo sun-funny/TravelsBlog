@@ -127,11 +127,31 @@ export class AddTravelComponent implements OnInit {
   }
 
   loadTravelData(id: string) {
-    this.travelService.getTravel().subscribe(travels => {
-      const travel = travels.find(t => t.id === id);
+    console.log('travel', id);
+    this.travelService.getTravelById(id).subscribe(travel => {
       if (travel) {
-        this.travelForm.patchValue(travel);
+        this.travelForm.patchValue({
+          country: travel.country,
+          city: travel.city,
+          short_description: travel.short_description,
+          description: travel.description,
+          flag: travel.flag,
+          img: travel.img,
+          year: travel.year,
+          featured: travel.featured,
+        });
+
+        setTimeout(() => {
+          if (this.flagUpload) {
+            this.setUploadedFile(this.flagUpload, travel.flag);
+          }
+          if (this.imageUpload) {
+            this.setUploadedFile(this.imageUpload, travel.img);
+          }
+        }, 0);
       }
+    }, error => {
+      console.error('Error loading travel:', error);
     });
   }
 
@@ -216,4 +236,21 @@ export class AddTravelComponent implements OnInit {
       }
     });
   }
+
+  setUploadedFile(fileUpload: FileUpload, fileUrl: string) {
+    if (!fileUrl) return;
+  
+    const fullUrl = `${environment.apiUrl}${fileUrl}`;
+    const fileName = fileUrl.split('/').pop() || 'uploaded-file.jpg';
+  
+    const fakeFile: any = {
+      name: fileName,
+      objectURL: fullUrl,
+      size: 1234,
+      type: 'image/jpeg'
+    };
+  
+    fileUpload.files = [fakeFile];
+  }
+
 }

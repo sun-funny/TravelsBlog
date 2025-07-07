@@ -38,4 +38,13 @@ export class TravelRestService {
   deleteTravel(id: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
+
+  getTravelById(id: string): Observable<ITravel> {
+    return this.http.get<ITravel>(`${this.apiUrl}/${id}`).pipe(
+      catchError(error => {
+        console.error('Error fetching travel:', error);
+        return of(null);
+      })
+    );
+  }
 }

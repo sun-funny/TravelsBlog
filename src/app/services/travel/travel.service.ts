@@ -34,4 +34,8 @@ export class TravelService {
   updateTravelSubject(travel: ITravel) {
     this.travelSubject.next(travel);
   }
+
+  getTravelById(id: string): Observable<ITravel> {
+    return this.travelServiceRest.getTravelById(id);
+  }
 }

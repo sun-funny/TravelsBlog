@@ -1,4 +1,5 @@
 export interface ITravel {
+  _id?: string;
   id: string;
   country: string;
   city?: string;
