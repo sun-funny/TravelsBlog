@@ -10,6 +10,13 @@
 
   <div class="filter-section">
     
+    <div class="search-filter">
+      <input pInputText
+             type="text"
+             [(ngModel)]="searchQuery"
+             placeholder="Поиск по названию"
+             (input)="onSearchChange()" />
+    </div>
     <div class="year-filter">
       <p-dropdown [options]="years" 
                   [(ngModel)]="selectedYear" 

@@ -10,9 +10,10 @@
         </button>
       </div>
 
-      <app-aside-travels 
+    <app-aside-travels 
       *ngIf="showAside" 
-      (yearFilterChange)="filterByYear($event)"
+      (yearFilterChange)="selectedYear = $event; filterTravels()"
+      (nameFilterChange)="searchQuery = $event; filterTravels()"
       [class.hidden]="!showAside">
     </app-aside-travels>
       

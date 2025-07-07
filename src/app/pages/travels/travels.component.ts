@@ -20,6 +20,8 @@ export class TravelsComponent implements OnInit, OnDestroy {
   buttonText = 'Показать все страны';
   isTravelsPage = true;
   isAdmin = false;
+  selectedYear: number | null = null;
+  searchQuery: string = '';
   private _destroyer: Subscription;
 
   constructor(
@@ -46,13 +48,15 @@ export class TravelsComponent implements OnInit, OnDestroy {
     this.isTravelsPage = this.router.url.includes('/travels');
   }
 
-  filterByYear(year: number | null): void {
-    if (year === null) {
-      this.filteredTravels = [...this.travels];
-    } else {
-      this.filteredTravels = this.travels.filter(travel => travel.year === year);
-    }
+  filterTravels(): void {
+    this.filteredTravels = this.travels.filter(travel => {
+      const matchesYear = this.selectedYear ? travel.year === this.selectedYear : true;
+      const matchesName = this.searchQuery ? 
+        travel.country.toLowerCase().includes(this.searchQuery.toLowerCase()) : true;
+      return matchesYear && matchesName;
+    });
   }
+
 
   ngOnDestroy() {
     this._destroyer?.unsubscribe();

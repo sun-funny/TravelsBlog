@@ -11,10 +11,13 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 })
 export class AsideTravelsComponent {
   @Output() yearFilterChange = new EventEmitter<number | null>();
+  @Output() nameFilterChange = new EventEmitter<string>();
+
   travels: ITravel[] = [];
   years: number[] = [];
   selectedYear: number | null = null;
   isAdmin: boolean = false;
+  searchQuery: string = '';
   private _destroyer: Subscription;
 
   constructor(private travelService: TravelService,
@@ -47,10 +50,17 @@ export class AsideTravelsComponent {
 
   resetFilter(): void {
     this.selectedYear = null;
+    this.searchQuery = '';
     this.yearFilterChange.emit(null);
+    this.nameFilterChange.emit('');
   }
 
   ngOnDestroy(): void {
     this._destroyer?.unsubscribe();
   }
+
+  onSearchChange(): void {
+    this.nameFilterChange.emit(this.searchQuery);
+  }
+
 }
