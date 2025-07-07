@@ -58,40 +58,23 @@
   height: 100%;
   position: relative;
   text-overflow: ellipsis;
+  text-decoration: none;
 
   &:hover {
-    background-color: transparent;
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: calc(100% - 20px);
-      height: 2px;
-      background-color: white;
-    }
+    text-decoration: underline;
+    text-decoration-color: white;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
   }
 
   &.active {
-    background-color: transparent;
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: calc(100% - 20px);
-      height: 2px;
-      background-color: white;
-    }
+    text-decoration: underline;
+    text-decoration-color: white;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
   }
 
   @media (max-width: 480px) {
     padding: 8px 12px;
-    &:hover::after,
-    &.active::after {
-      width: calc(100% - 24px);
-    }
   }
 }
