@@ -36,10 +36,8 @@ export class TravelStorageService {
   }
 
   setStorage(data: ITravel[]): void {
-   // запись данных в this.travelStorage
   }
   getStorage(): ITravel[] {
-     // возвращает в this.travelStorage
     return []
   }
 }

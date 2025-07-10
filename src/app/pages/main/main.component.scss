@@ -304,6 +304,10 @@
     .hero-section {
       border-radius: 3rem;
     }
+
+    .main-title {
+      top: 8%;
+    }
   }
 
   @media (max-width: 768px) {
@@ -317,6 +321,10 @@
         min-width: 200px;
         min-height: 50px;
       }
+    }
+
+    .main-title {
+      top: 8%;
     }
 
     .content-background {

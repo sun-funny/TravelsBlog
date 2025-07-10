@@ -129,7 +129,7 @@ confirmDeleteComment(commentId: string): void {
         });
       },
       error: (err) => {
-        console.error('Error deleting comment:', err);
+        console.error('Ошибка удаления комментария:', err);
         this.messageService.add({
           severity: 'error',
           summary: 'Ошибка',
@@ -145,11 +145,11 @@ private deleteAllComments(): void {
         this.messageService.add({
           severity: 'success',
           summary: 'Успешно',
-          detail: response.message || 'Все комментарии удалены'
+          detail: 'Все комментарии удалены'
         });
       },
       error: (err) => {
-        console.error('Error deleting all comments:', err);
+        console.error('Ошибка удаления комментария:', err);
         this.messageService.add({
           severity: 'error',
           summary: 'Ошибка',

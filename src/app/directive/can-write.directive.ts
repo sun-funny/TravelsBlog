@@ -20,7 +20,6 @@ export class CanWriteDirective implements OnInit , OnDestroy {
   }
 
   ngOnInit() {
-    //first check url
     this.checkAccess(this.router.url);
     this.unsubscriber = this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((data) => {
       this.checkAccess((data as NavigationEnd).url);
@@ -45,7 +44,6 @@ export class CanWriteDirective implements OnInit , OnDestroy {
     if (this.pCalendar) {
       this.pCalendar.disabled = !canWrite;
     }
-     // must trigger update
      this._cdr.detectChanges();
   }
 

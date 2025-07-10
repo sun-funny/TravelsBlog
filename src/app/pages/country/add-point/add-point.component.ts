@@ -78,8 +78,6 @@ export class AddPointComponent implements OnInit {
             detail: 'Point added successfully'
           });
           this.pointAdded.emit(point);
-          //this.resetForm();
-          //this.ref.close(point); 
           this.isLoading = false;
           this.img = 1;
         },
@@ -127,7 +125,6 @@ export class AddPointComponent implements OnInit {
           });
           this.pointAdded.emit(point);
           this.resetForm();
-          //this.ref.close(point); 
           this.isLoading = false;
         },
         error: (err) => {

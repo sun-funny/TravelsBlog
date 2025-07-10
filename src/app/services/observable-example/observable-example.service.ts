@@ -26,7 +26,6 @@ export class ObservableExampleService {
       }, 3000)
     })
     observable.subscribe((data) => {
-      // console.log('observable data', data);
     })
   }
 

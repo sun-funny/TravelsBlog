@@ -28,7 +28,6 @@
     flex-shrink: 0;
   }
 
-  // Variants
   &-variant-default {
     background-color: var(--primary);
     color: var(--primary-foreground);
@@ -86,7 +85,6 @@
     }
   }
 
-  // Sizes
   &-size-default {
     height: 2.25rem;
     padding: 0.5rem 1rem;
