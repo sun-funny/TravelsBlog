@@ -223,7 +223,7 @@ export class AddTravelComponent implements OnInit {
       data: {
         countryId: this.currentTravelId
       },
-      header: 'Add New Point'
+      header: 'Добавить локацию'
     });
 
     ref.onClose.subscribe((point: IPoint) => {
