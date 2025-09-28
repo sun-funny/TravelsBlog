@@ -17,7 +17,7 @@ export class TravelRestService {
   getTravels(): Observable<ITravel[]> {
     return this.http.get<ITravel[]>(this.apiUrl).pipe(
       catchError(error => {
-        console.error('Error fetching travels:', error);
+        console.error('Error fetching travels from:', this.apiUrl, error);
         return of(TravelMock);
       })
     );

@@ -5,6 +5,7 @@ import {UserAccessService} from "../user-access/user-access.service";
 import {UserRules} from "../../shared/mock/rules";
 import {BehaviorSubject, Subject} from "rxjs";
 import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 export const LOCAL_STORAGE_NAME = 'currentUser';
 
@@ -60,7 +61,7 @@ export class AuthService {
   
     try {
       const response = await this.http.post<{access_token: string}>(
-        'http://localhost:3000/users/refresh',
+        `${environment.apiUrl}/users/refresh`,
         { refresh_token: storedUser.refresh_token }
       ).toPromise();
       

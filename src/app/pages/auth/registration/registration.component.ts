@@ -4,6 +4,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { IUser } from "../../../models/users";
 import { ServerError } from 'src/app/models/error';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-registration',
@@ -38,7 +39,7 @@ export class RegistrationComponent implements OnInit {
       id: ''
     };
 
-    this.http.post('http://localhost:3000/users/', userObj).subscribe(
+    this.http.post(`${environment.apiUrl}/users/`, userObj).subscribe(
   (data: Object) => {
     this.messageService.add({severity:'success', summary:'Регистрация прошла успешно'});
   },

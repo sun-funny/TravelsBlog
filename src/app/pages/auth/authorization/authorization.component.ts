@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { IUser } from "../../../models/users";
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-authorization',
@@ -33,7 +34,7 @@ export class AuthorizationComponent implements OnInit {
     };
     console.log('login', this.login);
     this.http.post<{access_token: string, refresh_token: string, id: string, role: string}>(
-      'http://localhost:3000/users/' + this.login,
+      `${environment.apiUrl}/users/${this.login}`,
       authUser
     ).subscribe(
       (data) => {
