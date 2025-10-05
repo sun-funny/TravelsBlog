@@ -15,9 +15,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 export class TravelsComponent implements OnInit, OnDestroy {
   travels: ITravel[] = [];
   filteredTravels: ITravel[] = [];
-  showAllCountries = false;
-  showAside = false;
-  buttonText = 'Показать все страны';
+  showAside = true;
   isTravelsPage = true;
   isAdmin = false;
   selectedYear: number | null = null;
@@ -42,10 +40,25 @@ export class TravelsComponent implements OnInit, OnDestroy {
     ).subscribe(() => {
       this.checkIfTravelsPage();
     });
+
+    // Автоматически загружаем данные при инициализации
+    this.loadTravels();
   }
 
   private checkIfTravelsPage(): void {
     this.isTravelsPage = this.router.url.includes('/travels');
+  }
+
+  private loadTravels(): void {
+    this._destroyer = this.travelService.getTravel().subscribe({
+      next: (travels) => {
+        this.travels = travels;
+        this.filteredTravels = [...travels];
+      },
+      error: (err) => {
+        console.error('Error fetching travels:', err);
+      }
+    });
   }
 
   filterTravels(): void {
@@ -57,27 +70,8 @@ export class TravelsComponent implements OnInit, OnDestroy {
     });
   }
 
-
   ngOnDestroy() {
     this._destroyer?.unsubscribe();
-  }
-
-  toggleCountries() {
-    this.showAllCountries = !this.showAllCountries;
-    this.showAside = this.showAllCountries;
-    this.buttonText = this.showAllCountries ? 'Скрыть страны' : 'Показать все страны';
-    
-    if (this.showAllCountries && this.travels.length === 0) {
-      this._destroyer = this.travelService.getTravel().subscribe({
-        next: (travels) => {
-          this.travels = travels;
-          this.filteredTravels = [...travels];
-        },
-        error: (err) => {
-          console.error('Error fetching travels:', err);
-        }
-      });
-    }
   }
 
   openCountry(travelId: string): void {
@@ -85,16 +79,13 @@ export class TravelsComponent implements OnInit, OnDestroy {
   }
 
   getImageUrl(path: string): string {
-
     if (!path) return '';
-  if (path.startsWith('http')) {
-    return path;
+    if (path.startsWith('http')) {
+      return path;
+    }
+    if (path.startsWith('/')) {
+      return `${environment.apiUrl}${path}`;
+    }
+    return `${environment.apiUrl}/uploads/${path}`;
   }
-
-  if (path.startsWith('/')) {
-    return `${environment.apiUrl}${path}`;
-  }
-  return `${environment.apiUrl}/uploads/${path}`;
-}
-
 }

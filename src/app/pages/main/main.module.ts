@@ -14,6 +14,7 @@ import { MessageService } from "primeng/api";
 import { SharedModule } from "../../shared/shared.module";
 import { UiModule } from '../ui/ui.module';
 import { DirectiveModule } from '../../directive/directive.module';
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,12 @@ import { DirectiveModule } from '../../directive/directive.module';
   ],
   imports: [
     CommonModule,
-    RouterModule.forChild([{ path: '', component: MainComponent }]),
+    RouterModule.forChild([
+      { 
+        path: '', 
+        component: MainComponent 
+      }
+    ]),
     MenubarModule,
     CardModule,
     ButtonModule,
@@ -33,12 +39,11 @@ import { DirectiveModule } from '../../directive/directive.module';
     SharedModule,
     ReactiveFormsModule,
     UiModule,
-    DirectiveModule
+    DirectiveModule,
+    LeafletModule
   ],
   providers: [
     MessageService
   ]
 })
-export class MainModule {
-  constructor() { }
-}
+export class MainModule {}

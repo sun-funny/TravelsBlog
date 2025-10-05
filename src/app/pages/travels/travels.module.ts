@@ -30,7 +30,6 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 @NgModule({
   declarations: [
     TravelsComponent,
-    NearestTravelsComponent,
     AddTravelComponent,
     AddPointComponent,
     AsideTravelsComponent

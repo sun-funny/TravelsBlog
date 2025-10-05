@@ -1,63 +1,41 @@
-<div class="main-content">
-  <div class="section-wrapper">
-    <div class="hero-section">
-      <div class="hero-image"></div>
-      <img class="main-title" alt="Time for travels" src="/assets/img_main/ToTravelText.svg" />
-      <img class="vector-element" alt="Vector" src="/assets/img_main/vector-1.svg" />
-      <div class="cta-container">
-        <app-button class="cta-button" (click)="navigateToTravels()">
-          <span class="button-text">К путешествиям!</span>
-        </app-button>
+<div class="main-container">
+  <!-- SVG заголовок -->
+  <div class="header-section">
+    <div class="title-wrapper">
+      <img class="main-title" alt="To Travel" src="/assets/img_main/text.svg" />
+    </div>
+  </div>
+
+  <!-- Приветственный текст -->
+  <div class="welcome-section">
+    <div class="welcome-text">
+      Привет! Мы обожаем путешествия и постоянно открываем для себя новые маршруты и места. Мы создали этот сайт, чтобы делиться своими впечатлениями и опытом. Выбирайте страну на карте или в разделе "Наши путешествия", чтобы узнать о ней больше.
+    </div>
+  </div>
+
+  <!-- Основной контент -->
+  <div class="content-section">
+    <!-- Карта -->
+    <div class="map-container">
+      <div class="map-wrapper">
+        <div leaflet 
+          [leafletOptions]="mapOptions"
+          (leafletMapReady)="onMapReady($event)"
+          class="world-map">
+        </div>
       </div>
     </div>
 
-    <div class="content-background">
-      <div class="content-container">
-        <div class="about-section">
-          <h1 class="about-title">
-            Кто мы такие?
-          </h1>
-          <div class="team-container">
-            <div *ngFor="let member of teamMembers; let i = index" class="team-member"
-                 [style.top]="member.position.top"
-                 [style.left]="member.position.left"
-                 [style.transform]="i === 1 ? 'translate(-100%, -50%)' : i === 2 ? 'translateY(-100%)' : 'translateY(0)'">
-              <div class="member-header" [class.direction-left]="member.direction === 'left'" 
-                                        [class.direction-right]="member.direction === 'right'">
-                <h2 class="greeting">{{ member.greeting }}</h2>
-                <img class="member-image" [src]="member.image" [alt]="member.name">
-              </div>
-              <p class="description">{{ member.description }}</p>
-            </div>
+    <!-- Команда -->
+    <div class="team-section">
+      <h2 class="team-title">Кто мы такие?</h2>
+      <div class="team-grid">
+        <div *ngFor="let member of teamMembers" class="team-card">
+          <div class="card-header">
+            <img class="member-photo" [src]="member.image" [alt]="member.name">
+            <h3 class="member-name">{{ member.name }}</h3>
           </div>
-        </div>
-        <div class="map-section">
-          <img
-            class="map-image"
-            alt="Pngtreedistance"
-            src="/assets/img_main/Pngtreedistance.png"
-          />
-          <div class="locations-container">
-            <div class="st-petersburg" 
-              [style.top]="imageHeight - 10 + 'px'" 
-              [style.left]="'10px'">
-              <div class="st-petersburg-text">
-                St - Petersburg
-              </div>
-            </div>
-            <div *ngFor="let travel of featuredTravels; let i = index"
-              class="location"
-              [style.top.%]="calculateTopPosition(i) / containerHeight * 100" 
-              [style.left.%]="calculateLeftPosition(i) / containerWidth * 100"
-            >
-              <span class="country" (click)="navigateToCountry(travel.id)">
-                {{travel.country}}
-              </span>
-              <span *ngIf="travel.city" class="city">
-                {{travel.city}}
-              </span>
-            </div>
-          </div>
+          <p class="member-description">{{ member.description }}</p>
         </div>
       </div>
     </div>
