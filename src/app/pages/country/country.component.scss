@@ -100,6 +100,13 @@
           line-height: 1.6;
           color: #333;
         }
+        p {
+          text-indent: 1.5em;
+          margin-bottom: 1em;
+          font-size: 20px;
+          line-height: 1.6;
+          color: #333;
+        }
       } 
 
       h3 {
@@ -183,6 +190,54 @@
         }
       }
     }
+  }
+}
+
+.add-point-button-container {
+  margin: 1rem 0;
+  text-align: center;
+  
+  .p-button-primary {
+    background-color: #114967;
+    border: none;
+    
+    &:hover {
+      background-color: rgba(17, 73, 103, 0.8);
+    }
+  }
+}
+
+.point-description {
+  font-size: 20px;
+  line-height: 1.6;
+  color: #333;
+  
+  p {
+    text-indent: 1.5em;
+    margin-bottom: 1em;
+  }
+  
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin: 1rem 0;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    color: #114967;
+    margin: 1.5rem 0 1rem 0;
+  }
+  
+  blockquote {
+    border-left: 4px solid #87ceeb;
+    padding-left: 1rem;
+    margin: 1rem 0;
+    font-style: italic;
+    color: rgba(17, 73, 103, 0.8);
+    background-color: rgba(135, 206, 235, 0.1);
+    padding: 1rem;
+    border-radius: 0 4px 4px 0;
   }
 }
 

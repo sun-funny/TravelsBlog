@@ -1,0 +1,75 @@
+<div class="add-point-form-container">
+  <h3>Добавить новую точку</h3>
+  
+  <form [formGroup]="pointForm" (ngSubmit)="onSubmit()" class="point-form">
+    <div class="form-group">
+      <label for="name">Название точки *</label>
+      <input 
+        id="name"
+        type="text" 
+        pInputText 
+        formControlName="name"
+        placeholder="Введите название точки"
+        class="w-full">
+      <small *ngIf="pointForm.get('name')?.invalid && pointForm.get('name')?.touched" 
+             class="p-error">
+        Название обязательно и должно содержать минимум 2 символа
+      </small>
+    </div>
+
+    <div class="form-group">
+      <label for="description">Описание *</label>
+      <angular-editor
+        id="description"
+        formControlName="description"
+        [config]="editorConfig"
+        placeholder="Введите подробное описание точки...">
+      </angular-editor>
+      <small *ngIf="pointForm.get('description')?.invalid && pointForm.get('description')?.touched" 
+             class="p-error">
+        Описание обязательно
+      </small>
+    </div>
+
+    <div class="form-group">
+      <label>Изображения</label>
+      <p-fileUpload 
+        name="image"
+        [url]="environment.apiUrl + '/points/upload'"
+        accept="image/*"
+        [maxFileSize]="10000000"
+        [multiple]="true"
+        chooseLabel="Выбрать"
+        uploadLabel="Загрузить"
+        cancelLabel="Отмена"
+        (onUpload)="onImageUpload($event)"
+        (onError)="onImageUploadError($event)">
+        <ng-template pTemplate="content">
+          <ul *ngIf="uploadedImages.length">
+            <li *ngFor="let image of uploadedImages">{{ image }}</li>
+          </ul>
+        </ng-template>
+      </p-fileUpload>
+      <small class="p-text-secondary">Максимальный размер файла: 10MB</small>
+    </div>
+
+    <div class="form-actions">
+      <button 
+        pButton 
+        type="button" 
+        label="Отмена" 
+        icon="pi pi-times"
+        class="p-button-secondary" 
+        (click)="onCancel()"
+        [disabled]="isSubmitting"></button>
+      
+      <button 
+        pButton 
+        type="submit" 
+        label="Добавить точку" 
+        icon="pi pi-plus"
+        class="p-button-primary"
+        [disabled]="pointForm.invalid || isSubmitting"></button>
+    </div>
+  </form>
+</div>

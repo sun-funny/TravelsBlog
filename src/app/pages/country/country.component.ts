@@ -22,6 +22,7 @@ export class CountryComponent implements OnInit {
   selectedImage: string | null = null;
   currentPoint: IPoint | null = null;
   showAddPointForm: boolean = false;
+  environment = environment;
 
   constructor(
     private route: ActivatedRoute,
@@ -74,8 +75,25 @@ export class CountryComponent implements OnInit {
   }
 
   onPointAdded(newPoint: IPoint): void {
-    this.points = [...this.points, newPoint];
+    this.pointRestService.addPoint(newPoint).subscribe({
+      next: (savedPoint) => {
+        this.points = [...this.points, savedPoint];
+        this.showAddPointForm = false;
+      },
+      error: (err) => {
+        console.error('Error adding point:', err);
+        this.points = [...this.points, newPoint];
+        this.showAddPointForm = false;
+      }
+    });
+  }
+
+  onAddPointCancelled(): void {
     this.showAddPointForm = false;
+  }
+
+  toggleAddPointForm(): void {
+    this.showAddPointForm = !this.showAddPointForm;
   }
 
   openImageModal(image: string, point?: IPoint): void {
@@ -91,23 +109,17 @@ export class CountryComponent implements OnInit {
 
   formatDescription(description: string): string {
     if (!description) return '';
-    return description.split('\n\n')
-      .map(para => para.trim())
-      .filter(para => para.length > 0)
-      .map(para => `<p class="indented-paragraph">${para}</p>`)
-      .join('');
+    return description;
   }
 
   getImageUrl(path: string): string {
-
     if (!path) return '';
-  if (path.startsWith('http')) {
-    return path;
+    if (path.startsWith('http')) {
+      return path;
+    }
+    if (path.startsWith('/')) {
+      return `${environment.apiUrl}${path}`;
+    }
+    return `${environment.apiUrl}/uploads/${path}`;
   }
-
-  if (path.startsWith('/')) {
-    return `${environment.apiUrl}${path}`;
-  }
-  return `${environment.apiUrl}/uploads/${path}`;
-}
 }

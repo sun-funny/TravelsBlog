@@ -27,4 +27,8 @@ export class PointRestService {
   deletePoint(id: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
+
+  addPoint(point: IPoint): Observable<IPoint> {
+    return this.http.post<IPoint>(`${environment.apiUrl}/points`, point);
+  }
 }

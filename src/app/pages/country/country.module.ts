@@ -15,11 +15,15 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { FileUploadModule } from 'primeng/fileupload';
 import { MessageService } from 'primeng/api';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { AngularEditorModule } from '@kolkov/angular-editor';
+import { HttpClientModule } from '@angular/common/http';
+import { AddPointFormComponent } from './add-point-form/add-point-form.component';
 
 @NgModule({
   declarations: [
     CountryComponent,
-    AsideComponent
+    AsideComponent,
+    AddPointFormComponent
   ],
   imports: [
     CommonModule,
@@ -35,7 +39,9 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     ToastModule,
     InputTextareaModule,
     FileUploadModule,
-    ProgressSpinnerModule
+    ProgressSpinnerModule,
+    AngularEditorModule,
+    HttpClientModule
   ],
    providers: [MessageService]
 })
