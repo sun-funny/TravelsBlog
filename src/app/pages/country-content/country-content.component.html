@@ -65,7 +65,7 @@
       
       <!-- Информация для админа в режиме просмотра -->
       <div *ngIf="isAdmin && !isEditMode && countryContent?.updatedAt" 
-           class="content-meta">
+        class="content-meta">
         <small>
           Последнее обновление: {{ countryContent.updatedAt | date:'dd.MM.yyyy HH:mm' }}
           <span *ngIf="countryContent.updatedBy"> пользователем {{ countryContent.updatedBy }}</span>
@@ -73,7 +73,7 @@
       </div>
 
       <!-- Редактор Quill -->
-      <div class="quill-container glass-card" [class.editing]="isEditMode">
+      <div class="quill-container glass-card" [class.editing]="isEditMode && isAdmin">
         <div #editor class="quill-editor"></div>
       </div>
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, NgZone, Renderer2 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { TravelService } from 'src/app/services/travel/travel.service';
@@ -33,6 +33,7 @@ export class CountryContentComponent implements OnInit, OnDestroy {
   isSaving = false;
   
   private quill: Quill;
+  private quillInstance: any; // Для хранения экземпляра Quill
   private subscriptions: Subscription[] = [];
   private pendingImages: PendingImage[] = [];
   
@@ -43,23 +44,26 @@ export class CountryContentComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private contentService: CountryContentService,
     private messageService: MessageService,
-    private zone: NgZone
+    private zone: NgZone,
+    private renderer: Renderer2
   ) {}
 
   ngOnInit(): void {
     this.countryId = this.route.snapshot.paramMap.get('id');
     
-    // Проверяем права пользователя
+    // Проверить права пользователя
     this.subscriptions.push(
       this.authService.userBehavior$.subscribe(user => {
         this.isAdmin = user?.login === 'admin';
+        if (!this.isAdmin) {
+          this.isEditMode = false;
+        }
       })
     );
-
-    // Загружаем данные страны
+    // Загрузить данные страны
     this.loadCountryData();
     
-    // Загружаем контент
+    // Загрузить контент
     this.loadCountryContent();
   }
 
@@ -85,92 +89,159 @@ export class CountryContentComponent implements OnInit, OnDestroy {
   }
 
   private loadCountryContent(): void {
-  this.subscriptions.push(
-    this.contentService.getContent(this.countryId).subscribe({
-      next: (content) => {
-        this.countryContent = content;
-        setTimeout(() => this.initializeQuill(), 0);
-      },
-      error: (error) => {
-        // Если контента нет, создаем пустой
-        this.countryContent = {
-          countryId: this.countryId,
-          content: ''
-        };
-        setTimeout(() => this.initializeQuill(), 0);
-      }
-    })
-  );
-}
-
-  private initializeQuill(): void {
-  if (this.editorRef && this.editorRef.nativeElement) {
-    // Определяем опции тулбара
-    const toolbarOptions: any[] = [
-      ['bold', 'italic', 'underline', 'strike'],
-      ['blockquote', 'code-block'],
-      [{ 'header': 1 }, { 'header': 2 }],
-      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-      [{ 'script': 'sub'}, { 'script': 'super' }],
-      [{ 'indent': '-1'}, { 'indent': '+1' }],
-      [{ 'direction': 'rtl' }],
-      [{ 'size': ['small', false, 'large', 'huge'] }],
-      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-      [{ 'color': [] }, { 'background': [] }],
-      [{ 'font': [] }],
-      [{ 'align': [] }],
-      ['clean'],
-      ['link', 'image', 'video']
-    ];
-
-    // Инициализируем Quill ВНЕ angular zone
-    this.zone.runOutsideAngular(() => {
-        this.quill = new Quill(this.editorRef.nativeElement, {
-          theme: 'snow',
-          modules: {
-            toolbar: {
-              container: toolbarOptions,
-              handlers: {
-                image: () => {
-                  this.zone.run(() => {
-                    this.handleImageUpload();
-                  });
-                }
-              }
-            },
-            // Добавьте эту опцию для временных ссылок
-            clipboard: {
-              matchers: [
-                ['IMG', this.imageMatcher.bind(this)]
-              ]
-            }
-          }
-        });
-      });
-
-      
-    // Устанавливаем начальное содержимое
-    if (this.countryContent?.content) {
-      // Используем setTimeout для избежания конфликтов с циклом изменений
-      setTimeout(() => {
-        if (this.quill) {
-          this.quill.root.innerHTML = this.countryContent.content;
+    this.subscriptions.push(
+      this.contentService.getContent(this.countryId).subscribe({
+        next: (content) => {
+          this.countryContent = content;
+          // Инициализируем Quill только после загрузки контента
+          setTimeout(() => this.initializeQuill(), 100);
+        },
+        error: (error) => {
+          // Если контента нет, создаем пустой
+          this.countryContent = {
+            countryId: this.countryId,
+            content: ''
+          };
+          setTimeout(() => this.initializeQuill(), 100);
         }
-      }, 0);
-    }
+      })
+    );
+  }
 
-    // Отключаем редактор если не админ
-    if (!this.isAdmin && this.quill) {
-      this.quill.disable();
+  // Метод для полного уничтожения Quill
+  private destroyQuill(): void {
+    if (this.quillInstance) {
+      try {
+        // Сохраняем контент перед уничтожением
+        if (this.quillInstance.root) {
+          const content = this.quillInstance.root.innerHTML;
+          // Сохраняем контент в переменную компонента
+          if (this.countryContent) {
+            this.countryContent.content = content;
+          }
+        }
+        
+        // Отключаем все обработчики событий
+        if (this.quillInstance.events) {
+          this.quillInstance.events = {};
+        }
+        
+        // Удаляем экземпляр Quill
+        this.quillInstance = null;
+        
+        // Очищаем DOM элемент
+        if (this.editorRef && this.editorRef.nativeElement) {
+          this.editorRef.nativeElement.innerHTML = '';
+          const container = this.editorRef.nativeElement.parentElement;
+          if (container) {
+            // Удаляем все дочерние элементы кроме нашего контейнера
+            while (container.firstChild) {
+              container.removeChild(container.firstChild);
+            }
+            // Создаем новый чистый div для редактора
+            const newEditorDiv = this.renderer.createElement('div');
+            this.renderer.addClass(newEditorDiv, 'quill-editor');
+            this.renderer.appendChild(container, newEditorDiv);
+            
+            // Обновляем ссылку на элемент
+            this.editorRef.nativeElement = newEditorDiv;
+          }
+        }
+      } catch (error) {
+        console.error('Error destroying Quill:', error);
+      }
     }
   }
-}
 
-private imageMatcher(node: any, delta: any): any {
+  // Инициализация Quill с правильными опциями
+  private initializeQuill(): void {
+    // Уничтожаем предыдущий экземпляр Quill
+    this.destroyQuill();
+    
+    if (!this.editorRef || !this.editorRef.nativeElement) {
+      console.error('Editor element not found');
+      return;
+    }
+    
+    // Определяем модули в зависимости от режима
+    const modules: any = {
+      clipboard: {
+        matchers: [
+          ['IMG', this.imageMatcher.bind(this)]
+        ]
+      },
+      keyboard: {
+        bindings: Quill.import('modules/keyboard').bindings
+      }
+    };
+    
+    // Добавляем тулбар только в режиме редактирования для админа
+    if (this.isEditMode && this.isAdmin) {
+      modules.toolbar = {
+        container: [
+          ['bold', 'italic', 'underline', 'strike'],
+          ['blockquote', 'code-block'],
+          [{ 'header': 1 }, { 'header': 2 }],
+          [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+          [{ 'script': 'sub'}, { 'script': 'super' }],
+          [{ 'indent': '-1'}, { 'indent': '+1' }],
+          [{ 'direction': 'rtl' }],
+          [{ 'size': ['small', false, 'large', 'huge'] }],
+          [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+          [{ 'color': [] }, { 'background': [] }],
+          [{ 'font': [] }],
+          [{ 'align': [] }],
+          ['clean'],
+          ['link', 'image', 'video']
+        ],
+        handlers: {
+          image: () => {
+            this.zone.run(() => {
+              this.handleImageUpload();
+            });
+          }
+        }
+      };
+    }
+    
+    // Инициализируем Quill
+    this.zone.runOutsideAngular(() => {
+      try {
+        this.quillInstance = new Quill(this.editorRef.nativeElement, {
+          theme: 'snow',
+          modules: modules,
+          readOnly: !(this.isEditMode && this.isAdmin),
+          placeholder: this.isEditMode ? 'Начните вводить текст...' : ''
+        });
+        
+        // Устанавливаем контент
+        if (this.countryContent?.content) {
+          setTimeout(() => {
+            if (this.quillInstance && this.quillInstance.root) {
+              this.quillInstance.root.innerHTML = this.countryContent.content;
+            }
+          }, 0);
+        }
+        
+        // Принудительно скрываем тулбар в режиме просмотра
+        if (!(this.isEditMode && this.isAdmin)) {
+          setTimeout(() => {
+            const toolbar = this.editorRef.nativeElement.querySelector('.ql-toolbar');
+            if (toolbar) {
+              toolbar.style.display = 'none';
+            }
+          }, 50);
+        }
+      } catch (error) {
+        console.error('Error initializing Quill:', error);
+      }
+    });
+  }
+
+  private imageMatcher(node: any, delta: any): any {
     if (node.tagName === 'IMG') {
       const src = node.getAttribute('src');
       if (src.startsWith('blob:')) {
-        // Это временное изображение, оставляем как есть
         return delta.compose({
           retain: delta.length(),
           insert: { image: src }
@@ -180,255 +251,113 @@ private imageMatcher(node: any, delta: any): any {
     return delta;
   }
 
-private async handleImageUpload(): Promise<void> {
-  return new Promise((resolve) => {
-    const input = document.createElement('input');
-    input.setAttribute('type', 'file');
-    input.setAttribute('accept', 'image/*');
-    input.style.display = 'none';
+  private async handleImageUpload(): Promise<void> {
+    if (!this.quillInstance) return;
     
-    input.addEventListener('change', async () => {
-      if (input.files && input.files[0]) {
-        const file = input.files[0];
-        
-        // Валидация
-        if (!this.validateImageFile(file)) {
-          resolve();
-          return;
-        }
-        
-        // Вставляем placeholder
-        const range = this.quill.getSelection();
-        if (!range) {
-          resolve();
-          return;
-        }
-        
-        // Вставляем placeholder (пустое изображение с loader)
-        const placeholderId = `img-${Date.now()}`;
-        const placeholderSrc = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIGZpbGw9IiNGMEYwRjAiLz48cGF0aCBkPSJNMzAgMjBDMjYuMTQgMjAgMjMgMjMuMTQgMjMgMjdDMjMgMzAuODYgMjYuMTQgMzQgMzAgMzRDMzMuODYgMzQgMzcgMzAuODYgMzcgMjdDMzcgMjMuMTQgMzMuODYgMjAgMzAgMjBaTTMwIDM3QzI0LjQ4IDM3IDIwIDMyLjUyIDIwIDI3QzIwIDIxLjQ4IDI0LjQ4IDE3IDMwIDE3QzM1LjUyIDE3IDQwIDIxLjQ4IDQwIDI3QzQwIDMyLjUyIDM1LjUyIDM3IDMwIDM3Wk0xMi41IDQ1QzExLjEyIDQ1IDEwIDQzLjg4IDEwIDQyLjVWMTAuNUMxMCA5LjEyIDExLjEyIDggMTIuNSA4SDQ3LjVDNDguODggOCA1MCA5LjEyIDUwIDEwLjVWNDIuNUM1MCA0My44OCA0OC44OCA0NSA0Ny41IDQ1SDEyLjVaTTEyLjUgNDIuNUg0Ny41VjEwLjVIMTIuNVY0Mi41WiIgZmlsbD0iI0JCQiIvPjwvc3ZnPg==';
-        
-        this.quill.insertEmbed(range.index, 'image', placeholderSrc);
-        this.quill.setSelection(range.index + 1, 0);
-        
-        try {
-          // Загружаем изображение
-          const formData = new FormData();
-          formData.append('image', file);
-          
-          const response = await this.contentService.uploadImage(formData).toPromise();
-          
-          // Получаем полный URL
-          const fullImageUrl = this.getImageUrl(response.url);
-          
-          // Заменяем placeholder на реальное изображение
-          const content = this.quill.root.innerHTML;
-          const updatedContent = content.replace(
-            placeholderSrc, 
-            fullImageUrl
-          );
-          this.quill.root.innerHTML = updatedContent;
-          
-        } catch (error) {
-          console.error('Ошибка загрузки изображения:', error);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Ошибка',
-            detail: 'Не удалось загрузить изображение'
-          });
-          
-          // Удаляем placeholder при ошибке
-          const content = this.quill.root.innerHTML;
-          const updatedContent = content.replace(
-            `<img src="${placeholderSrc}">`, 
-            ''
-          );
-          this.quill.root.innerHTML = updatedContent;
-        }
-      }
+    return new Promise((resolve) => {
+      const input = document.createElement('input');
+      input.setAttribute('type', 'file');
+      input.setAttribute('accept', 'image/*');
+      input.style.display = 'none';
       
-      document.body.removeChild(input);
-      resolve();
-    });
-    
-    document.body.appendChild(input);
-    input.click();
-  });
-}
-
-private validateImageFile(file: File): boolean {
-  // Валидация размера
-  if (file.size > 10 * 1024 * 1024) {
-    this.messageService.add({
-      severity: 'error',
-      summary: 'Ошибка',
-      detail: 'Размер файла не должен превышать 10MB'
-    });
-    return false;
-  }
-  
-  // Валидация типа
-  const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-  if (!allowedTypes.includes(file.type)) {
-    this.messageService.add({
-      severity: 'error',
-      summary: 'Ошибка',
-      detail: 'Допустимые форматы: JPEG, PNG, GIF, WebP'
-    });
-    return false;
-  }
-  
-  return true;
-}
-
-
-saveContent(): void {
-  if (!this.isAdmin || !this.quill) return;
-
-  this.isSaving = true;
-  
-  // Получаем очищенный контент
-  const content = this.quill.root.innerHTML;
-  
-  // Убедимся, что в контенте нет blob изображений
-  if (content.includes('blob:')) {
-    this.messageService.add({
-      severity: 'warn',
-      summary: 'Внимание',
-      detail: 'Пожалуйста, дождитесь загрузки всех изображений'
-    });
-    this.isSaving = false;
-    return;
-  }
-
-  const user = this.authService.getCurrentUser();
-  const countryContent: ICountryContent = {
-    _id: this.countryContent?._id,
-    countryId: this.countryId,
-    content: content,
-    updatedAt: new Date(),
-    updatedBy: user?.login || 'admin'
-  };
-
-  this.contentService.saveContent(countryContent).subscribe({
-    next: (savedContent) => {
-      this.countryContent = savedContent;
-      this.isEditMode = false;
-      this.isSaving = false;
-      
-      // Освобождаем все временные URLs
-      this.pendingImages.forEach(img => {
-        URL.revokeObjectURL(img.url);
+      input.addEventListener('change', async () => {
+        if (input.files && input.files[0]) {
+          const file = input.files[0];
+          
+          if (!this.validateImageFile(file)) {
+            resolve();
+            return;
+          }
+          
+          const range = this.quillInstance.getSelection();
+          if (!range) {
+            resolve();
+            return;
+          }
+          
+          const placeholderId = `img-${Date.now()}`;
+          const placeholderSrc = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIGZpbGw9IiNGMEYwRjAiLz48cGF0aCBkPSJNMzAgMjBDMjYuMTQgMjAgMjMgMjMuMTQgMjMgMjdDMjMgMzAuODYgMjYuMTQgMzQgMzAgMzRDMzMuODYgMzQgMzcgMzAuODYgMzcgMjdDMzcgMjMuMTQgMzMuODYgMjAgMzAgMjBaTTMwIDM3QzI0LjQ4IDM3IDIwIDMyLjUyIDIwIDI3QzIwIDIxLjQ4IDI0LjQ4IDE3IDMwIDE3QzM1LjUyIDE3IDQwIDIxLjQ4IDQwIDI3QzQwIDMyLjUyIDM1LjUyIDM3IDMwIDM3Wk0xMi41IDQ1QzExLjEyIDQ1IDEwIDQzLjg4IDEwIDQyLjVWMTAuNUMxMCA5LjEyIDExLjEyIDggMTIuNSA4SDQ3LjVDNDguODggOCA1MCA5LjEyIDUwIDEwLjVWNDIuNUM1MCA0My44OCA0OC44OCA0NSA0Ny41IDQ1SDEyLjVaTTEyLjUgNDIuNUg0Ny41VjEwLjVIMTIuNVY0Mi41WiIgZmlsbD0iI0JCQiIvPjwvc3ZnPg==';
+          
+          this.quillInstance.insertEmbed(range.index, 'image', placeholderSrc);
+          this.quillInstance.setSelection(range.index + 1, 0);
+          
+          try {
+            const formData = new FormData();
+            formData.append('image', file);
+            
+            const response = await this.contentService.uploadImage(formData).toPromise();
+            const fullImageUrl = this.getImageUrl(response.url);
+            
+            const content = this.quillInstance.root.innerHTML;
+            const updatedContent = content.replace(placeholderSrc, fullImageUrl);
+            this.quillInstance.root.innerHTML = updatedContent;
+            
+          } catch (error) {
+            console.error('Ошибка загрузки изображения:', error);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Ошибка',
+              detail: 'Не удалось загрузить изображение'
+            });
+            
+            const content = this.quillInstance.root.innerHTML;
+            const updatedContent = content.replace(
+              `<img src="${placeholderSrc}">`, 
+              ''
+            );
+            this.quillInstance.root.innerHTML = updatedContent;
+          }
+        }
+        
+        document.body.removeChild(input);
+        resolve();
       });
-      this.pendingImages = [];
       
-      if (this.quill) {
-        this.quill.disable();
-      }
-      
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Успех',
-        detail: 'Контент сохранен'
-      });
-    },
-    error: (error) => {
-      console.error('Error saving content:', error);
-      this.isSaving = false;
+      document.body.appendChild(input);
+      input.click();
+    });
+  }
+
+  private validateImageFile(file: File): boolean {
+    if (file.size > 10 * 1024 * 1024) {
       this.messageService.add({
         severity: 'error',
         summary: 'Ошибка',
-        detail: error.message || 'Не удалось сохранить контент'
+        detail: 'Размер файла не должен превышать 10MB'
       });
-    }
-  });
-}
-
-private extractTempImageUrls(content: string): string[] {
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(content, 'text/html');
-  const images = doc.querySelectorAll('img');
-  const tempUrls: string[] = [];
-  
-  images.forEach(img => {
-    const src = img.getAttribute('src');
-    if (src && src.startsWith('blob:')) {
-      tempUrls.push(src);
-    }
-  });
-  
-  return tempUrls;
-}
-
-private async uploadAndReplaceImages(tempUrls: string[]): Promise<void> {
-  const uploadPromises = tempUrls.map(async (tempUrl) => {
-    // Находим файл по временному URL
-    const pendingImage = this.pendingImages.find(img => img.url === tempUrl);
-    
-    if (!pendingImage) {
-      console.warn('No pending image found for URL:', tempUrl);
-      return null;
+      return false;
     }
     
-    const formData = new FormData();
-    formData.append('image', pendingImage.file);
-    
-    try {
-      const response = await this.contentService.uploadImage(formData).toPromise();
-      const finalUrl = `${environment.apiUrl}${response.url}`;
-      
-      // Заменяем временную ссылку на постоянную
-      const content = this.quill.root.innerHTML;
-      const updatedContent = content.replace(tempUrl, finalUrl);
-      this.quill.root.innerHTML = updatedContent;
-      
-      // Освобождаем временную URL
-      URL.revokeObjectURL(tempUrl);
-      
-      // Удаляем из pendingImages
-      this.pendingImages = this.pendingImages.filter(img => img.url !== tempUrl);
-      
-      return finalUrl;
-    } catch (error) {
-      console.error('Failed to upload image:', error);
-      return null;
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Ошибка',
+        detail: 'Допустимые форматы: JPEG, PNG, GIF, WebP'
+      });
+      return false;
     }
-  });
-  
-  await Promise.all(uploadPromises);
-}
-
-  private async uploadPendingImages(): Promise<void> {
-    const uploadPromises = this.pendingImages.map(async (pendingImage) => {
-      const formData = new FormData();
-      formData.append('image', pendingImage.file);
-      
-      try {
-        const response = await this.contentService.uploadImage(formData).toPromise();
-        const finalUrl = `${environment.apiUrl}${response.url}`;
-        
-        // Заменяем временную ссылку на постоянную в редакторе
-        const content = this.quill.root.innerHTML;
-        const updatedContent = content.replace(pendingImage.url, finalUrl);
-        this.quill.root.innerHTML = updatedContent;
-        
-        // Освобождаем временную URL
-        URL.revokeObjectURL(pendingImage.url);
-        
-        return { success: true };
-      } catch (error) {
-        console.error('Failed to upload image:', error);
-        return { success: false, error };
-      }
-    });
     
-    await Promise.all(uploadPromises);
-    this.pendingImages = []; // Очищаем массив временных изображений
+    return true;
   }
 
-  private saveFinalContent(): void {
-    const content = this.quill.root.innerHTML;
+  saveContent(): void {
+    if (!this.isAdmin || !this.quillInstance) return;
+
+    this.isSaving = true;
     
+    const content = this.quillInstance.root.innerHTML;
+    
+    if (content.includes('blob:')) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Внимание',
+        detail: 'Пожалуйста, дождитесь загрузки всех изображений'
+      });
+      this.isSaving = false;
+      return;
+    }
+
     const user = this.authService.getCurrentUser();
     const countryContent: ICountryContent = {
       _id: this.countryContent?._id,
@@ -438,72 +367,49 @@ private async uploadAndReplaceImages(tempUrls: string[]): Promise<void> {
       updatedBy: user?.login || 'admin'
     };
 
-    this.subscriptions.push(
-      this.contentService.saveContent(countryContent).subscribe({
-        next: (savedContent) => {
-          this.countryContent = savedContent;
-          this.isEditMode = false;
-          this.quill.disable();
-          this.isSaving = false;
-          
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Успех',
-            detail: 'Контент сохранен'
-          });
-        },
-        error: (error) => {
-          console.error('Error saving content:', error);
-          this.isSaving = false;
-          
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Ошибка',
-            detail: error.message || 'Не удалось сохранить контент'
-          });
-        }
-      })
-    );
-  }
-private logContentImages(): void {
-  if (this.quill) {
-    const content = this.quill.root.innerHTML;
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(content, 'text/html');
-    const images = doc.querySelectorAll('img');
-    
-    console.log('Found images in content:', images.length);
-    images.forEach((img, index) => {
-      console.log(`Image ${index + 1}:`, img.getAttribute('src'));
+    this.contentService.saveContent(countryContent).subscribe({
+      next: (savedContent) => {
+        this.countryContent = savedContent;
+        this.isEditMode = false;
+        this.isSaving = false;
+        
+        // Освобождаем все временные URLs
+        this.pendingImages.forEach(img => {
+          URL.revokeObjectURL(img.url);
+        });
+        this.pendingImages = [];
+        
+        // Переинициализируем Quill в режиме просмотра
+        setTimeout(() => {
+          this.initializeQuill();
+        }, 100);
+        
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Успех',
+          detail: 'Контент сохранен'
+        });
+      },
+      error: (error) => {
+        console.error('Error saving content:', error);
+        this.isSaving = false;
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Ошибка',
+          detail: error.message || 'Не удалось сохранить контент'
+        });
+      }
     });
   }
-}
+
   toggleEditMode(): void {
     if (this.isAdmin) {
       this.isEditMode = !this.isEditMode;
-      if (this.isEditMode && this.quill) {
-        this.quill.enable();
-      } else if (this.quill) {
-        this.quill.disable();
-      }
-    }
-  }
-
-  // Отмена изменений
-   cancelEdit(): void {
-    this.isEditMode = false;
-    
-    // Освобождаем все временные URLs
-    this.pendingImages.forEach(img => {
-      URL.revokeObjectURL(img.url);
-    });
-    this.pendingImages = [];
-    
-    if (this.quill) {
-      if (this.countryContent?.content) {
-        this.quill.root.innerHTML = this.countryContent.content;
-      }
-      this.quill.disable();
+      
+      // Переинициализируем Quill с новыми параметрами
+      setTimeout(() => {
+        this.initializeQuill();
+      }, 100);
     }
   }
 
@@ -512,40 +418,37 @@ private logContentImages(): void {
   }
 
   ngOnDestroy(): void {
-    // Освобождаем временные URLs при уничтожении компонента
+    // Уничтожаем Quill при уничтожении компонента
+    this.destroyQuill();
+    
+    // Освобождаем временные URLs
     this.pendingImages.forEach(img => {
       URL.revokeObjectURL(img.url);
     });
+    
+    // Отписываемся от всех подписок
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   getImageUrl(path: string): string {
-  if (!path) return '';
-  
-  // Проверяем различные форматы URL
-  if (path.startsWith('http') || path.startsWith('//')) {
-    return path;
-  }
-  
-  if (path.startsWith('blob:')) {
-    return path; // Это временное изображение
-  }
-  
-  if (path.startsWith('/uploads/')) {
-    // Сервер возвращает относительный путь /uploads/filename.jpg
+    if (!path) return '';
+    
+    if (path.startsWith('http') || path.startsWith('//') || path.startsWith('blob:')) {
+      return path;
+    }
+    
+    if (path.startsWith('/uploads/')) {
+      return `${environment.apiUrl}${path}`;
+    }
+    
+    if (path.startsWith('uploads/')) {
+      return `${environment.apiUrl}/${path}`;
+    }
+    
+    if (!path.includes('/') && path.includes('.')) {
+      return `${environment.apiUrl}/uploads/${path}`;
+    }
+    
     return `${environment.apiUrl}${path}`;
   }
-  
-  if (path.startsWith('uploads/')) {
-    // Без ведущего слеша
-    return `${environment.apiUrl}/${path}`;
-  }
-  
-  if (!path.includes('/') && path.includes('.')) {
-    // Просто имя файла
-    return `${environment.apiUrl}/uploads/${path}`;
-  }
-  
-  return `${environment.apiUrl}${path}`;
-}
 }

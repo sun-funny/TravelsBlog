@@ -12,7 +12,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(10, 31, 45, 0.85); // Темно-синий фон с прозрачностью
+    background: rgba(10, 31, 45, 0.85);
     z-index: 1;
   }
   
@@ -97,7 +97,7 @@
     
     h1 {
       margin: 0;
-      font-size: 2.5rem;
+      font-size: 5rem;
       font-weight: 700;
       color: #ffffff;
       text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
@@ -118,7 +118,7 @@
       padding: 0.25rem 1rem;
       border-radius: 20px;
       margin-top: 0.5rem;
-      font-size: 0.9rem;
+      font-size: 1.5rem;
       border: 1px solid rgba(135, 206, 235, 0.3);
     }
   }
@@ -448,20 +448,41 @@
 
 // Стили для Quill редактора
 ::ng-deep {
-  .p-button-spinner {
-    width: 1rem;
-    height: 1rem;
-  }
-  
+  // Скрываем панель инструментов по умолчанию
   .ql-toolbar {
+    display: none !important;
     border: none !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
     background: rgba(255, 255, 255, 0.05) !important;
     border-radius: 8px 8px 0 0;
     backdrop-filter: blur(10px);
     
+    &.ql-toolbar-visible {
+      display: block !important;
+    }
+  }
+  
+  .ql-container {
+    border: none !important;
+    border-top: 1px solid transparent !important;
+    
+    &.ql-disabled {
+      .ql-editor {
+        cursor: default !important;
+        user-select: text !important;
+      }
+    }
+  }
+  
+  // Стили для видимой панели инструментов
+  .ql-toolbar-visible {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    padding: 8px !important;
+    
     .ql-formats {
-      margin-right: 0.5rem !important;
+      margin-right: 8px !important;
+      margin-bottom: 4px !important;
     }
     
     button {
@@ -470,6 +491,9 @@
       border-radius: 4px;
       width: 28px;
       height: 28px;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
       
       &:hover {
         color: #87ceeb !important;
@@ -487,6 +511,7 @@
       
       .ql-picker-label {
         color: #e0f0ff !important;
+        padding: 2px 8px !important;
       }
       
       .ql-picker-options {
@@ -505,48 +530,64 @@
     }
   }
   
-  .ql-container {
-    border: none !important;
+  // Стили для контейнера редактора в режиме просмотра
+  .quill-container:not(.editing) {
+    .ql-container {
+      border-top: none !important;
+    }
+    
+    // Убедитесь, что нет случайных отступов для тулбара
+    .ql-toolbar {
+      display: none !important;
+      height: 0 !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      overflow: hidden !important;
+    }
   }
   
-  .ql-tooltip {
-    background: rgba(17, 73, 103, 0.95) !important;
-    border: 1px solid rgba(135, 206, 235, 0.3) !important;
-    color: #e0f0ff !important;
-    backdrop-filter: blur(10px);
+  // Стили для контейнера редактора в режиме редактирования
+  .quill-container.editing {
+    .ql-toolbar {
+      display: flex !important;
+    }
     
-    input[type="text"] {
-      background: rgba(255, 255, 255, 0.1) !important;
-      border: 1px solid rgba(135, 206, 235, 0.3) !important;
-      color: #e0f0ff !important;
+    .ql-container {
+      border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
     }
   }
 }
 
-::ng-deep {
-  .ql-container {
-    position: relative !important;
-    z-index: 1 !important;
+// Обновите стили для самой карточки редактора
+.rich-content-section {
+  .glass-card {
+    &.editing {
+      .ql-toolbar {
+        display: flex !important;
+        animation: fadeIn 0.3s ease;
+      }
+    }
     
-    &.ql-disabled {
-      .ql-editor {
-        cursor: default !important;
+    &:not(.editing) {
+      .ql-toolbar {
+        display: none !important;
+      }
+      
+      .ql-container {
+        min-height: 100px !important;
       }
     }
   }
-  
-  .ql-toolbar {
-    position: relative !important;
-    z-index: 2 !important;
-    
-    button.ql-image {
-      position: relative;
-      z-index: 10;
-      
-      &::after {
-        display: none !important;
-      }
-    }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
