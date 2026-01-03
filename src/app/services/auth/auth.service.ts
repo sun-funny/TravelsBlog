@@ -36,6 +36,15 @@ export class AuthService {
     }
   }
 
+  public getCurrentUser(): IUser | null {
+    const storedUser: IUser | null = JSON.parse(
+      localStorage.getItem(LOCAL_STORAGE_NAME) || 
+      sessionStorage.getItem(LOCAL_STORAGE_NAME) || 
+      'null'
+    );
+    return storedUser || this.currentUser;
+  }
+
   private getUser(login: string): IUser | null {
     return this.userStorage.find((user) => login === user.login) || null;
   }

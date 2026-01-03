@@ -5,8 +5,6 @@ import { TravelService } from 'src/app/services/travel/travel.service';
 import { MessageService } from 'primeng/api';
 import { Router, ActivatedRoute } from '@angular/router';
 import { DialogService } from 'primeng/dynamicdialog';
-import { AddPointComponent } from '../../country/add-point/add-point.component';
-import { IPoint } from 'src/app/models/point';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { FileUpload } from 'primeng/fileupload';
@@ -215,28 +213,6 @@ export class AddTravelComponent implements OnInit {
     return Math.random().toString(36).substr(2, 9);
   }
 
-  openAddPointForm() {
-    if (!this.currentTravelId) return console.log('Нет id');
-
-    const ref = this.dialogService.open(AddPointComponent, {
-      width: '70%',
-      data: {
-        countryId: this.currentTravelId
-      },
-      header: 'Добавить локацию'
-    });
-
-    ref.onClose.subscribe((point: IPoint) => {
-      if (point) {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Успешно',
-          detail: 'Контент добавлен'
-        });
-      }
-    });
-  }
-
   setUploadedFile(fileUpload: FileUpload, fileUrl: string) {
     if (!fileUrl) return;
   
@@ -251,6 +227,18 @@ export class AddTravelComponent implements OnInit {
     };
   
     fileUpload.files = [fakeFile];
+  }
+
+  openContentEditor(): void {
+    if (this.currentTravelId) {
+      this.router.navigate(['/travels', this.currentTravelId]);
+    } else {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Предупреждение',
+        detail: 'Сначала сохраните путешествие, чтобы добавить контент'
+      });
+    }
   }
 
 }

@@ -44,9 +44,12 @@
               "node_modules/primeng/resources/primeng.min.css",
               "node_modules/leaflet/dist/leaflet.css",
               "node_modules/bootstrap/dist/css/bootstrap.css",
+              "node_modules/quill/dist/quill.snow.css",
+              "node_modules/quill/dist/quill.bubble.css",
+              "node_modules/quill/dist/quill.core.css",
               "src/assets/main.scss"
             ],
-            "scripts": []
+            "scripts": ["node_modules/quill/dist/quill.min.js"]
           },
           "configurations": {
             "production": {

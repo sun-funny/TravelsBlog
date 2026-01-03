@@ -28,6 +28,16 @@
   margin-top: 0.5rem;
 }
 
+.p-button-help {
+  background-color: #9c27b0;
+  border-color: #9c27b0;
+  
+  &:hover {
+    background-color: #7b1fa2;
+    border-color: #7b1fa2;
+  }
+}
+
 textarea {
   width: 100%;
 }

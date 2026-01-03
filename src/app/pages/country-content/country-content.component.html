@@ -1,0 +1,90 @@
+<div class="country-content-container main-content">
+  <div *ngIf="isLoading" class="loading-container">
+    <p-progressSpinner></p-progressSpinner>
+  </div>
+
+  <div *ngIf="!isLoading && travel" class="country-content">
+    <!-- Заголовок и навигация -->
+    <div class="country-header">
+      <button pButton 
+              type="button" 
+              icon="pi pi-arrow-left" 
+              label="Назад к списку" 
+              class="p-button-secondary"
+              (click)="goBack()">
+      </button>
+      
+      <div class="country-title">
+        <h1>{{ travel.country }}</h1>
+        <h2 *ngIf="travel.city">{{ travel.city }}</h2>
+        <div class="country-year">{{ travel.year }}</div>
+      </div>
+
+      <div class="header-actions" *ngIf="isAdmin">
+        <button pButton 
+                type="button" 
+                [icon]="isEditMode ? 'pi pi-times' : 'pi pi-pencil'" 
+                [label]="isEditMode ? 'Отменить' : 'Редактировать'"
+                [class]="isEditMode ? 'p-button-secondary' : 'p-button-info'"
+                (click)="toggleEditMode()">
+        </button>
+        
+        <button pButton 
+                type="button" 
+                icon="pi pi-save" 
+                label="Сохранить" 
+                class="p-button-success ml-2"
+                *ngIf="isEditMode"
+                [disabled]="isSaving"
+                (click)="saveContent()">
+          <p-progressSpinner *ngIf="isSaving" 
+                            styleClass="p-button-spinner" 
+                            strokeWidth="2">
+          </p-progressSpinner>
+        </button>
+      </div>
+    </div>
+
+    <!-- Основное изображение страны -->
+    <div class="country-hero">
+      <img [src]="getImageUrl(travel.img)" 
+           alt="{{travel.country}}" 
+           class="country-hero-image">
+    </div>
+
+    <!-- Краткое описание -->
+    <div class="short-description">
+      <p>{{ travel.short_description }}</p>
+    </div>
+
+    <!-- Базовое описание -->
+    <div class="basic-description">
+      <h3>Основная информация</h3>
+      <p>{{ travel.description }}</p>
+    </div>
+
+    <!-- Rich Content Editor/Viewer -->
+    <div class="rich-content-section">
+      <h3>Дополнительная информация</h3>
+      
+      <!-- Информация для админа в режиме просмотра -->
+      <div *ngIf="isAdmin && !isEditMode && countryContent?.updatedAt" 
+           class="content-meta">
+        <small>
+          Последнее обновление: {{ countryContent.updatedAt | date:'dd.MM.yyyy HH:mm' }}
+          <span *ngIf="countryContent.updatedBy"> пользователем {{ countryContent.updatedBy }}</span>
+        </small>
+      </div>
+
+      <!-- Редактор Quill -->
+      <div class="quill-container" [class.editing]="isEditMode">
+        <div #editor class="quill-editor"></div>
+      </div>
+
+      <!-- Подсказка для не-админов -->
+      <div *ngIf="!isAdmin" class="view-only-notice">
+        <p><i class="pi pi-info-circle"></i> Только администратор может редактировать этот контент</p>
+      </div>
+    </div>
+  </div>
+</div>

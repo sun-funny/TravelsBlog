@@ -9,4 +9,7 @@ export interface ITravel {
   img: string;
   year: number;
   featured: boolean;
+  richContent?: string;
+  contentUpdatedAt?: Date;
+  contentUpdatedBy?: string;
 }

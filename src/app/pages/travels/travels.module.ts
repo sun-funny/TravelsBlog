@@ -14,32 +14,38 @@ import { MessageService } from "primeng/api";
 import { SharedModule } from "../../shared/shared.module";
 import { UiModule } from '../ui/ui.module';
 import { DirectiveModule } from '../../directive/directive.module';
-import { NearestTravelsComponent } from './nearest-travels.component';
 import { AddTravelComponent } from './add-travel/add-travel.component';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { DialogModule } from 'primeng/dialog';
 import { DialogService } from 'primeng/dynamicdialog';
-import { AddPointComponent } from '../country/add-point/add-point.component';
-import { CountryComponent } from '../country/country.component';
 import { FileUploadModule } from 'primeng/fileupload';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { AsideTravelsComponent } from './aside-travels/aside-travels.component';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { QuillModule } from 'ngx-quill';
+import { CountryContentComponent } from '../country-content/country-content.component';
 
 @NgModule({
   declarations: [
     TravelsComponent,
     AddTravelComponent,
-    AddPointComponent,
-    AsideTravelsComponent
+    AsideTravelsComponent,
+    CountryContentComponent
   ],
   imports: [
     CommonModule,
+    QuillModule.forRoot({
+      modules: {
+        syntax: false,
+        toolbar: []
+      }
+    }),
     RouterModule.forChild([
       { path: '', component: TravelsComponent},
       { path: 'add', component: AddTravelComponent },
-      { path: 'edit/:id', component: AddTravelComponent }
+      { path: 'edit/:id', component: AddTravelComponent },
+      { path: ':id', component: CountryContentComponent }
     ]),
     MenubarModule,
     CardModule,
@@ -63,7 +69,6 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
   providers: [
     MessageService,
     DialogService
-  ],
-  entryComponents: [AddPointComponent]
+  ]
 })
 export class TravelsModule {}

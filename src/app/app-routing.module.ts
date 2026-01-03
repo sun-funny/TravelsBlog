@@ -28,7 +28,7 @@ const routes: Routes = [
   path: 'travels',
   children: [
       { path: '', loadChildren: () => import('./pages/travels/travels.module').then(m => m.TravelsModule) },
-      { path: ':id', loadChildren: () => import('./pages/country/country.module').then(m => m.CountryModule) }
+      //{ path: ':id', loadChildren: () => import('./pages/country-content/country-content.module').then(m => m.CountryModule) }
     ]
   },
   {
