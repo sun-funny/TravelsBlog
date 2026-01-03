@@ -1,58 +1,73 @@
-<div class="comments-container p-4">
-  <p-toast></p-toast>
-  <p-confirmDialog></p-confirmDialog>
-  
-  <div class="mb-5" *ngIf="authService.isAuthenticated">
-    <p-card>
-      <h3>Добавить комментарий</h3>
-      <div class="flex flex-column">
-        <textarea 
-          pInputTextarea 
-          [(ngModel)]="newCommentText" 
-          rows="5" 
-          class="w-full mb-3"
-          style="width: 100%; min-width: 100%;"
-          placeholder="Ваш комментарий...">
-        </textarea>
-        <button 
-          pButton 
-          label="Отправить" 
-          icon="pi pi-send" 
-          (click)="addComment()"
-          [disabled]="!newCommentText.trim()"
-          class="align-self-end">
+<div class="comments-container">
+  <div class="comments-main main-content">
+    <p-toast></p-toast>
+    <p-confirmDialog></p-confirmDialog>
+    
+    <div class="comments-wrapper">
+      <!-- Форма добавления комментария -->
+      <div class="mb-5" *ngIf="authService.isAuthenticated">
+        <div class="comment-form-card">
+          <h3 class="comment-form-title">Добавить комментарий</h3>
+          <div class="comment-form">
+            <textarea 
+              pInputTextarea 
+              [(ngModel)]="newCommentText" 
+              rows="5" 
+              class="comment-textarea"
+              placeholder="Ваш комментарий...">
+            </textarea>
+            <div class="comment-form-actions">
+              <button 
+                pButton 
+                label="Отправить" 
+                icon="pi pi-send" 
+                (click)="addComment()"
+                [disabled]="!newCommentText.trim()"
+                class="comment-submit-btn">
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Список комментариев -->
+      <div class="comments-list">
+        <div *ngFor="let comment of comments" class="comment-card mb-3">
+          <div class="comment-card-content">
+            <div class="flex justify-content-between align-items-center mb-2">
+              <div class="flex align-items-center gap-2">
+                <h3 class="comment-author m-0">{{comment.userName}}</h3>
+                <span *ngIf="isAdmin" 
+                      class="pi pi-trash comment-delete-icon" 
+                      (click)="confirmDeleteComment(comment._id)"
+                      pTooltip="Удалить комментарий" tooltipPosition="top">
+                </span>
+              </div>
+              <span class="comment-date">{{comment.date | date:'medium'}}</span>
+            </div>
+            <p class="comment-text m-0">{{comment.text}}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Кнопка удаления всех комментариев (для админа) -->
+      <div *ngIf="isAdmin && comments.length" class="admin-controls mt-4">
+        <button pButton 
+                label="Удалить все комментарии" 
+                icon="pi pi-trash" 
+                class="delete-all-btn"
+                (click)="confirmDeleteAllComments()">
         </button>
       </div>
-    </p-card>
-  </div>
-  
-  <div *ngFor="let comment of comments" class="mb-3">
-    <p-card>
-      <div class="flex justify-content-between align-items-center mb-2">
-        <div class="flex align-items-center gap-2">
-          <h3 class="m-0">{{comment.userName}}</h3>
-          <span *ngIf="isAdmin" 
-                class="pi pi-trash text-red-500 cursor-pointer" 
-                (click)="confirmDeleteComment(comment._id)"
-                pTooltip="Удалить комментарий" tooltipPosition="top">
-          </span>
+      
+      <!-- Сообщение при отсутствии комментариев -->
+      <div *ngIf="!comments.length" class="no-comments">
+        <div class="no-comments-content">
+          <i class="pi pi-comment no-comments-icon"></i>
+          <h3>Пока нет комментариев</h3>
+          <p>Будьте первым, кто поделится мнением!</p>
         </div>
-        <span class="text-color-secondary">{{comment.date | date:'medium'}}</span>
       </div>
-      <p class="m-0">{{comment.text}}</p>
-    </p-card>
-  </div>
-
-  <div *ngIf="isAdmin && comments.length" class="mt-4">
-    <button pButton 
-            label="Удалить все комментарии" 
-            icon="pi pi-trash" 
-            class="p-button-danger"
-            (click)="confirmDeleteAllComments()">
-    </button>
-  </div>
-  
-  <div *ngIf="!comments.length" class="text-center">
-    <p>Пока нет комментариев. Будьте первым!</p>
+    </div>
   </div>
 </div>
