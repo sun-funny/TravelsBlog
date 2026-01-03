@@ -8,6 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 
 export const LOCAL_STORAGE_NAME = 'currentUser';
+export const RETURN_URL_KEY = 'returnUrl';
 
 @Injectable({
   providedIn: 'root'
@@ -29,10 +30,9 @@ export class AuthService {
     private accessService: UserAccessService,
     private http: HttpClient
   ) {
-
     const storedUser: IUser | null = JSON.parse(localStorage.getItem(LOCAL_STORAGE_NAME) || 'null');
     if (storedUser) {
-     this.auth(storedUser)
+      this.auth(storedUser);
     }
   }
 
@@ -62,10 +62,22 @@ export class AuthService {
     this.userSubject.next(this.currentUser);
   }
 
+  public saveReturnUrl(url: string): void {
+    localStorage.setItem(RETURN_URL_KEY, url);
+  }
+
+  public getStoredReturnUrl(): string {
+    return localStorage.getItem(RETURN_URL_KEY) || '/main';
+  }
+
+  public clearStoredReturnUrl(): void {
+    localStorage.removeItem(RETURN_URL_KEY);
+  }
+
   async refreshToken(): Promise<boolean> {
     const storedUser: IUser | null = JSON.parse(localStorage.getItem(LOCAL_STORAGE_NAME) || 'null');
     if (storedUser) {
-      this.auth(storedUser)
+      this.auth(storedUser);
     }
   
     try {
@@ -103,19 +115,22 @@ export class AuthService {
     this.userBehaviorSubject.next(this.currentUser);
   }
 
-  private authAndRedirect(user: IUser, isRememberMe?: boolean) {
+  public authAndRedirect(user: IUser, isRememberMe?: boolean) {
     this.auth(user, isRememberMe);
-    const returnUrl = this.router.parseUrl(this.router.url).queryParams['returnUrl'] || 'faq';
+    
+    const returnUrl = this.getStoredReturnUrl();
+    this.clearStoredReturnUrl(); // Очищаем после использования
+    
     this.router.navigateByUrl(returnUrl);
   }
 
   get isAuthenticated(): boolean  {
     return !!this.currentUser || !!localStorage.getItem(LOCAL_STORAGE_NAME);
   }
+  
   get isUserInStore(): boolean  {
     return !!localStorage.getItem(LOCAL_STORAGE_NAME);
   }
-
 
   get user(): IUser | null {
     return this.currentUser;
@@ -133,7 +148,7 @@ export class AuthService {
     if (user.psw !== psw) {
       return 'Неверный пароль';
     }
-    this.authAndRedirect(user, isRememberMe)
+    this.authAndRedirect(user, isRememberMe);
     return true;
   }
 
@@ -142,7 +157,7 @@ export class AuthService {
       return 'User already exists';
     }
     this.userStorage.push(user);
-    this.authAndRedirect(user, isRememberMe)
+    this.authAndRedirect(user, isRememberMe);
     return true;
   }
 
@@ -157,11 +172,11 @@ export class AuthService {
 
   changePassword(psw: string) {
     if (!this.currentUser) {
-      return
+      return;
     }
     this.currentUser.psw = psw;
     const dbUser = this.userStorage.find(({login}) => login === this.currentUser?.login)!;
-    dbUser.psw = psw
+    dbUser.psw = psw;
   }
 
   getUserId(): string {
@@ -173,11 +188,11 @@ export class AuthService {
   }
   
   private getStoredUser(): IUser | null {
-  try {
-    const user = JSON.parse(localStorage.getItem(LOCAL_STORAGE_NAME) || sessionStorage.getItem(LOCAL_STORAGE_NAME) || 'null');
-    return user && user.login && (user.access_token || user.psw) ? user : null;
-  } catch {
-    return null;
+    try {
+      const user = JSON.parse(localStorage.getItem(LOCAL_STORAGE_NAME) || sessionStorage.getItem(LOCAL_STORAGE_NAME) || 'null');
+      return user && user.login && (user.access_token || user.psw) ? user : null;
+    } catch {
+      return null;
+    }
   }
-}
 }

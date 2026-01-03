@@ -1,80 +1,360 @@
-.content-wrapper {
-  display: flex;
-  flex-direction: column;
-  min-height: calc(100vh - 100px);
-  padding-bottom: 100px;
+// Основной контейнер с фоном как в travels и main
+.add-travel-container {
+  min-height: 100vh;
+  background: url('/assets/img_main/FonMain.jpg') center/cover fixed;
+  padding: 2rem 1rem;
+  font-family: 'Montserrat', Helvetica, sans-serif;
   position: relative;
-}
-
-.p-card {
-  margin: 1rem auto;
-  max-width: 1200px;
-  min-height: calc(33vh - 100px);
-}
-
-:host {
-  display: block;
-  position: relative;
-}
-
-.p-field {
-  margin-bottom: 1.5rem;
   display: flex;
-  align-items: center;
-}
-
-.p-error {
-  display: block;
-  margin-top: 0.5rem;
-}
-
-.p-button-help {
-  background-color: #9c27b0;
-  border-color: #9c27b0;
+  justify-content: center;
+  align-items: flex-start;
   
-  &:hover {
-    background-color: #7b1fa2;
-    border-color: #7b1fa2;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(10, 31, 45, 0.85);
+    z-index: 1;
+  }
+  
+  > * {
+    position: relative;
+    z-index: 2;
   }
 }
 
-textarea {
+.add-travel-main {
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.add-travel-content {
   width: 100%;
 }
 
-.button-group {
-  margin-top: 2rem;
+// Обертка формы
+.form-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: calc(100vh - 4rem);
+  padding: 1rem;
+}
+
+// Карточка формы
+.form-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 2.5rem;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   width: 100%;
-  
-  .p-d-flex {
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 1rem;
+  max-width: 800px;
+  transition: all 0.3s ease;
+  margin: 0 auto;
+
+  &:hover {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+    border-color: rgba(135, 206, 235, 0.2);
+  }
+}
+
+// Заголовок формы
+.form-title {
+  color: #ffffff;
+  font-size: 2.2rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 2.5rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  font-family: 'Montserrat', Helvetica, sans-serif;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+// Форма
+.travel-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+}
+
+// Поля формы
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  label {
+    color: #87ceeb;
+    font-size: 1.1rem;
+    font-weight: 600;
+    font-family: 'Montserrat', Helvetica, sans-serif;
+    margin-bottom: 0.25rem;
     
-    button {
-      flex: 1 1 auto;
-      min-width: 160px;
-      max-width: 200px;
+    span {
+      color: #ff6b6b;
+      margin-left: 0.25rem;
+    }
+  }
+
+  input, textarea {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    padding: 0.875rem 1rem;
+    color: #ffffff;
+    font-size: 1rem;
+    font-family: 'Montserrat', Helvetica, sans-serif;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+
+    &:focus {
+      outline: none;
+      border-color: #87ceeb;
+      box-shadow: 0 0 0 2px rgba(135, 206, 235, 0.2);
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    &.invalid {
+      border-color: #ff6b6b;
+      background: rgba(255, 107, 107, 0.08);
+    }
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 100px;
+    line-height: 1.6;
+  }
+}
+
+// Стили для файловых загрузок
+.file-upload-wrapper {
+  ::ng-deep {
+    .p-fileupload {
+      .p-button {
+        background: rgba(135, 206, 235, 0.2);
+        border: 1px solid rgba(135, 206, 235, 0.3);
+        color: #87ceeb;
+        font-family: 'Montserrat', Helvetica, sans-serif;
+        font-weight: 600;
+        transition: all 0.3s ease;
+
+        &:hover {
+          background: rgba(135, 206, 235, 0.3);
+          border-color: rgba(135, 206, 235, 0.5);
+        }
+      }
     }
   }
 }
 
+// Чекбокс поле
+.checkbox-field {
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 8px;
+    transition: background 0.3s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    span {
+      color: #e0f0ff;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    ::ng-deep {
+      .p-inputswitch {
+        &.p-inputswitch-checked {
+          .p-inputswitch-slider {
+            background: #87ceeb;
+            
+            &:before {
+              background: #ffffff;
+            }
+          }
+        }
+
+        .p-inputswitch-slider {
+          background: rgba(255, 255, 255, 0.2);
+          border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+      }
+    }
+  }
+}
+
+// Сообщения об ошибках
+.error-message {
+  color: #ff6b6b;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-top: 0.25rem;
+  padding-left: 0.5rem;
+  font-family: 'Montserrat', Helvetica, sans-serif;
+}
+
+// Кнопки
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+  .btn {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 2rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: 'Montserrat', Helvetica, sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    min-width: 160px;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+
+    i {
+      font-size: 1.1rem;
+    }
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  .btn-delete {
+    background: rgba(255, 107, 107, 0.2);
+    border: 1px solid rgba(255, 107, 107, 0.3);
+    color: #ff6b6b;
+
+    &:hover {
+      background: rgba(255, 107, 107, 0.3);
+      border-color: rgba(255, 107, 107, 0.5);
+    }
+  }
+
+  .btn-cancel {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0f0ff;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+  }
+
+  .btn-save {
+    background: rgba(135, 206, 235, 0.2);
+    border: 1px solid rgba(135, 206, 235, 0.3);
+    color: #87ceeb;
+
+    &:hover {
+      background: rgba(135, 206, 235, 0.3);
+      border-color: rgba(135, 206, 235, 0.5);
+    }
+  }
+}
+
+// Адаптивность
+@media (max-width: 1200px) {
+  .form-card {
+    padding: 2rem;
+    max-width: 700px;
+  }
+}
+
 @media (max-width: 768px) {
-  .p-card {
-    margin: 0.5rem;
+  .add-travel-container {
+    padding: 1rem 0.5rem;
   }
-  
-  .p-field {
-    flex-direction: column;
-    align-items: flex-start;
+
+  .form-wrapper {
+    padding: 0.5rem;
   }
-  
-  .button-group .p-d-flex {
+
+  .form-card {
+    padding: 1.5rem;
+    max-width: 100%;
+  }
+
+  .form-title {
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+  }
+
+  .form-actions {
     flex-direction: column;
-    
-    button {
+    align-items: stretch;
+    gap: 1rem;
+
+    .btn {
+      min-width: 100%;
       width: 100%;
-      max-width: 100%;
+    }
+  }
+
+  .travel-form {
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-card {
+    padding: 1.25rem;
+    border-radius: 12px;
+  }
+
+  .form-title {
+    font-size: 1.6rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-field {
+    label {
+      font-size: 1rem;
+    }
+
+    input, textarea {
+      padding: 0.75rem;
+      font-size: 0.95rem;
+    }
+  }
+
+  .form-actions {
+    margin-top: 2rem;
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      font-size: 0.95rem;
     }
   }
 }
