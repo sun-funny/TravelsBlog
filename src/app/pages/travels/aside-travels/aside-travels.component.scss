@@ -1,43 +1,158 @@
 .aside-travels-container {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
   padding: 1rem;
-  background-color: #114967;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-
+  margin-bottom: 2rem;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  position: relative; // Важно для позиционирования
+  
   .settings-section {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     
     .travels-settings-button {
-      margin-left: auto;
-      display: block;
-      color:aliceblue;
+      width: 100%;
+      background: rgba(135, 206, 235, 0.2) !important;
+      border: 1px solid rgba(135, 206, 235, 0.3) !important;
+      color: #87ceeb !important;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+      padding: 0.5rem !important;
+      font-size: 0.9rem;
+      
+      &:hover {
+        background: rgba(135, 206, 235, 0.3) !important;
+        border-color: rgba(135, 206, 235, 0.5) !important;
+        color: #ffffff !important;
+      }
+      
+      .pi {
+        margin-right: 0.5rem;
+      }
     }
   }
-
+  
   .filter-section {
-    h3 {
-      margin-bottom: 1rem;
-      color: #062c50;
-    }
-
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    flex-wrap: wrap;
+    
     .search-filter {
-      margin-bottom: 1rem;
+      flex: 1;
+      min-width: 200px;
+      
+      input {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        padding: 0.5rem 0.75rem;
+        color: #e0f0ff;
+        font-family: 'Montserrat', Helvetica, sans-serif;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+        height: 38px;
+        
+        &::placeholder {
+          color: rgba(224, 240, 255, 0.6);
+        }
+        
+        &:focus {
+          outline: none;
+          border-color: rgba(135, 206, 235, 0.5);
+          box-shadow: 0 0 0 2px rgba(135, 206, 235, 0.2);
+        }
+      }
     }
     
     .year-filter {
-      margin-bottom: 1rem;
+      min-width: 120px;
+      position: relative; // Для правильного позиционирования
       
-      label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: 600;
+      ::ng-deep {
+        .p-dropdown {
+          width: 100%;
+          background: rgba(255, 255, 255, 0.08);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          border-radius: 8px;
+          backdrop-filter: blur(10px);
+          height: 38px;
+          
+          .p-dropdown-label {
+            color: #e0f0ff;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.9rem;
+            line-height: 1.5;
+          }
+          
+          .p-dropdown-trigger {
+            color: #87ceeb;
+            width: 2rem;
+          }
+          
+          .p-dropdown-panel {
+            background: rgba(17, 73, 103, 0.95);
+            border: 1px solid rgba(135, 206, 235, 0.3);
+            backdrop-filter: blur(10px);
+            z-index: 9999 !important; // Увеличьте z-index
+            position: fixed !important; // Используйте fixed для гарантии поверх всего
+            
+            .p-dropdown-items {
+              .p-dropdown-item {
+                color: #e0f0ff;
+                font-size: 0.9rem;
+                padding: 0.5rem 0.75rem;
+                
+                &:hover {
+                  background: rgba(135, 206, 235, 0.2);
+                  color: #87ceeb;
+                }
+                
+                &.p-highlight {
+                  background: rgba(135, 206, 235, 0.3);
+                  color: #87ceeb;
+                }
+              }
+            }
+          }
+        }
       }
     }
-
+    
     .reset-button {
-      width: 100%;
+      min-width: 100px;
+      background: rgba(255, 255, 255, 0.1) !important;
+      border: 1px solid rgba(255, 255, 255, 0.2) !important;
+      color: #ffffff !important;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+      padding: 0.5rem 0.75rem !important;
+      font-size: 0.9rem;
+      height: 38px;
+      white-space: nowrap;
+      
+      &:hover {
+        background: rgba(255, 255, 255, 0.2) !important;
+        border-color: rgba(255, 255, 255, 0.3) !important;
+      }
     }
   }
+}
 
+// Альтернативное решение с глобальными стилями
+::ng-deep {
+  .p-dropdown-panel {
+    z-index: 9999 !important;
+    position: fixed !important;
+    max-height: 200px;
+    overflow-y: auto;
+    
+    // Для лучшей видимости
+    .p-dropdown-items-wrapper {
+      max-height: 200px;
+    }
+  }
 }

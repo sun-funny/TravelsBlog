@@ -105,11 +105,6 @@
                 <button pButton type="button" label="Отмена" 
                     class="p-button-secondary" (click)="router.navigate(['/travels'])">
                 </button>
-                <button *ngIf="isEditMode" pButton type="button" 
-                    icon="pi pi-plus" label="Добавить контент" 
-                    class="p-button-help"
-                    (click)="openContentEditor()">
-                </button>
                 <button pButton type="submit" 
                     [label]="isEditMode ? 'Обновить' : 'Сохранить'" 
                     class="p-button-success">
