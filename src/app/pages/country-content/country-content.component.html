@@ -10,13 +10,12 @@
               type="button" 
               icon="pi pi-arrow-left" 
               label="Назад к списку" 
-              class="p-button-secondary"
+              class="p-button-secondary back-button"
               (click)="goBack()">
       </button>
       
       <div class="country-title">
         <h1>{{ travel.country }}</h1>
-        <h2 *ngIf="travel.city">{{ travel.city }}</h2>
         <div class="country-year">{{ travel.year }}</div>
       </div>
 
@@ -46,26 +45,23 @@
     </div>
 
     <!-- Основное изображение страны -->
-    <div class="country-hero">
-      <img [src]="getImageUrl(travel.img)" 
-           alt="{{travel.country}}" 
-           class="country-hero-image">
-    </div>
-
-    <!-- Краткое описание -->
-    <div class="short-description">
-      <p>{{ travel.short_description }}</p>
+    <div class="country-image-container">
+      <div class="image-wrapper">
+        <img [src]="getImageUrl(travel.img)" 
+             alt="{{travel.country}}" 
+             class="country-hero-image">
+      </div>
     </div>
 
     <!-- Базовое описание -->
     <div class="basic-description">
-      <h3>Основная информация</h3>
+      <h3>О стране</h3>
       <p>{{ travel.description }}</p>
     </div>
 
     <!-- Rich Content Editor/Viewer -->
     <div class="rich-content-section">
-      <h3>Дополнительная информация</h3>
+      <h3>Подробнее</h3>
       
       <!-- Информация для админа в режиме просмотра -->
       <div *ngIf="isAdmin && !isEditMode && countryContent?.updatedAt" 
@@ -77,7 +73,7 @@
       </div>
 
       <!-- Редактор Quill -->
-      <div class="quill-container" [class.editing]="isEditMode">
+      <div class="quill-container glass-card" [class.editing]="isEditMode">
         <div #editor class="quill-editor"></div>
       </div>
 
