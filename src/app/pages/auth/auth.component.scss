@@ -6,37 +6,340 @@
   width: 100%;
   padding: 20px;
   box-sizing: border-box;
-}
   
-.auth-tabview {
-  width: 100%;
-  max-width: 800px;
-  padding: 20px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  // Фон в стиле travels
+  background: url('/assets/img_main/FonMain.jpg') center/cover fixed;
+  position: relative;
+  font-family: 'Montserrat', Helvetica, sans-serif;
   
-  .p-tabview-nav {
-    font-size: 1.2rem;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(10, 31, 45, 0.85);
+    z-index: 1;
   }
   
-  .p-tabview-panels {
-    font-size: 1rem;
-    padding: 1rem 0;
+  > * {
+    position: relative;
+    z-index: 2;
   }
 }
 
+.auth-tabview {
+  width: 100%;
+  max-width: 500px;
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
+    border-color: rgba(135, 206, 235, 0.3);
+  }
+}
+
+// Глобальные стили для PrimeNG tabview
+::ng-deep {
+  .p-tabview {
+    // Основной контейнер
+    background: transparent !important;
+    
+    // Навигация (вкладки)
+    .p-tabview-nav {
+      background: transparent !important;
+      border: none !important;
+      padding: 0 !important;
+      margin-bottom: 1.5rem;
+      
+      li {
+        margin-right: 1rem;
+        margin-bottom: 0;
+        
+        .p-tabview-nav-link {
+          background: rgba(255, 255, 255, 0.05) !important; /* Прозрачный фон */
+          border: 1px solid rgba(255, 255, 255, 0.1) !important; /* Бордер */
+          color: #e0f0ff !important;
+          border-radius: 8px !important;
+          padding: 0.75rem 1.5rem !important;
+          transition: all 0.3s ease;
+          font-size: 1rem;
+          font-weight: 500;
+          font-family: 'Montserrat', Helvetica, sans-serif;
+          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+          
+          &:not(.p-disabled):focus {
+            box-shadow: none !important;
+            outline: none !important;
+          }
+          
+          &:hover {
+            background: rgba(255, 255, 255, 0.1) !important;
+            border-color: rgba(135, 206, 235, 0.3) !important;
+            color: #ffffff !important;
+            transform: translateY(-2px);
+          }
+        }
+        
+        // Активная вкладка
+        &.p-highlight {
+          .p-tabview-nav-link {
+            background: rgba(135, 206, 235, 0.15) !important;
+            border-color: rgba(135, 206, 235, 0.4) !important;
+            color: #87ceeb !important;
+            border-bottom: 1px solid rgba(135, 206, 235, 0.4) !important;
+          }
+        }
+        
+        // Неактивная вкладка
+        &:not(.p-highlight) {
+          .p-tabview-nav-link {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+          }
+        }
+      }
+    }
+    
+    // Панели (содержимое вкладок)
+    .p-tabview-panels {
+      background: transparent !important;
+      border: none !important;
+      padding: 0 !important;
+    }
+    
+    // Отдельная панель
+    .p-tabview-panel {
+      background: transparent !important;
+    }
+  }
+}
+
+// Стили для форм
+::ng-deep {
+  .auth-form {
+    width: 100%;
+    background: transparent !important;
+    
+    .form-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+      
+      span {
+        color: #ffffff;
+        font-size: 1rem;
+        font-weight: 500;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        margin-right: 1rem;
+        min-width: 140px;
+      }
+      
+      input {
+        flex: 1;
+        min-width: 200px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #ffffff !important;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        
+        &.p-inputtext {
+          color: #ffffff !important;
+          background: rgba(255, 255, 255, 0.05) !important;
+          
+          &:enabled:hover {
+            color: #ffffff !important;
+            border-color: rgba(135, 206, 235, 0.3);
+            background: rgba(255, 255, 255, 0.08) !important;
+          }
+          
+          &:enabled:focus {
+            color: #ffffff !important;
+            background: rgba(255, 255, 255, 0.08) !important;
+          }
+        }
+        
+        &::placeholder {
+          color: rgba(224, 240, 255, 0.7) !important;
+        }
+        
+        &:-webkit-autofill,
+        &:-webkit-autofill:hover, 
+        &:-webkit-autofill:focus,
+        &:-webkit-autofill:active {
+          -webkit-text-fill-color: #ffffff !important;
+          -webkit-box-shadow: 0 0 0px 1000px rgba(20, 41, 55, 0.8) inset !important;
+          transition: background-color 5000s ease-in-out 0s;
+        }
+        
+        &:focus {
+          outline: none;
+          border-color: rgba(135, 206, 235, 0.5);
+          box-shadow: 0 0 0 2px rgba(135, 206, 235, 0.1);
+          background: rgba(255, 255, 255, 0.08);
+        }
+        
+        &:hover {
+          border-color: rgba(135, 206, 235, 0.3);
+          background: rgba(255, 255, 255, 0.07);
+        }
+        
+        &.input-error {
+          border-color: rgba(255, 99, 71, 0.6);
+          background: rgba(255, 99, 71, 0.1);
+          
+          &:focus {
+            box-shadow: 0 0 0 2px rgba(255, 99, 71, 0.1);
+          }
+        }
+      }
+    }
+    
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 2rem;
+    }
+  }
+}
+
+// Стили для кнопок
+::ng-deep {
+  .p-button {
+    background: rgba(135, 206, 235, 0.2) !important;
+    border: 1px solid rgba(135, 206, 235, 0.3) !important;
+    color: #87ceeb !important;
+    border-radius: 8px;
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    font-family: 'Montserrat', Helvetica, sans-serif;
+    
+    &:enabled:hover {
+      background: rgba(135, 206, 235, 0.3) !important;
+      border-color: rgba(135, 206, 235, 0.5) !important;
+      color: #a3d9f0 !important;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    
+    &:focus {
+      box-shadow: 0 0 0 2px rgba(135, 206, 235, 0.2) !important;
+    }
+    
+    &:disabled {
+      background: rgba(255, 255, 255, 0.05) !important;
+      border-color: rgba(255, 255, 255, 0.1) !important;
+      color: rgba(224, 240, 255, 0.5) !important;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// Адаптивность
 @media (max-width: 768px) {
   .auth-container {
     padding: 10px;
     align-items: flex-start;
+    padding-top: 2rem;
   }
   
   .auth-tabview {
-    padding: 10px;
+    padding: 20px;
+  }
+  
+  ::ng-deep {
+    .p-tabview {
+      .p-tabview-nav {
+        flex-wrap: wrap;
+        
+        li {
+          margin-right: 0.5rem;
+          margin-bottom: 0.5rem;
+          
+          .p-tabview-nav-link {
+            padding: 0.6rem 1rem !important;
+            font-size: 0.9rem;
+          }
+        }
+      }
+    }
     
-    .p-tabview-nav {
-      font-size: 1rem;
+    .auth-form {
+      .form-row {
+        flex-direction: column;
+        align-items: stretch;
+        
+        span {
+          margin-bottom: 0.5rem;
+          min-width: auto;
+        }
+        
+        input {
+          min-width: 100%;
+        }
+      }
+      
+      .form-actions {
+        justify-content: center;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-tabview {
+    padding: 15px;
+  }
+  
+  ::ng-deep {
+    .p-tabview {
+      .p-tabview-nav {
+        flex-direction: column;
+        
+        li {
+          margin-right: 0;
+          margin-bottom: 0.5rem;
+          width: 100%;
+          
+          .p-tabview-nav-link {
+            width: 100%;
+            text-align: center;
+            padding: 0.75rem !important;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Стили для кнопок внутри вкладок
+::ng-deep {
+  .auth-tabview {
+    .p-tabview-nav-link {
+      // Иконки (если будут добавлены)
+      .p-tabview-nav-icon {
+        margin-right: 0.5rem;
+      }
+      
+      // Текст вкладки
+      .p-tabview-title {
+        font-weight: 600;
+      }
     }
   }
 }
