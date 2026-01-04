@@ -53,7 +53,7 @@ export class AddTravelComponent implements OnInit {
       city: ['', Validators.required],
       short_description: ['', Validators.required],
       description: ['', Validators.required],
-      flag: ['', Validators.required],
+      flag: [''],
       img: ['', Validators.required],
       year: ['', [Validators.required, Validators.min(2000), Validators.max(new Date().getFullYear())]],
       featured: [false],
