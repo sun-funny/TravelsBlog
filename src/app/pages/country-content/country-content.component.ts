@@ -9,6 +9,8 @@ import { ICountryContent } from 'src/app/models/country-content';
 import { MessageService } from 'primeng/api';
 import Quill from 'quill';
 import { environment } from 'src/environments/environment';
+import ImageResize from 'quill-image-resize-module';
+Quill.register('modules/imageResize', ImageResize);
 
 interface PendingImage {
   file: File;
@@ -174,6 +176,25 @@ export class CountryContentComponent implements OnInit, OnDestroy {
     },
     keyboard: {
       bindings: Quill.import('modules/keyboard').bindings
+    },
+    imageResize: {
+      modules: ['Resize', 'DisplaySize', 'Toolbar'],
+      displayStyles: {
+        backgroundColor: 'black',
+        border: '2px solid #87ceeb',
+        color: 'white'
+      },
+      handleStyles: {
+        backgroundColor: '#87ceeb',
+        border: '1px solid #fff',
+        height: '12px',
+        width: '12px',
+        borderRadius: '50%'
+      },
+      // Важно: разрешить изменение размера
+      displaySize: true,
+      // Стандартный метод изменения размера
+      resizeImage: true
     }
   };
   
@@ -196,25 +217,12 @@ export class CountryContentComponent implements OnInit, OnDestroy {
         ['link', 'image', 'video']
       ],
       handlers: {
-        image: () => {
-          this.zone.run(() => {
-            this.handleImageUpload();
-          });
-        },
+        image: () => { this.zone.run(() => this.handleImageUpload()); },
         // Кастомный обработчик для Header 1
         header: (value: any) => {
-          if (this.quillInstance) {
-            if (value === '1') {
-              // Применяем стили для Header 1
-              this.applyHeader1Styles();
-            } else if (value === false) {
-              // Применяем стили для Normal text
-              this.applyNormalStyles();
-            } else {
-              // Для других header используем стандартное поведение
-              this.quillInstance.format('header', value);
-            }
-          }
+        if (value === '1') this.applyHeader1Styles();
+        else if (value === false) this.applyNormalStyles();
+        else this.quillInstance.format('header', value);
         }
       }
     };
@@ -272,7 +280,7 @@ private applyHeader1Styles(): void {
   this.quillInstance.format('header', 1);
   this.quillInstance.format('size', 'large');
   this.quillInstance.format('align', 'center');
-  this.quillInstance.format('color', '#520d0dff'); // Красный цвет
+  this.quillInstance.format('color', '#ffffff');
 }
 
 private applyNormalStyles(): void {

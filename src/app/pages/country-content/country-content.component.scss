@@ -648,10 +648,16 @@
 
   .ql-editor img {
     max-width: 100%;
-    height: auto;
-    margin: 1rem 0;
     border-radius: 10px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    margin: 1rem 0;
+  }
+
+  .ql-image-resize {
+    img {
+      max-width: none !important; /* Важно для resize */
+      height: auto;
+    }
   }
 
   /* =========================================================
