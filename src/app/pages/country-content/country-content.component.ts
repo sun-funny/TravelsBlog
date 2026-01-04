@@ -181,15 +181,14 @@ export class CountryContentComponent implements OnInit, OnDestroy {
   if (this.isEditMode && this.isAdmin) {
     modules.toolbar = {
       container: [
+        [{ 'header': [1, false, 2, 3, 4, 5, 6] }], // Header 1 и Normal
         ['bold', 'italic', 'underline', 'strike'],
         ['blockquote', 'code-block'],
-        [{ 'header': 1 }, { 'header': 2 }],
         [{ 'list': 'ordered'}, { 'list': 'bullet' }],
         [{ 'script': 'sub'}, { 'script': 'super' }],
         [{ 'indent': '-1'}, { 'indent': '+1' }],
         [{ 'direction': 'rtl' }],
         [{ 'size': ['small', false, 'large', 'huge'] }],
-        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
         [{ 'color': [] }, { 'background': [] }],
         [{ 'font': [] }],
         [{ 'align': [] }],
@@ -201,9 +200,25 @@ export class CountryContentComponent implements OnInit, OnDestroy {
           this.zone.run(() => {
             this.handleImageUpload();
           });
+        },
+        // Кастомный обработчик для Header 1
+        header: (value: any) => {
+          if (this.quillInstance) {
+            if (value === '1') {
+              // Применяем стили для Header 1
+              this.applyHeader1Styles();
+            } else if (value === false) {
+              // Применяем стили для Normal text
+              this.applyNormalStyles();
+            } else {
+              // Для других header используем стандартное поведение
+              this.quillInstance.format('header', value);
+            }
+          }
         }
       }
     };
+
   }
   
   this.zone.runOutsideAngular(() => {
@@ -244,6 +259,36 @@ export class CountryContentComponent implements OnInit, OnDestroy {
       console.error('Error initializing Quill:', error);
     }
   });
+}
+
+private applyHeader1Styles(): void {
+  if (!this.quillInstance) return;
+  
+  // Получаем текущий формат в позиции курсора
+  const range = this.quillInstance.getSelection();
+  if (!range) return;
+  
+  // Применяем все стили сразу
+  this.quillInstance.format('header', 1);
+  this.quillInstance.format('size', 'large');
+  this.quillInstance.format('align', 'center');
+  this.quillInstance.format('color', '#520d0dff'); // Красный цвет
+}
+
+private applyNormalStyles(): void {
+  if (!this.quillInstance) return;
+  
+  const range = this.quillInstance.getSelection();
+  if (!range) return;
+  
+  // Сбрасываем header и применяем стили для обычного текста
+  this.quillInstance.format('header', false);
+  this.quillInstance.format('size', false);
+  this.quillInstance.format('align', 'justify');
+  this.quillInstance.format('color', '#ffffff'); // Белый цвет
+  
+  // Убедимся, что шрифт normal
+  this.quillInstance.format('font', false); // Сброс кастомного шрифта
 }
 
   private imageMatcher(node: any, delta: any): any {
