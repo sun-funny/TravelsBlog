@@ -154,18 +154,25 @@ export class CountryContentComponent implements OnInit, OnDestroy {
   }
 
   // Инициализация Quill с правильными опциями
-  private initializeQuill(): void {
-  this.destroyQuill();
+private initializeQuill(): void {
+  // Уничтожаем только если уже существует
+  if (this.quillInstance) {
+    this.destroyQuill();
+  }
   
   if (!this.editorRef || !this.editorRef.nativeElement) {
     console.error('Editor element not found');
     return;
   }
   
-  // ОЧИЩАЕМ содержимое элемента редактора
+  // Сохраняем позицию курсора перед инициализацией
+  const previousSelection = this.quillInstance?.getSelection();
+  
+  // Используем старый контент или загруженный
+  const contentToLoad = this.countryContent?.content || '';
+  
   this.editorRef.nativeElement.innerHTML = '';
   
-  // ТОЛЬКО для режима редактирования создаем тулбар
   const modules: any = {
     clipboard: {
       matchers: [
@@ -177,11 +184,10 @@ export class CountryContentComponent implements OnInit, OnDestroy {
     }
   };
   
-  // В режиме просмотра НЕ добавляем модуль toolbar
   if (this.isEditMode && this.isAdmin) {
     modules.toolbar = {
       container: [
-        [{ 'header': [1, false, 2, 3, 4, 5, 6] }], // Header 1 и Normal
+        [{ 'header': [1, false, 2, 3, 4, 5, 6] }],
         ['bold', 'italic', 'underline', 'strike'],
         ['blockquote', 'code-block'],
         [{ 'list': 'ordered'}, { 'list': 'bullet' }],
@@ -196,99 +202,173 @@ export class CountryContentComponent implements OnInit, OnDestroy {
         ['link', 'image', 'video']
       ],
       handlers: {
-        image: () => {
-          this.zone.run(() => {
-            this.handleImageUpload();
-          });
-        },
-        // Кастомный обработчик для Header 1
-        header: (value: any) => {
-          if (this.quillInstance) {
-            if (value === '1') {
-              // Применяем стили для Header 1
-              this.applyHeader1Styles();
-            } else if (value === false) {
-              // Применяем стили для Normal text
-              this.applyNormalStyles();
-            } else {
-              // Для других header используем стандартное поведение
-              this.quillInstance.format('header', value);
-            }
-          }
-        }
+  image: () => {
+    this.zone.run(() => {
+      this.handleImageUpload();
+    });
+  },
+  header: (value: any) => {
+    this.zone.run(() => {
+      if (value === '1') {
+        this.applyHeader1Styles();
+      } else if (value === false) {
+        this.applyNormalStyles();
+      } else {
+        this.applyFormatSafely('header', value);
       }
+    });
+  },
+  // Добавьте для других форматов
+  bold: () => this.applyFormatSafely('bold', true),
+  italic: () => this.applyFormatSafely('italic', true),
+  underline: () => this.applyFormatSafely('underline', true),
+  strike: () => this.applyFormatSafely('strike', true),
+  color: (value: string) => this.applyFormatSafely('color', value),
+  background: (value: string) => this.applyFormatSafely('background', value)
+}
     };
-
   }
   
   this.zone.runOutsideAngular(() => {
     try {
       this.quillInstance = new Quill(this.editorRef.nativeElement, {
-        theme: this.isEditMode && this.isAdmin ? 'snow' : 'bubble', // Используем 'bubble' для режима просмотра
+        theme: (this.isEditMode && this.isAdmin) ? 'snow' : 'bubble',
         modules: modules,
         readOnly: !(this.isEditMode && this.isAdmin),
         placeholder: this.isEditMode ? 'Начните вводить текст...' : ''
       });
       
-      if (this.countryContent?.content) {
-        setTimeout(() => {
-          if (this.quillInstance && this.quillInstance.root) {
-            this.quillInstance.root.innerHTML = this.countryContent.content;
-          }
-        }, 0);
+      // Устанавливаем контент синхронно
+      if (contentToLoad) {
+        this.quillInstance.clipboard.dangerouslyPasteHTML(0, contentToLoad);
       }
       
-      // СКРЫВАЕМ тулбар в режиме просмотра
+      // Восстанавливаем позицию курсора после загрузки контента
+      setTimeout(() => {
+        if (previousSelection && previousSelection.index >= 0) {
+          try {
+            this.quillInstance.setSelection(previousSelection.index, previousSelection.length);
+          } catch (e) {
+            // Если не удалось восстановить, ставим в конец
+            const length = this.quillInstance.getLength();
+            this.quillInstance.setSelection(length, 0);
+          }
+        }
+      }, 10);
+      
+      // Подписываемся на события форматирования
+      if (this.isEditMode && this.isAdmin) {
+        this.setupFormatHandlers();
+      }
+      
+      // Скрываем тулбар в режиме просмотра
       if (!(this.isEditMode && this.isAdmin)) {
         setTimeout(() => {
           const toolbar = this.editorRef.nativeElement.querySelector('.ql-toolbar');
           if (toolbar) {
             toolbar.style.display = 'none';
-            toolbar.remove(); // Полностью удаляем из DOM
-          }
-          
-          // Также скрываем контейнер тулбара, если он существует
-          const toolbarContainer = this.editorRef.nativeElement.parentElement.querySelector('.ql-toolbar-container');
-          if (toolbarContainer) {
-            toolbarContainer.style.display = 'none';
-            toolbarContainer.remove();
           }
         }, 50);
       }
+      
     } catch (error) {
       console.error('Error initializing Quill:', error);
     }
   });
 }
 
+// Добавьте новый метод для настройки обработчиков форматирования
+private setupFormatHandlers(): void {
+  if (!this.quillInstance) return;
+  
+  // Обработчик для форматирования текста
+  this.quillInstance.on('editor-change', (eventType: string, ...args: any[]) => {
+    if (eventType === 'selection-change') {
+      // Сохраняем позицию курсора при изменении выделения
+      this.saveCursorPosition();
+    } else if (eventType === 'text-change') {
+      // Сохраняем позицию курсора при изменении текста
+      this.saveCursorPosition();
+    }
+  });
+}
+
+// Метод для сохранения позиции курсора
+private saveCursorPosition(): void {
+  if (!this.quillInstance) return;
+  
+  const selection = this.quillInstance.getSelection();
+  if (selection) {
+    // Можно сохранить в локальное хранилище или переменную
+    sessionStorage.setItem('quillCursorPosition', JSON.stringify(selection));
+  }
+}
+
+// Метод для восстановления позиции курсора
+private restoreCursorPosition(): void {
+  if (!this.quillInstance) return;
+  
+  const savedPosition = sessionStorage.getItem('quillCursorPosition');
+  if (savedPosition) {
+    try {
+      const position = JSON.parse(savedPosition);
+      setTimeout(() => {
+        this.quillInstance.setSelection(position.index, position.length);
+      }, 100);
+    } catch (e) {
+      console.error('Error restoring cursor position:', e);
+    }
+  }
+}
+
+private applyFormatSafely(format: string, value: any): void {
+  if (!this.quillInstance) return;
+  
+  // Сохраняем текущую позицию курсора
+  const currentSelection = this.quillInstance.getSelection();
+  if (!currentSelection) return;
+  
+  // Применяем форматирование
+  this.quillInstance.format(format, value);
+  
+  // Восстанавливаем фокус и позицию курсора
+  setTimeout(() => {
+    try {
+      this.quillInstance.setSelection(currentSelection.index, currentSelection.length);
+      this.quillInstance.focus();
+    } catch (e) {
+      console.error('Error restoring cursor after format:', e);
+    }
+  }, 0);
+}
+
+// Для заголовка Header 1
 private applyHeader1Styles(): void {
   if (!this.quillInstance) return;
   
-  // Получаем текущий формат в позиции курсора
   const range = this.quillInstance.getSelection();
   if (!range) return;
   
-  // Применяем все стили сразу
-  this.quillInstance.format('header', 1);
-  this.quillInstance.format('size', 'large');
-  this.quillInstance.format('align', 'center');
-  this.quillInstance.format('color', '#520d0dff'); // Красный цвет
+  // Используем безопасное применение
+  this.applyFormatSafely('header', 1);
+  this.applyFormatSafely('size', 'large');
+  this.applyFormatSafely('align', 'center');
+  this.applyFormatSafely('color', '#520d0dff');
 }
 
+// Для обычного текста
 private applyNormalStyles(): void {
   if (!this.quillInstance) return;
   
   const range = this.quillInstance.getSelection();
   if (!range) return;
   
-  // Сбрасываем header и применяем стили для обычного текста
-  this.quillInstance.format('header', false);
-  this.quillInstance.format('size', false);
-  this.quillInstance.format('align', 'justify');
-  this.quillInstance.format('color', '#ffffff'); // Белый цвет
-  
-  // Убедимся, что шрифт normal
-  this.quillInstance.format('font', false); // Сброс кастомного шрифта
+  // Используем безопасное применение
+  this.applyFormatSafely('header', false);
+  this.applyFormatSafely('size', false);
+  this.applyFormatSafely('align', 'justify');
+  this.applyFormatSafely('color', '#ffffff');
+  this.applyFormatSafely('font', false);
 }
 
   private imageMatcher(node: any, delta: any): any {
@@ -455,22 +535,32 @@ private applyNormalStyles(): void {
     });
   }
 
-  toggleEditMode(): void {
+toggleEditMode(): void {
   if (this.isAdmin) {
-    this.isEditMode = !this.isEditMode;
-    
-    // Сохраняем текущий контент перед переключением режима
+    // Сохраняем текущий контент и позицию курсора
     if (this.quillInstance && this.quillInstance.root) {
       const currentContent = this.quillInstance.root.innerHTML;
       if (this.countryContent) {
         this.countryContent.content = currentContent;
       }
+      
+      // Сохраняем позицию курсора
+      this.saveCursorPosition();
     }
     
-    // Полностью пересоздаем Quill с новыми параметрами
+    this.isEditMode = !this.isEditMode;
+    
+    // Используем небольшую задержку для плавного переключения
     setTimeout(() => {
       this.initializeQuill();
-    }, 0);
+      
+      // Восстанавливаем позицию курсора после инициализации
+      if (this.isEditMode) {
+        setTimeout(() => {
+          this.restoreCursorPosition();
+        }, 200);
+      }
+    }, 50);
   }
 }
 
@@ -479,6 +569,8 @@ private applyNormalStyles(): void {
   }
 
   ngOnDestroy(): void {
+    sessionStorage.removeItem('quillCursorPosition');
+
     // Уничтожаем Quill при уничтожении компонента
     this.destroyQuill();
     
