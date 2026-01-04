@@ -191,7 +191,7 @@ export class CountryContentComponent implements OnInit, OnDestroy {
         width: '12px',
         borderRadius: '50%'
       },
-      // Важно: разрешить изменение размера
+      // Разрешить изменение размера
       displaySize: true,
       // Стандартный метод изменения размера
       resizeImage: true
@@ -280,7 +280,7 @@ private applyHeader1Styles(): void {
   this.quillInstance.format('header', 1);
   this.quillInstance.format('size', 'large');
   this.quillInstance.format('align', 'center');
-  this.quillInstance.format('color', '#ffffff');
+  this.quillInstance.format('color', '#520d0dff'); // Красный цвет
 }
 
 private applyNormalStyles(): void {
