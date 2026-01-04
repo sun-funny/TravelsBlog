@@ -296,6 +296,10 @@
           min-height: 400px;
           padding: 1.5rem;
           color: #e0f0ff;
+
+          .ql-editor [style*="color"] {
+          color: unset !important;
+          }
           
           p {
             line-height: 1.7;
@@ -448,113 +452,153 @@
 
 // Стили для Quill редактора
 ::ng-deep {
-  // Скрываем панель инструментов по умолчанию
+
+  /* ===== Toolbar ===== */
   .ql-toolbar {
-    display: none !important;
-    border: none !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-    background: rgba(255, 255, 255, 0.05) !important;
-    border-radius: 8px 8px 0 0;
-    backdrop-filter: blur(10px);
-    
-    &.ql-toolbar-visible {
-      display: block !important;
-    }
+    background: rgba(17, 73, 103, 0.95);
+    border: 1px solid rgba(135, 206, 235, 0.3);
+    border-bottom: none;
+    border-radius: 12px 12px 0 0;
+    padding: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
   }
-  
+
+  .ql-toolbar .ql-formats {
+    margin-right: 8px;
+  }
+
+  /* ===== Toolbar buttons ===== */
+  .ql-toolbar button {
+    color: #e0f0ff;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ql-toolbar button:hover {
+    background: rgba(135, 206, 235, 0.25);
+    color: #87ceeb;
+  }
+
+  .ql-toolbar button.ql-active {
+    background: rgba(135, 206, 235, 0.35);
+    color: #87ceeb;
+  }
+
+  /* ===== Pickers (font / size / color / bg / align) ===== */
+  .ql-picker {
+    color: #e0f0ff;
+  }
+
+  .ql-picker-label {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    padding: 2px 8px;
+    color: #e0f0ff;
+  }
+
+  .ql-picker-label:hover {
+    color: #87ceeb;
+  }
+
+  .ql-picker-options {
+    background: rgba(17, 73, 103, 0.97);
+    border: 1px solid rgba(135, 206, 235, 0.3);
+    border-radius: 8px;
+    padding: 6px;
+  }
+
+  .ql-picker-item {
+    color: #e0f0ff;
+  }
+
+  .ql-picker-item:hover {
+    color: #87ceeb;
+  }
+
+  /* ===== Color & Background picker ===== */
+  .ql-color-picker,
+  .ql-background {
+    width: 160px;
+  }
+
+  .ql-color-picker .ql-picker-item,
+  .ql-background .ql-picker-item {
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  /* ===== Editor container ===== */
   .ql-container {
-    border: none !important;
-    border-top: 1px solid transparent !important;
-    
-    &.ql-disabled {
-      .ql-editor {
-        cursor: default !important;
-        user-select: text !important;
-      }
-    }
+    background: rgba(10, 31, 45, 0.85);
+    border: 1px solid rgba(135, 206, 235, 0.3);
+    border-radius: 0 0 12px 12px;
+    font-family: 'Montserrat', Helvetica, sans-serif;
+    font-size: 1rem;
   }
-  
-  // Стили для видимой панели инструментов
-  .ql-toolbar-visible {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    padding: 8px !important;
-    
-    .ql-formats {
-      margin-right: 8px !important;
-      margin-bottom: 4px !important;
-    }
-    
-    button {
-      color: #e0f0ff !important;
-      background: rgba(255, 255, 255, 0.1) !important;
-      border-radius: 4px;
-      width: 28px;
-      height: 28px;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      
-      &:hover {
-        color: #87ceeb !important;
-        background: rgba(135, 206, 235, 0.2) !important;
-      }
-      
-      &.ql-active {
-        color: #87ceeb !important;
-        background: rgba(135, 206, 235, 0.3) !important;
-      }
-    }
-    
-    .ql-picker {
-      color: #e0f0ff !important;
-      
-      .ql-picker-label {
-        color: #e0f0ff !important;
-        padding: 2px 8px !important;
-      }
-      
-      .ql-picker-options {
-        background: rgba(17, 73, 103, 0.95) !important;
-        border: 1px solid rgba(135, 206, 235, 0.3) !important;
-        backdrop-filter: blur(10px);
-        
-        .ql-picker-item {
-          color: #e0f0ff !important;
-          
-          &:hover {
-            color: #87ceeb !important;
-          }
-        }
-      }
-    }
+
+  /* ===== Editor ===== */
+  .ql-editor {
+    min-height: 300px;
+    padding: 1.5rem;
+    color: #e0f0ff;
+    line-height: 1.7;
   }
-  
-  // Стили для контейнера редактора в режиме просмотра
-  .quill-container:not(.editing) {
-    .ql-container {
-      border-top: none !important;
-    }
-    
-    // Убедитесь, что нет случайных отступов для тулбара
-    .ql-toolbar {
-      display: none !important;
-      height: 0 !important;
-      padding: 0 !important;
-      margin: 0 !important;
-      overflow: hidden !important;
-    }
+
+  .ql-editor p {
+    margin-bottom: 1rem;
   }
-  
-  // Стили для контейнера редактора в режиме редактирования
-  .quill-container.editing {
-    .ql-toolbar {
-      display: flex !important;
-    }
-    
-    .ql-container {
-      border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
-    }
+
+  /* ===== Headings ===== */
+  .ql-editor h1,
+  .ql-editor h2,
+  .ql-editor h3,
+  .ql-editor h4,
+  .ql-editor h5,
+  .ql-editor h6 {
+    color: #87ceeb;
+    margin: 1.5rem 0 0.75rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  }
+
+  /* ===== Blockquote ===== */
+  .ql-editor blockquote {
+    border-left: 4px solid #87ceeb;
+    background: rgba(135, 206, 235, 0.12);
+    padding: 0.75rem 1rem;
+    margin: 1rem 0;
+    border-radius: 0 8px 8px 0;
+    color: #a0c8e0;
+  }
+
+  /* ===== Code block ===== */
+  .ql-editor pre {
+    background: rgba(0, 0, 0, 0.4);
+    color: #e0f0ff;
+    padding: 1rem;
+    border-radius: 8px;
+    overflow-x: auto;
+  }
+
+  /* ===== Images ===== */
+  .ql-editor img {
+    max-width: 100%;
+    height: auto;
+    margin: 1rem 0;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  }
+
+  /* ===== Disabled (view mode) ===== */
+  .ql-container.ql-disabled .ql-editor {
+    cursor: default;
+    user-select: text;
   }
 }
 
