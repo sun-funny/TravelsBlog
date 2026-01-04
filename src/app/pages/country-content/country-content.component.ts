@@ -155,88 +155,96 @@ export class CountryContentComponent implements OnInit, OnDestroy {
 
   // Инициализация Quill с правильными опциями
   private initializeQuill(): void {
-    // Уничтожаем предыдущий экземпляр Quill
-    this.destroyQuill();
-    
-    if (!this.editorRef || !this.editorRef.nativeElement) {
-      console.error('Editor element not found');
-      return;
+  this.destroyQuill();
+  
+  if (!this.editorRef || !this.editorRef.nativeElement) {
+    console.error('Editor element not found');
+    return;
+  }
+  
+  // ОЧИЩАЕМ содержимое элемента редактора
+  this.editorRef.nativeElement.innerHTML = '';
+  
+  // ТОЛЬКО для режима редактирования создаем тулбар
+  const modules: any = {
+    clipboard: {
+      matchers: [
+        ['IMG', this.imageMatcher.bind(this)]
+      ]
+    },
+    keyboard: {
+      bindings: Quill.import('modules/keyboard').bindings
     }
-    
-    // Определяем модули в зависимости от режима
-    const modules: any = {
-      clipboard: {
-        matchers: [
-          ['IMG', this.imageMatcher.bind(this)]
-        ]
-      },
-      keyboard: {
-        bindings: Quill.import('modules/keyboard').bindings
+  };
+  
+  // В режиме просмотра НЕ добавляем модуль toolbar
+  if (this.isEditMode && this.isAdmin) {
+    modules.toolbar = {
+      container: [
+        ['bold', 'italic', 'underline', 'strike'],
+        ['blockquote', 'code-block'],
+        [{ 'header': 1 }, { 'header': 2 }],
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        [{ 'script': 'sub'}, { 'script': 'super' }],
+        [{ 'indent': '-1'}, { 'indent': '+1' }],
+        [{ 'direction': 'rtl' }],
+        [{ 'size': ['small', false, 'large', 'huge'] }],
+        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+        [{ 'color': [] }, { 'background': [] }],
+        [{ 'font': [] }],
+        [{ 'align': [] }],
+        ['clean'],
+        ['link', 'image', 'video']
+      ],
+      handlers: {
+        image: () => {
+          this.zone.run(() => {
+            this.handleImageUpload();
+          });
+        }
       }
     };
-    
-    // Добавляем тулбар только в режиме редактирования для админа
-    if (this.isEditMode && this.isAdmin) {
-      modules.toolbar = {
-        container: [
-          ['bold', 'italic', 'underline', 'strike'],
-          ['blockquote', 'code-block'],
-          [{ 'header': 1 }, { 'header': 2 }],
-          [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-          [{ 'script': 'sub'}, { 'script': 'super' }],
-          [{ 'indent': '-1'}, { 'indent': '+1' }],
-          [{ 'direction': 'rtl' }],
-          [{ 'size': ['small', false, 'large', 'huge'] }],
-          [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-          [{ 'color': [] }, { 'background': [] }],
-          [{ 'font': [] }],
-          [{ 'align': [] }],
-          ['clean'],
-          ['link', 'image', 'video']
-        ],
-        handlers: {
-          image: () => {
-            this.zone.run(() => {
-              this.handleImageUpload();
-            });
-          }
-        }
-      };
-    }
-    
-    // Инициализируем Quill
-    this.zone.runOutsideAngular(() => {
-      try {
-        this.quillInstance = new Quill(this.editorRef.nativeElement, {
-          theme: 'snow',
-          modules: modules,
-          readOnly: !(this.isEditMode && this.isAdmin),
-          placeholder: this.isEditMode ? 'Начните вводить текст...' : ''
-        });
-        
-        // Устанавливаем контент
-        if (this.countryContent?.content) {
-          setTimeout(() => {
-            if (this.quillInstance && this.quillInstance.root) {
-              this.quillInstance.root.innerHTML = this.countryContent.content;
-            }
-          }, 0);
-        }
-        
-        // Принудительно скрываем тулбар в режиме просмотра
-        if (!(this.isEditMode && this.isAdmin)) {
-          setTimeout(() => {
-            const toolbar = this.editorRef.nativeElement.querySelector('.ql-toolbar');
-            if (toolbar) {
-              toolbar.style.display = 'none';
-            }
-          }, 50);
-        }
-      } catch (error) {
-        console.error('Error initializing Quill:', error);
-      }
-    });
   }
+  
+  this.zone.runOutsideAngular(() => {
+    try {
+      this.quillInstance = new Quill(this.editorRef.nativeElement, {
+        theme: this.isEditMode && this.isAdmin ? 'snow' : 'bubble', // Используем 'bubble' для режима просмотра
+        modules: modules,
+        readOnly: !(this.isEditMode && this.isAdmin),
+        placeholder: this.isEditMode ? 'Начните вводить текст...' : ''
+      });
+      
+      if (this.countryContent?.content) {
+        setTimeout(() => {
+          if (this.quillInstance && this.quillInstance.root) {
+            this.quillInstance.root.innerHTML = this.countryContent.content;
+          }
+        }, 0);
+      }
+      
+      // СКРЫВАЕМ тулбар в режиме просмотра
+      if (!(this.isEditMode && this.isAdmin)) {
+        setTimeout(() => {
+          const toolbar = this.editorRef.nativeElement.querySelector('.ql-toolbar');
+          if (toolbar) {
+            toolbar.style.display = 'none';
+            toolbar.remove(); // Полностью удаляем из DOM
+          }
+          
+          // Также скрываем контейнер тулбара, если он существует
+          const toolbarContainer = this.editorRef.nativeElement.parentElement.querySelector('.ql-toolbar-container');
+          if (toolbarContainer) {
+            toolbarContainer.style.display = 'none';
+            toolbarContainer.remove();
+          }
+        }, 50);
+      }
+    } catch (error) {
+      console.error('Error initializing Quill:', error);
+    }
+  });
+}
 
   private imageMatcher(node: any, delta: any): any {
     if (node.tagName === 'IMG') {
@@ -403,15 +411,23 @@ export class CountryContentComponent implements OnInit, OnDestroy {
   }
 
   toggleEditMode(): void {
-    if (this.isAdmin) {
-      this.isEditMode = !this.isEditMode;
-      
-      // Переинициализируем Quill с новыми параметрами
-      setTimeout(() => {
-        this.initializeQuill();
-      }, 100);
+  if (this.isAdmin) {
+    this.isEditMode = !this.isEditMode;
+    
+    // Сохраняем текущий контент перед переключением режима
+    if (this.quillInstance && this.quillInstance.root) {
+      const currentContent = this.quillInstance.root.innerHTML;
+      if (this.countryContent) {
+        this.countryContent.content = currentContent;
+      }
     }
+    
+    // Полностью пересоздаем Quill с новыми параметрами
+    setTimeout(() => {
+      this.initializeQuill();
+    }, 0);
   }
+}
 
   goBack(): void {
     this.router.navigate(['/travels']);
