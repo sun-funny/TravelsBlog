@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
@@ -20,7 +20,8 @@ export class CountryContentService {
       if (error.status === 404) {
         const emptyContent: ICountryContent = {
           countryId: countryId,
-          content: ''
+          content: '',
+          carouselImages: []
         };
         return of(emptyContent);
       }
@@ -78,28 +79,41 @@ export class CountryContentService {
     );
   }
 
+  public deleteImage(imagePath: string): Observable<any> {
+    // Вариант 1: Используем getAuthHeaders()
+    const headers = this.getAuthHeaders();
+    
+    return this.http.delete(`${environment.apiUrl}/api/images`, {
+      body: { imagePath },
+      headers: headers
+    }).pipe(
+      catchError(this.handleError)
+    );
+}
+
   // Вспомогательные методы
 
   private prepareContentForSave(content: ICountryContent): any {
-    const cleanContent = content.content?.trim() || '';
-    
-    // Очищаем HTML: удаляем пустые параграфы и лишние пробелы
-    let processedContent = cleanContent
-      .replace(/<p>\s*<\/p>/g, '') // Удаляем пустые параграфы
-      .replace(/\s+/g, ' ') // Заменяем множественные пробелы на один
-      .trim();
-    
-    // Если после очистки контент пустой, ставим пустую строку
-    if (!processedContent || processedContent === '<p></p>') {
-      processedContent = '';
-    }
-
-    return {
-      countryId: content.countryId,
-      content: processedContent,
-      updatedBy: content.updatedBy
-    };
+  const cleanContent = content.content?.trim() || '';
+  
+  // Очищаем HTML: удаляем пустые параграфы и лишние пробелы
+  let processedContent = cleanContent
+    .replace(/<p>\s*<\/p>/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  
+  if (!processedContent || processedContent === '<p></p>') {
+    processedContent = '';
   }
+
+  // ВОТ ИСПРАВЛЕНИЕ: добавляем carouselImages в данные для сохранения
+  return {
+    countryId: content.countryId,
+    content: processedContent,
+    carouselImages: content.carouselImages || [], // Добавляем массив изображений карусели
+    updatedBy: content.updatedBy
+  };
+}
 
   private getAuthHeaders(isJson: boolean = true): { [header: string]: string } {
     const token = localStorage.getItem('token');

@@ -44,12 +44,77 @@
       </div>
     </div>
 
-    <!-- Основное изображение страны -->
-    <div class="country-image-container">
-      <div class="image-wrapper">
-        <img [src]="getImageUrl(travel.img)" 
-             alt="{{travel.country}}" 
-             class="country-hero-image">
+    <!-- Карусель изображений -->
+    <div class="image-carousel-section">
+      <div class="section-header">
+        <h3>Галерея</h3>
+        <button pButton 
+                type="button" 
+                icon="pi pi-images" 
+                label="Добавить изображения" 
+                class="p-button-outlined add-images-btn"
+                *ngIf="isAdmin"
+                (click)="openImageUploadModal()">
+        </button>
+      </div>
+      
+      <div class="carousel-container" *ngIf="carouselImages.length > 0">
+        <img [src]="carouselImages[selectedImageIndex].url" 
+             alt="Image {{selectedImageIndex + 1}}"
+             class="main-carousel-image"
+             [class.loading]="carouselImages[selectedImageIndex].isUploading">
+        
+        <button class="carousel-nav prev" 
+                (click)="prevImage()"
+                [disabled]="carouselImages.length <= 1">
+          <i class="pi pi-chevron-left"></i>
+        </button>
+        
+        <button class="carousel-nav next" 
+                (click)="nextImage()"
+                [disabled]="carouselImages.length <= 1">
+          <i class="pi pi-chevron-right"></i>
+        </button>
+        
+        <div class="image-counter">
+          {{selectedImageIndex + 1}} / {{carouselImages.length}}
+        </div>
+        
+        <div class="carousel-indicators">
+          <div *ngFor="let image of carouselImages; let i = index" 
+               class="indicator" 
+               [class.active]="i === selectedImageIndex"
+               (click)="selectImage(i)">
+          </div>
+        </div>
+      </div>
+      
+      <!-- Миниатюры -->
+      <div class="thumbnail-container" *ngIf="carouselImages.length > 1">
+        <div *ngFor="let image of carouselImages; let i = index" 
+             class="thumbnail" 
+             [class.active]="i === selectedImageIndex"
+             (click)="selectImage(i)">
+          <img [src]="image.url" alt="Thumbnail {{i + 1}}">
+          <button class="delete-thumbnail" 
+                  *ngIf="isAdmin"
+                  (click)="removeCarouselImage(i); $event.stopPropagation()">
+            <i class="pi pi-times"></i>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Сообщение если нет изображений -->
+      <div *ngIf="carouselImages.length === 0" class="no-images-message">
+        <p>Нет изображений для отображения</p>
+        <button pButton 
+                type="button" 
+                icon="pi pi-plus" 
+                label="Добавить изображения" 
+                class="p-button-outlined"
+                *ngIf="isAdmin"
+                (click)="openImageUploadModal()">
+        </button>
       </div>
     </div>
 
@@ -84,3 +149,80 @@
     </div>
   </div>
 </div>
+
+<!-- Модальное окно загрузки изображений -->
+<p-dialog [(visible)]="showImageUploadModal" 
+          [modal]="true" 
+          [style]="{ width: '90vw', maxWidth: '800px' }"
+          [draggable]="false" 
+          [resizable]="false"
+          class="image-upload-modal">
+  
+  <ng-template pTemplate="header">
+    <div class="modal-header">
+      <h3>Добавление изображений</h3>
+      <button pButton 
+              type="button" 
+              icon="pi pi-times" 
+              class="p-button-text p-button-rounded"
+              (click)="showImageUploadModal = false"
+              [disabled]="isUploadingImages">
+      </button>
+    </div>
+  </ng-template>
+  
+  <div class="image-preview-grid">
+    <div *ngFor="let image of carouselImages; let i = index" 
+         class="image-preview-item">
+      <img [src]="image.url" alt="Preview {{i + 1}}">
+      <div class="preview-overlay">
+        <button class="delete-preview" 
+                (click)="removeCarouselImage(i)"
+                [disabled]="isUploadingImages">
+          Удалить
+        </button>
+      </div>
+      <div *ngIf="image.isUploading" class="uploading-indicator">
+        Загрузка...
+      </div>
+    </div>
+  </div>
+  
+  <div class="upload-controls">
+    <div class="file-input-wrapper">
+      <input type="file" 
+             multiple 
+             accept="image/*" 
+             (change)="onCarouselImagesSelected($event)"
+             [disabled]="isUploadingImages">
+    </div>
+    
+    <div class="modal-actions">
+      <button pButton 
+              type="button" 
+              label="Отмена" 
+              class="p-button-secondary"
+              (click)="showImageUploadModal = false"
+              [disabled]="isUploadingImages">
+      </button>
+      
+      <button pButton 
+              type="button" 
+              label="Загрузить" 
+              class="p-button-success"
+              (click)="uploadCarouselImages()"
+              [disabled]="isUploadingImages || !hasFilesToUpload()">
+        <p-progressSpinner *ngIf="isUploadingImages" 
+                          styleClass="p-button-spinner" 
+                          strokeWidth="2">
+        </p-progressSpinner>
+      </button>
+    </div>
+  </div>
+  
+  <div class="upload-info">
+    <p><i class="pi pi-info-circle"></i> 
+      Максимальное количество изображений: 10. Поддерживаемые форматы: JPG, PNG, GIF, WebP. Максимальный размер файла: 10MB.
+    </p>
+  </div>
+</p-dialog>
