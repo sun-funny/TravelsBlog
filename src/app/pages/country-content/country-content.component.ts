@@ -453,28 +453,36 @@ private extractImagePathFromUrl(url: string): string | null {
         ...Quill.import('modules/keyboard').bindings,
         // Кастомный биндинг для удаления
         deleteCarousel: {
-          key: 'Delete',
-          handler: (range: any) => {
-            if (this.isEditMode && this.isAdmin) {
-              this.zone.run(() => {
-                this.deleteCarouselAtCursor();
-              });
-            }
-            return false;
+      key: 'Delete',
+      handler: (range: any) => {
+        if (this.isEditMode && this.isAdmin) {
+          const isInCarousel = this.isCursorInCarousel(range);
+          if (isInCarousel) {
+            this.zone.run(() => {
+              this.deleteCarouselAtCursor();
+            });
+            return false; // Блокируем только если в карусели
           }
+        }
+        return true; // Разрешаем стандартное удаление
+      }
         },
         // Также можно добавить для Backspace
         backspaceDeleteCarousel: {
-          key: 'Backspace',
-          handler: (range: any) => {
-            if (this.isEditMode && this.isAdmin) {
-              this.zone.run(() => {
-                this.deleteCarouselAtCursor();
-              });
-            }
-            return false;
+      key: 'Backspace',
+      handler: (range: any) => {
+        if (this.isEditMode && this.isAdmin) {
+          const isInCarousel = this.isCursorInCarousel(range);
+          if (isInCarousel) {
+            this.zone.run(() => {
+              this.deleteCarouselAtCursor();
+            });
+            return false; // Блокируем только если в карусели
           }
         }
+        return true; // Разрешаем стандартное удаление
+      }
+    }
       }
     },
     imageResize: {
@@ -591,6 +599,17 @@ private extractImagePathFromUrl(url: string): string | null {
 
 // Для внутренней карусели
 
+private isCursorInCarousel(range: any): boolean {
+  if (!range || !this.quillInstance) return false;
+  
+  const [leaf] = this.quillInstance.getLeaf(range.index);
+  if (leaf && leaf.parent) {
+    const carouselElement = leaf.parent.domNode.closest('.ql-carousel');
+    return !!carouselElement;
+  }
+  
+  return false;
+}
 
 // Обработчик для копирования/вставки карусели
 private carouselMatcher(node: HTMLElement, delta: any): any {
@@ -614,33 +633,19 @@ private deleteCarouselAtCursor(): void {
   const range = this.quillInstance.getSelection();
   if (!range) return;
   
-  const [leaf, offset] = this.quillInstance.getLeaf(range.index);
+  const [leaf] = this.quillInstance.getLeaf(range.index);
   
   if (leaf && leaf.parent) {
     const carouselElement = leaf.parent.domNode.closest('.ql-carousel') as HTMLElement;
-    if (carouselElement) {
-      if (confirm('Удалить эту карусель?')) {
-        // Находим индекс карусели в редакторе
-        const editor = this.quillInstance.scroll.domNode as HTMLElement;
-        const carousels = editor.querySelectorAll('.ql-carousel');
-        let carouselIndex = -1;
-        
-        carousels.forEach((carousel: Element, index: number) => {
-          if (carousel === carouselElement) {
-            carouselIndex = index;
-          }
-        });
-        
-        if (carouselIndex !== -1) {
-          // Удаляем карусель из контента Quill
-          const length = this.quillInstance.getLength();
-          const startIndex = Array.from(editor.childNodes).indexOf(carouselElement);
-          
-          if (startIndex !== -1) {
-            // Используем API Quill для удаления
-            this.quillInstance.deleteText(startIndex, 1);
-          }
-        }
+    if (carouselElement && confirm('Удалить эту карусель?')) {
+      // Находим индекс карусели в редакторе
+      const editor = this.quillInstance.scroll.domNode as HTMLElement;
+      const allElements = Array.from(editor.childNodes);
+      const carouselIndex = allElements.indexOf(carouselElement);
+      
+      if (carouselIndex !== -1) {
+        // Удаляем через API Quill
+        this.quillInstance.deleteText(carouselIndex, 1);
       }
     }
   }
