@@ -668,6 +668,168 @@
     cursor: default;
     user-select: text;
   }
+
+  // ВНУТРЕННЯЯ КАРУСЕЛЬ
+  .ql-editor {
+
+  .ql-carousel {
+    margin: 20px 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f5f5f5;
+    position: relative;
+    }
+
+  .carousel-wrapper {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%; /* 16:9 Aspect Ratio */
+    overflow: hidden;
+  }
+
+  .carousel-images {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      
+      .carousel-slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.3);
+        
+        .carousel-image {
+          max-width: 100%;
+          max-height: 100%;
+          width: auto;
+          height: auto;
+          object-fit: contain;
+          display: block;
+          margin: 0 auto;
+        }
+      }
+    }
+
+  .carousel-indicators {
+      position: absolute;
+      bottom: 20px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      z-index: 50;
+      
+      .carousel-indicator {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        border: 2px solid rgba(255, 255, 255, 0.7);
+        background: rgba(255, 255, 255, 0.3);
+        cursor: pointer;
+        padding: 0;
+        font-size: 0;
+        transition: all 0.3s ease;
+        
+        &:hover {
+          background: rgba(255, 255, 255, 0.6);
+        }
+        
+        &.active {
+          background: #87ceeb;
+          border-color: #87ceeb;
+          transform: scale(1.2);
+        }
+      }
+    }
+  .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      font-size: 20px;
+      cursor: pointer;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background: rgba(0, 0, 0, 0.9);
+        transform: translateY(-50%) scale(1.1);
+      }
+      
+      &.prev {
+        left: 20px;
+      }
+      
+      &.next {
+        right: 20px;
+      }
+  }
+
+  .insert-carousel-btn {
+    margin: 10px 0;
+    text-align: center;
+  
+    button {
+    background: rgba(135, 206, 235, 0.2);
+    border: 1px solid rgba(135, 206, 235, 0.4);
+    color: #87ceeb;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    
+    &:hover {
+      background: rgba(135, 206, 235, 0.3);
+      border-color: rgba(135, 206, 235, 0.6);
+    }
+    
+    &:active {
+      background: rgba(135, 206, 235, 0.4);
+    }
+  }
+  }
+  // Стили для resize handler карусели
+.ql-image-resize {
+  .ql-carousel {
+    cursor: default;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+      width: 15px;
+      height: 15px;
+      background: rgba(135, 206, 235, 0.7);
+      border-radius: 2px;
+      cursor: se-resize;
+      z-index: 100;
+    }
+  }
+}
+  }
+  // ============ КОНЕЦ ВНУТРЕННЯЯ КАРУСЕЛЬ
 }
 
 // Обновите стили для самой карточки редактора

@@ -11,6 +11,7 @@ import Quill from 'quill';
 import { environment } from 'src/environments/environment';
 import ImageResize from 'quill-image-resize-module';
 Quill.register('modules/imageResize', ImageResize);
+import { registerCustomBlots } from 'src/app/quill/quill-custom-blots';
 
 interface PendingImage {
   file: File;
@@ -20,7 +21,8 @@ interface PendingImage {
 
 // Карусель
 interface CarouselImage {
-  url: string;
+  url: string;     // для Angular шаблона
+  rawUrl: string;  // 🔥 для Quill (НЕ санитизируется)
   file?: File;
   isUploading?: boolean;
 }
@@ -51,6 +53,15 @@ export class CountryContentComponent implements OnInit, OnDestroy {
   private quillInstance: any;
   private subscriptions: Subscription[] = [];
   private pendingImages: PendingImage[] = [];
+
+  // carusel-quill
+  private carouselTempImages: CarouselImage[] = []; // Для внутренней карусели Quill
+
+  // Инициализируйте в ngOnInit или создайте метод для сброса
+  private resetCarouselTempImages(): void {
+    this.carouselTempImages = [];
+  }
+  // ===================
   
   constructor(
     private route: ActivatedRoute,
@@ -64,6 +75,9 @@ export class CountryContentComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    // Зарегистрируйте кастомные блоки ПЕРЕД инициализацией Quill
+    registerCustomBlots();
+
     this.countryId = this.route.snapshot.paramMap.get('id');
     
     // Проверить права пользователя
@@ -88,34 +102,44 @@ export class CountryContentComponent implements OnInit, OnDestroy {
   }
 
   private loadCountryData(): void {
-    this.isLoading = true;
-    this.subscriptions.push(
-      this.travelService.getTravelById(this.countryId).subscribe({
-        next: (travel) => {
-          this.travel = travel;
+  this.isLoading = true;
+  this.subscriptions.push(
+    this.travelService.getTravelById(this.countryId).subscribe({
+      next: (travel) => {
+        this.travel = travel;
 
-          // Инициализируем карусель с основным изображением
-          if (travel.img) {
-            this.carouselImages = [{
-              url: this.getImageUrl(travel.img)
-            }];
-          }
-
-          this.isLoading = false;
-        },
-        error: (error) => {
-          console.error('Error loading country:', error);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Ошибка',
-            detail: 'Не удалось загрузить информацию о стране'
-          });
-          this.isLoading = false;
+        if (travel.img) {
+          this.carouselImages = [
+            this.makeCarouselImage(this.getImageUrl(travel.img))
+          ];
         }
-      })
-    );
+
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Error loading country:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Ошибка',
+          detail: 'Не удалось загрузить информацию о стране'
+        });
+        this.isLoading = false;
+      }
+    })
+  );
   }
 
+private makeCarouselImage(
+  url: string,
+  file?: File
+): CarouselImage {
+  return {
+    url,
+    rawUrl: url,
+    file,
+    isUploading: false
+  };
+}
 
 private loadCountryContent(): void {
   this.subscriptions.push(
@@ -125,14 +149,13 @@ private loadCountryContent(): void {
         
         // Загружаем изображения карусели из сохраненного контента
         if (content.carouselImages && content.carouselImages.length > 0) {
-          this.carouselImages = content.carouselImages.map(url => ({
-            url: this.getImageUrl(url)
-          }));
+          this.carouselImages = content.carouselImages.map(url =>
+          this.makeCarouselImage(this.getImageUrl(url))
+          );
         } else if (this.travel?.img) {
-          // Если нет сохраненных изображений карусели, используем основное изображение
-          this.carouselImages = [{
-            url: this.getImageUrl(this.travel.img)
-          }];
+          this.carouselImages = [
+          this.makeCarouselImage(this.getImageUrl(this.travel.img))
+          ];
         }
         
         // Инициализируем Quill только после загрузки контента
@@ -147,9 +170,9 @@ private loadCountryContent(): void {
         
         // Основное изображение из travel
         if (this.travel?.img) {
-          this.carouselImages = [{
-            url: this.getImageUrl(this.travel.img)
-          }];
+          this.carouselImages = [
+          this.makeCarouselImage(this.getImageUrl(this.travel.img))
+          ];
         }
         
         setTimeout(() => this.initializeQuill(), 100);
@@ -193,11 +216,12 @@ private loadCountryContent(): void {
       
       if (!this.validateImageFile(file)) continue;
       
-      const url = URL.createObjectURL(file);
+      const rawUrl = URL.createObjectURL(file);
+
       this.carouselImages.push({
-        url: url,
-        file: file,
-        isUploading: false
+        url: rawUrl,     // ← Angular его засаниитизирует
+        rawUrl: rawUrl, // ← НО мы больше НИКОГДА не берём его из template
+        file
       });
     }
 
@@ -238,30 +262,35 @@ async uploadCarouselImages(): Promise<void> {
 
   // Загрузить одно изображение
   private async uploadSingleImage(index: number): Promise<void> {
-    const image = this.carouselImages[index];
-    if (!image.file) return;
+  const image = this.carouselImages[index];
+  if (!image.file) return;
 
-    image.isUploading = true;
+  image.isUploading = true;
 
-    try {
-      const formData = new FormData();
-      formData.append('image', image.file);
+  try {
+    const formData = new FormData();
+    formData.append('image', image.file);
 
-      const response = await this.contentService.uploadImage(formData).toPromise();
-      const fullImageUrl = this.getImageUrl(response.url);
+    const response = await this.contentService.uploadImage(formData).toPromise();
+    const fullImageUrl = this.getImageUrl(response.url);
 
-      this.carouselImages[index] = {
-        url: fullImageUrl,
-        isUploading: false
-      };
+    this.carouselImages[index] = {
+      ...image,
+      url: fullImageUrl,
+      rawUrl: fullImageUrl,
+      file: undefined,
+      isUploading: false
+    };
 
-      URL.revokeObjectURL(image.url);
-
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      this.carouselImages[index].isUploading = false;
-      throw error;
+    if (image.rawUrl.startsWith('blob:')) {
+      URL.revokeObjectURL(image.rawUrl);
     }
+
+  } catch (error) {
+    console.error('Error uploading image:', error);
+    this.carouselImages[index].isUploading = false;
+    throw error;
+  }
   }
 
 
@@ -412,11 +441,41 @@ private extractImagePathFromUrl(url: string): string | null {
   const modules: any = {
     clipboard: {
       matchers: [
-        ['IMG', this.imageMatcher.bind(this)]
+        ['IMG', this.imageMatcher.bind(this)],
+        // Добавляем обработчик для карусели
+        ['DIV', this.carouselMatcher.bind(this)]
       ]
     },
     keyboard: {
-      bindings: Quill.import('modules/keyboard').bindings
+      // Сохраняем стандартные биндинги и добавляем свои
+      bindings: {
+        // Стандартные биндинги Quill
+        ...Quill.import('modules/keyboard').bindings,
+        // Кастомный биндинг для удаления
+        deleteCarousel: {
+          key: 'Delete',
+          handler: (range: any) => {
+            if (this.isEditMode && this.isAdmin) {
+              this.zone.run(() => {
+                this.deleteCarouselAtCursor();
+              });
+            }
+            return false;
+          }
+        },
+        // Также можно добавить для Backspace
+        backspaceDeleteCarousel: {
+          key: 'Backspace',
+          handler: (range: any) => {
+            if (this.isEditMode && this.isAdmin) {
+              this.zone.run(() => {
+                this.deleteCarouselAtCursor();
+              });
+            }
+            return false;
+          }
+        }
+      }
     },
     imageResize: {
       modules: ['Resize', 'DisplaySize', 'Toolbar'],
@@ -485,6 +544,12 @@ private extractImagePathFromUrl(url: string): string | null {
             this.quillInstance.root.innerHTML = this.countryContent.content;
           }
         }, 0);
+
+        setTimeout(() => {
+          if (this.isEditMode && this.isAdmin) {
+            this.injectCarouselButton();
+            }
+        }, 0);
       }
       
       // СКРЫВАЕМ тулбар в режиме просмотра
@@ -508,7 +573,374 @@ private extractImagePathFromUrl(url: string): string | null {
       console.error('Error initializing Quill:', error);
     }
   });
+   // После инициализации Quill добавьте обработчики для каруселей
+  setTimeout(() => {
+    this.initializeAllCarousels();
+  }, 100);
+  
+  // Также обновляйте карусели при изменении контента
+  if (this.quillInstance) {
+    this.quillInstance.on('text-change', () => {
+      setTimeout(() => {
+        this.initializeAllCarousels();
+      }, 50);
+    });
+  }
+
 }
+
+// Для внутренней карусели
+
+
+// Обработчик для копирования/вставки карусели
+private carouselMatcher(node: HTMLElement, delta: any): any {
+  if (node.classList && node.classList.contains('ql-carousel')) {
+    const imagesAttr = node.getAttribute('data-images');
+    if (imagesAttr) {
+      const images = JSON.parse(imagesAttr);
+      return delta.compose({
+        retain: delta.length(),
+        insert: { carousel: { images } }
+      });
+    }
+  }
+  return delta;
+}
+
+// Метод для удаления карусели под курсором
+private deleteCarouselAtCursor(): void {
+  if (!this.quillInstance) return;
+  
+  const range = this.quillInstance.getSelection();
+  if (!range) return;
+  
+  const [leaf, offset] = this.quillInstance.getLeaf(range.index);
+  
+  if (leaf && leaf.parent) {
+    const carouselElement = leaf.parent.domNode.closest('.ql-carousel') as HTMLElement;
+    if (carouselElement) {
+      if (confirm('Удалить эту карусель?')) {
+        // Находим индекс карусели в редакторе
+        const editor = this.quillInstance.scroll.domNode as HTMLElement;
+        const carousels = editor.querySelectorAll('.ql-carousel');
+        let carouselIndex = -1;
+        
+        carousels.forEach((carousel: Element, index: number) => {
+          if (carousel === carouselElement) {
+            carouselIndex = index;
+          }
+        });
+        
+        if (carouselIndex !== -1) {
+          // Удаляем карусель из контента Quill
+          const length = this.quillInstance.getLength();
+          const startIndex = Array.from(editor.childNodes).indexOf(carouselElement);
+          
+          if (startIndex !== -1) {
+            // Используем API Quill для удаления
+            this.quillInstance.deleteText(startIndex, 1);
+          }
+        }
+      }
+    }
+  }
+}
+
+private initializeAllCarousels(): void {
+  const carousels = document.querySelectorAll('.ql-carousel .carousel-wrapper');
+  
+  carousels.forEach((carousel) => {
+    const htmlCarousel = carousel as HTMLElement;
+    if (htmlCarousel.id) {
+      this.initializeSingleCarousel(htmlCarousel.id);
+    }
+  });
+}
+
+private initializeSingleCarousel(carouselId: string): void {
+  const carousel = document.getElementById(carouselId);
+  if (!carousel) return;
+  
+  const slides = carousel.querySelectorAll<HTMLDivElement>('.carousel-slide');
+  const indicators = carousel.querySelectorAll<HTMLButtonElement>('.carousel-indicator');
+  const prevBtn = carousel.querySelector<HTMLButtonElement>('.carousel-btn.prev');
+  const nextBtn = carousel.querySelector<HTMLButtonElement>('.carousel-btn.next');
+  
+  let currentIndex = 0;
+  
+  const showSlide = (index: number) => {
+    // Скрываем все слайды
+    slides.forEach((slide, i) => {
+      slide.style.display = i === index ? 'block' : 'none';
+      slide.style.opacity = i === index ? '1' : '0';
+    });
+    
+    // Обновляем индикаторы
+    indicators.forEach((indicator, i) => {
+      if (i === index) {
+        indicator.classList.add('active');
+      } else {
+        indicator.classList.remove('active');
+      }
+    });
+    
+    currentIndex = index;
+  };
+  
+  // Инициализация
+  if (slides.length > 0) {
+    showSlide(0);
+  }
+  
+  // Обработчики событий
+  prevBtn?.addEventListener('click', () => {
+    const newIndex = (currentIndex - 1 + slides.length) % slides.length;
+    showSlide(newIndex);
+  });
+  
+  nextBtn?.addEventListener('click', () => {
+    const newIndex = (currentIndex + 1) % slides.length;
+    showSlide(newIndex);
+  });
+  
+  indicators.forEach((indicator, index) => {
+    indicator.addEventListener('click', () => showSlide(index));
+  });
+}
+
+private injectCarouselButton(): void {
+  const container = this.editorRef.nativeElement.parentElement;
+  if (!container) {
+    console.warn('Quill container not found');
+    return;
+  }
+
+  // Проверяем, есть ли уже кнопка
+  if (container.querySelector('.insert-carousel-btn')) {
+    return;
+  }
+
+  const toolbar = container.querySelector('.ql-toolbar');
+  if (!toolbar) {
+    console.warn('Quill toolbar not found');
+    return;
+  }
+
+  // Создаем контейнер для кнопки
+  const btnWrapper = document.createElement('div');
+  btnWrapper.className = 'insert-carousel-btn';
+  btnWrapper.style.cssText = `
+    margin-top: 10px;
+    margin-bottom: 10px;
+    text-align: center;
+  `;
+
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.innerHTML = `<i class="pi pi-images"></i> Вставить карусель`;
+  button.className = 'p-button p-button-info';
+  button.style.cssText = `
+    background: rgba(135, 206, 235, 0.2);
+    border: 1px solid rgba(135, 206, 235, 0.4);
+    color: #87ceeb;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  `;
+
+  button.addEventListener('click', () => {
+    this.zone.run(() => this.openCarouselImagePicker());
+  });
+
+  // Добавляем hover эффект
+  button.addEventListener('mouseenter', () => {
+    button.style.background = 'rgba(135, 206, 235, 0.3)';
+    button.style.borderColor = 'rgba(135, 206, 235, 0.6)';
+  });
+
+  button.addEventListener('mouseleave', () => {
+    button.style.background = 'rgba(135, 206, 235, 0.2)';
+    button.style.borderColor = 'rgba(135, 206, 235, 0.4)';
+  });
+
+  btnWrapper.appendChild(button);
+  
+  // Вставляем после тулбара
+  toolbar.insertAdjacentElement('afterend', btnWrapper);
+}
+
+openCarouselImagePicker(): void {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.multiple = true;
+  input.style.display = 'none';
+
+  input.addEventListener('change', (event: any) => {
+    this.zone.run(() => {
+      // Используем новый метод для обработки изображений для Quill карусели
+      this.handleCarouselImagesForQuill(event);
+    });
+  });
+
+  document.body.appendChild(input);
+  input.click();
+  document.body.removeChild(input);
+}
+
+// Новый метод для обработки изображений для карусели в Quill
+private handleCarouselImagesForQuill(event: any): void {
+  const files: FileList = event.target.files;
+  if (!files.length) return;
+
+  // Очищаем временные изображения
+  this.carouselTempImages = [];
+
+  // Добавляем временные URL для предпросмотра
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    
+    if (!this.validateImageFile(file)) continue;
+    
+    const rawUrl = URL.createObjectURL(file);
+
+    this.carouselTempImages.push({
+      url: rawUrl,
+      rawUrl: rawUrl,
+      file,
+      isUploading: false
+    });
+  }
+
+  // Если есть изображения, вставляем карусель
+  if (this.carouselTempImages.length > 0) {
+    this.insertCarouselIntoQuill();
+  }
+}
+
+async insertCarouselIntoQuill(): Promise<void> {
+  if (!this.quillInstance) return;
+
+  if (this.carouselTempImages.length === 0) {
+    this.messageService.add({
+      severity: 'warn',
+      summary: 'Нет изображений',
+      detail: 'Сначала выберите изображения для карусели'
+    });
+    return;
+  }
+
+  try {
+    const uploadedUrls = await this.uploadImagesForCarousel();
+    
+    if (!uploadedUrls.length) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Нет изображений',
+        detail: 'Не удалось загрузить изображения'
+      });
+      return;
+    }
+
+    console.log('Inserting carousel with URLs:', uploadedUrls);
+    
+    const range = this.quillInstance.getSelection(true);
+    const index = range ? range.index : this.quillInstance.getLength();
+
+    // Вставляем карусель как блок с возможностью изменения размера
+    try {
+      this.quillInstance.insertEmbed(index, 'carousel', { 
+        images: uploadedUrls 
+      }, 'user');
+      
+      console.log('Carousel inserted successfully');
+      
+      // Добавляем пустую строку после карусели для удобства
+      this.quillInstance.insertText(index + 1, '\n\n');
+      
+      // Перемещаем курсор после карусели
+      this.quillInstance.setSelection(index + 2);
+      
+      // Инициализируем карусель после вставки
+      setTimeout(() => {
+        const carousels = this.quillInstance.root.querySelectorAll('.ql-carousel');
+        if (carousels.length > 0) {
+          const lastCarousel = carousels[carousels.length - 1];
+          const wrapper = lastCarousel.querySelector('.carousel-wrapper');
+          if (wrapper && wrapper.id) {
+            this.initializeSingleCarousel(wrapper.id);
+          }
+        }
+      }, 100);
+      
+    } catch (error) {
+      console.error('Error inserting carousel embed:', error);
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Ошибка',
+        detail: 'Не удалось вставить карусель'
+      });
+    }
+    
+    this.cleanupCarouselTempImages();
+    
+  } catch (error) {
+    console.error('Error uploading images:', error);
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Ошибка',
+      detail: 'Не удалось загрузить изображения'
+    });
+    
+    this.cleanupCarouselTempImages();
+  }
+}
+
+// Метод для загрузки изображений для карусели Quill
+private async uploadImagesForCarousel(): Promise<string[]> {
+  const uploadedUrls: string[] = [];
+
+  // Загружаем каждое изображение
+  for (let i = 0; i < this.carouselTempImages.length; i++) {
+    const image = this.carouselTempImages[i];
+    if (!image.file) continue;
+
+    try {
+      image.isUploading = true;
+      
+      const formData = new FormData();
+      formData.append('image', image.file);
+
+      const response = await this.contentService.uploadImage(formData).toPromise();
+      const fullImageUrl = this.getImageUrl(response.url);
+      uploadedUrls.push(fullImageUrl);
+      
+      // Освобождаем blob URL
+      URL.revokeObjectURL(image.rawUrl);
+      
+      image.isUploading = false;
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      image.isUploading = false;
+      throw error;
+    }
+  }
+
+  return uploadedUrls;
+}
+
+// Очистка временных изображений
+private cleanupCarouselTempImages(): void {
+  this.carouselTempImages.forEach(img => {
+    if (img.rawUrl.startsWith('blob:')) {
+      URL.revokeObjectURL(img.rawUrl);
+    }
+  });
+  this.carouselTempImages = [];
+}
+//==========================
+
 
 private applyHeader1Styles(): void {
   if (!this.quillInstance) return;
@@ -648,14 +1080,25 @@ saveContent(): void {
 
   this.isSaving = true;
   
+  // Получаем контент Quill
   const content = this.quillInstance.root.innerHTML;
   
+   // Проверяем наличие blob URL в контенте
   if (content.includes('blob:')) {
     this.messageService.add({
       severity: 'warn',
       summary: 'Внимание',
       detail: 'Пожалуйста, дождитесь загрузки всех изображений в редакторе'
     });
+
+    // Находим все blob URL в контенте
+    const blobRegex = /src=["'](blob:[^"']+)["']/g;
+    const matches = content.match(blobRegex);
+    
+    if (matches) {
+      console.warn('Обнаружены blob URL в контенте:', matches);
+    }
+    
     this.isSaving = false;
     return;
   }

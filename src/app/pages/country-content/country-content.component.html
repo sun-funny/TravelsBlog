@@ -141,11 +141,6 @@
       <div class="quill-container glass-card" [class.editing]="isEditMode && isAdmin">
         <div #editor class="quill-editor"></div>
       </div>
-
-      <!-- Подсказка для не-админов -->
-      <div *ngIf="!isAdmin" class="view-only-notice">
-        <p><i class="pi pi-info-circle"></i> Только администратор может редактировать этот контент</p>
-      </div>
     </div>
   </div>
 </div>
