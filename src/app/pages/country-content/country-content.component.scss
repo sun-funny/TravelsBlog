@@ -453,6 +453,348 @@
 // Стили для Quill редактора
 ::ng-deep {
 
+   /* =========================================================
+     QUILL TOOLBAR POPUP STYLES - DARK THEME
+     ========================================================= */
+
+  /* Все всплывающие окна тулбара */
+  .ql-toolbar .ql-picker-options {
+    background: rgba(12, 38, 56, 0.98) !important; /* Темно-синий как у тулбара */
+    border: 1px solid rgba(135, 206, 235, 0.35) !important;
+    border-radius: 8px !important;
+    padding: 8px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+    min-width: 120px !important;
+    backdrop-filter: blur(10px) !important;
+  }
+
+  /* Пункты меню во всплывающих окнах */
+  .ql-picker-item {
+    color: #ffffff !important; /* Белый текст для контраста */
+    padding: 8px 12px !important;
+    border-radius: 6px !important;
+    transition: all 0.2s ease !important;
+    font-family: 'Montserrat', Helvetica, sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 400 !important;
+  }
+
+  .ql-picker-item:hover {
+    background: rgba(135, 206, 235, 0.25) !important;
+    color: #ffffff !important;
+  }
+
+  /* Активный пункт меню */
+  .ql-picker-item.ql-selected {
+    background: rgba(135, 206, 235, 0.35) !important;
+    color: #ffffff !important;
+    font-weight: 500 !important;
+  }
+
+  /* Выбранный пункт в выпадающем списке */
+  .ql-picker-label {
+    color: #ffffff !important;
+  }
+
+  /* Заголовки в цветовой палитре */
+  .ql-color-picker .ql-picker-label::before,
+  .ql-background .ql-picker-label::before {
+    color: #ffffff !important;
+  }
+
+  /* Стрелочки в выпадающих списках */
+  .ql-picker-label svg {
+    stroke: #ffffff !important;
+  }
+
+  /* Цветовая палитра - улучшенная видимость */
+  .ql-color-picker .ql-picker-options,
+  .ql-background .ql-picker-options {
+    padding: 12px !important;
+    width: 200px !important;
+  }
+
+  .ql-color-picker .ql-picker-item,
+  .ql-background .ql-picker-item {
+    border: 2px solid rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+    margin: 3px !important;
+    border-radius: 4px !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .ql-color-picker .ql-picker-item:hover,
+  .ql-background .ql-picker-item:hover {
+    border-color: #87ceeb !important;
+    transform: scale(1.1) !important;
+    box-shadow: 0 0 8px rgba(135, 206, 235, 0.5) !important;
+  }
+
+  /* Выпадающие списки (шрифт, размер, выравнивание) */
+  .ql-font .ql-picker-options,
+  .ql-size .ql-picker-options,
+  .ql-header .ql-picker-options,
+  .ql-align .ql-picker-options {
+    max-height: 220px !important;
+    overflow-y: auto !important;
+  }
+
+  /* Стиль для скроллбара в выпадающих списках */
+  .ql-picker-options::-webkit-scrollbar {
+    width: 6px !important;
+  }
+
+  .ql-picker-options::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-radius: 3px !important;
+  }
+
+  .ql-picker-options::-webkit-scrollbar-thumb {
+    background: rgba(135, 206, 235, 0.5) !important;
+    border-radius: 3px !important;
+  }
+
+  .ql-picker-options::-webkit-scrollbar-thumb:hover {
+    background: rgba(135, 206, 235, 0.7) !important;
+  }
+
+  /* Контейнер для выпадающих окон */
+  .ql-toolbar .ql-picker {
+    position: relative !important;
+  }
+
+  .ql-picker-options {
+    position: absolute !important;
+    z-index: 9999 !important;
+    top: 100% !important;
+    left: 0 !important;
+    margin-top: 5px !important;
+  }
+
+  /* Анимация появления */
+  .ql-picker-options {
+    animation: slideDownFadeDark 0.2s ease-out !important;
+  }
+
+  @keyframes slideDownFadeDark {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Особые стили для палитры цветов текста */
+  .ql-color .ql-picker-options .ql-picker-item {
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  }
+
+  /* Улучшение для меню заголовков (h1-h6) */
+  .ql-header .ql-picker-item[data-value="1"] {
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    color: #87ceeb !important; /* Голубой для заголовков */
+  }
+
+  .ql-header .ql-picker-item[data-value="2"] {
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    color: #a0d8f1 !important; /* Светло-голубой */
+  }
+
+  .ql-header .ql-picker-item[data-value="3"] {
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    color: #b8e2f5 !important;
+  }
+
+  /* Для меню размеров шрифта */
+  .ql-size .ql-picker-item[data-value="small"] {
+    font-size: 12px !important;
+    color: #cccccc !important;
+  }
+
+  .ql-size .ql-picker-item[data-value="large"] {
+    font-size: 18px !important;
+    color: #ffffff !important;
+  }
+
+  .ql-size .ql-picker-item[data-value="huge"] {
+    font-size: 22px !important;
+    color: #ffffff !important;
+    font-weight: 500 !important;
+  }
+
+  /* Стили для меню шрифтов */
+  .ql-font .ql-picker-item {
+    font-family: inherit !important;
+  }
+
+  .ql-font .ql-picker-item[data-value="serif"] {
+    font-family: "Times New Roman", Times, serif !important;
+  }
+
+  .ql-font .ql-picker-item[data-value="monospace"] {
+    font-family: Monaco, "Courier New", monospace !important;
+  }
+
+  /* Подсказки при наведении на элементы палитры */
+  .ql-color-picker .ql-picker-item,
+  .ql-background .ql-picker-item {
+    position: relative !important;
+  }
+
+  .ql-color-picker .ql-picker-item:hover::after,
+  .ql-background .ql-picker-item:hover::after {
+    content: attr(data-label) !important;
+    position: absolute !important;
+    top: -30px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    background: rgba(12, 38, 56, 0.95) !important;
+    color: white !important;
+    padding: 6px 10px !important;
+    border-radius: 4px !important;
+    font-size: 12px !important;
+    white-space: nowrap !important;
+    z-index: 10000 !important;
+    border: 1px solid rgba(135, 206, 235, 0.4) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  /* Улучшенный стиль для разделителей */
+  .ql-snow .ql-toolbar .ql-formats + .ql-formats {
+    border-left: 1px solid rgba(135, 206, 235, 0.3) !important;
+    margin-left: 4px !important;
+    padding-left: 8px !important;
+  }
+
+  /* Переопределение стандартных стилей Quill */
+  .ql-snow .ql-picker {
+    color: #ffffff !important;
+  }
+
+  .ql-snow .ql-picker-options {
+    background-color: rgba(12, 38, 56, 0.98) !important;
+  }
+
+  .ql-snow .ql-picker-label {
+    color: #ffffff !important;
+  }
+
+  /* Улучшение видимости для меню выравнивания */
+  .ql-align .ql-picker-item {
+    text-align: center !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+
+  /* Стиль для нормального текста (без заголовка) */
+  .ql-header .ql-picker-item[data-value=""] {
+    font-size: 14px !important;
+    color: #ffffff !important;
+    font-weight: 400 !important;
+  }
+
+  /* Улучшение для меню списков */
+  .ql-list .ql-picker-item {
+    padding-left: 30px !important;
+    position: relative !important;
+  }
+
+  .ql-list .ql-picker-item[data-value="ordered"]::before {
+    content: "1." !important;
+    position: absolute !important;
+    left: 10px !important;
+    color: #87ceeb !important;
+  }
+
+  .ql-list .ql-picker-item[data-value="bullet"]::before {
+    content: "•" !important;
+    position: absolute !important;
+    left: 10px !important;
+    color: #87ceeb !important;
+    font-size: 18px !important;
+  }
+
+  /* Градиентный фон для лучшего визуального разделения */
+  .ql-picker-options::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 1px !important;
+    background: linear-gradient(90deg, transparent, #87ceeb, transparent) !important;
+  }
+}
+
+/* Дополнительные стили для улучшения контрастности */
+::ng-deep {
+  /* Улучшение видимости активных состояний в тулбаре */
+  .ql-toolbar button.ql-active {
+    background: rgba(135, 206, 235, 0.4) !important;
+    border-color: rgba(135, 206, 235, 0.6) !important;
+  }
+
+  .ql-toolbar button.ql-active svg .ql-stroke {
+    stroke: #ffffff !important;
+  }
+
+  /* Улучшение видимости при наведении на кнопки тулбара */
+  .ql-toolbar button:hover {
+    background: rgba(135, 206, 235, 0.25) !important;
+  }
+
+  /* Улучшенные иконки для лучшей видимости */
+  .ql-toolbar button svg .ql-stroke {
+    stroke: #e0f0ff !important;
+    stroke-width: 2px !important;
+  }
+
+  .ql-toolbar button svg .ql-fill {
+    fill: #e0f0ff !important;
+  }
+
+  .ql-toolbar button:hover svg .ql-stroke {
+    stroke: #ffffff !important;
+  }
+
+  .ql-toolbar button:hover svg .ql-fill {
+    fill: #ffffff !important;
+  }
+
+  /* Яркая обводка для активных элементов */
+  .ql-toolbar button.ql-active {
+    box-shadow: 0 0 0 1px rgba(135, 206, 235, 0.5) inset !important;
+  }
+
+  /* Улучшение для цветных квадратиков в палитре */
+  .ql-color-picker .ql-picker-item.ql-primary-color {
+    border: 2px solid #87ceeb !important;
+  }
+
+  .ql-color-picker .ql-picker-item.ql-selected {
+    border: 2px solid #ffffff !important;
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.5) !important;
+  }
+
+  /* Голубая подсветка для выбранных элементов меню */
+  .ql-picker-item.ql-selected::before {
+    content: "✓" !important;
+    position: absolute !important;
+    left: 8px !important;
+    color: #87ceeb !important;
+    font-weight: bold !important;
+  }
+
+  /* Увеличение отступов для лучшей читаемости */
+  .ql-picker-item {
+    margin: 2px 0 !important;
+  }
   /* =========================================================
      QUILL DARK TOOLBAR
      ========================================================= */
