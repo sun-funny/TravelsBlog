@@ -968,9 +968,10 @@ private applyHeader1Styles(): void {
   
   // Применяем все стили сразу
   this.quillInstance.format('header', 1);
+  this.quillInstance.format('bold', true);
   this.quillInstance.format('size', 'large');
-  this.quillInstance.format('align', 'center');
-  this.quillInstance.format('color', '#520d0dff'); // Красный цвет
+  this.quillInstance.format('align', 'left');
+  this.quillInstance.format('color', '#ffffff');
 }
 
 private applyNormalStyles(): void {
@@ -981,6 +982,7 @@ private applyNormalStyles(): void {
   
   // Сбрасываем header и применяем стили для обычного текста
   this.quillInstance.format('header', false);
+  this.quillInstance.format('bold', false); 
   this.quillInstance.format('size', false);
   this.quillInstance.format('align', 'justify');
   this.quillInstance.format('color', '#ffffff'); // Белый цвет

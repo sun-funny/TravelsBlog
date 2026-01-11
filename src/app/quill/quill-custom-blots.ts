@@ -343,100 +343,242 @@ imagesContainer.style.cssText = `
     this.initializeResize(carouselWrapper);
   }
 
-  static openAlignmentMenu(carouselElement: HTMLElement) {
-    // Создаем меню выравнивания
-    const menu = document.createElement('div');
-    menu.className = 'carousel-alignment-menu';
-    menu.style.cssText = `
-      position: absolute;
-      top: 40px;
-      right: 0;
-      background: rgba(12, 38, 56, 0.98);
-      border: 1px solid rgba(135, 206, 235, 0.35);
-      border-radius: 8px;
-      padding: 8px;
-      z-index: 1000;
-      min-width: 120px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+static openAlignmentMenu(carouselElement: HTMLElement) {
+  // Удаляем существующее меню, если есть
+  const existingMenu = carouselElement.querySelector('.carousel-alignment-menu');
+  if (existingMenu) {
+    existingMenu.remove();
+  }
+  
+  // Создаем меню выравнивания
+  const menu = document.createElement('div');
+  menu.className = 'carousel-alignment-menu';
+  menu.style.cssText = `
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background: rgba(12, 38, 56, 0.98);
+    border: 1px solid rgba(135, 206, 235, 0.35);
+    border-radius: 8px;
+    padding: 8px;
+    z-index: 1000;
+    min-width: 140px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+  `;
+  
+  const options = [
+    { 
+      value: 'left', 
+      icon: '◀', 
+      label: 'По левому краю',
+      // Более понятные иконки
+      // альтернативные варианты:
+      // icon: '↖', // или '◀', или '←'
+      // icon: '▌', // символ левого выравнивания
+      iconStyle: 'transform: rotate(90deg); display: inline-block;'
+    },
+    { 
+      value: 'center', 
+      icon: '●', 
+      label: 'По центру',
+      // альтернативы:
+      // icon: '◎', '⊙', '◉'
+      iconStyle: ''
+    },
+    { 
+      value: 'right', 
+      icon: '▶', 
+      label: 'По правому краю',
+      // альтернативы:
+      // icon: '↗', '▐', '→'
+      iconStyle: 'transform: rotate(90deg); display: inline-block;'
+    }
+  ];
+  
+  const currentAlignment = carouselElement.getAttribute('data-alignment') || 'center';
+  
+  // Добавляем заголовок меню
+  const menuTitle = document.createElement('div');
+  menuTitle.textContent = 'Выравнивание:';
+  menuTitle.style.cssText = `
+    color: #87ceeb;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid rgba(135, 206, 235, 0.2);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  `;
+  menu.appendChild(menuTitle);
+  
+  options.forEach(option => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = `alignment-option ${currentAlignment === option.value ? 'selected' : ''}`;
+    
+    // Создаем контейнер для содержимого кнопки
+    const content = document.createElement('div');
+    content.style.cssText = `
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      width: 100%;
     `;
     
-    const options = [
-      { value: 'left', icon: '◀', label: 'По левому краю' },
-      { value: 'center', icon: '●', label: 'По центру' },
-      { value: 'right', icon: '▶', label: 'По правому краю' }
-    ];
+    // Иконка с улучшенной видимостью
+    const iconSpan = document.createElement('span');
+    iconSpan.textContent = option.icon;
+    iconSpan.style.cssText = `
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      font-size: 16px;
+      color: ${currentAlignment === option.value ? '#87ceeb' : '#e0f0ff'};
+      ${option.iconStyle}
+      text-shadow: ${currentAlignment === option.value ? '0 0 8px rgba(135, 206, 235, 0.7)' : 'none'};
+      transition: all 0.2s ease;
+    `;
     
-    const currentAlignment = carouselElement.getAttribute('data-alignment') || 'center';
+    // Текст
+    const textSpan = document.createElement('span');
+    textSpan.textContent = option.label;
+    textSpan.style.cssText = `
+      color: ${currentAlignment === option.value ? '#87ceeb' : '#e0f0ff'};
+      font-size: 13px;
+      font-weight: ${currentAlignment === option.value ? '500' : '400'};
+      flex: 1;
+      text-align: left;
+    `;
     
-    options.forEach(option => {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.innerHTML = `${option.icon} ${option.label}`;
-      button.style.cssText = `
-        display: block;
-        width: 100%;
-        padding: 8px 12px;
-        background: ${currentAlignment === option.value ? 'rgba(135, 206, 235, 0.25)' : 'transparent'};
-        border: none;
-        color: #e0f0ff;
-        text-align: left;
-        border-radius: 4px;
-        cursor: pointer;
-        margin: 2px 0;
-        transition: all 0.2s ease;
+    // Индикатор выбранного варианта
+    const checkSpan = document.createElement('span');
+    if (currentAlignment === option.value) {
+      checkSpan.textContent = '✓';
+      checkSpan.style.cssText = `
+        color: #87ceeb;
+        font-weight: bold;
+        font-size: 14px;
       `;
-      
-      button.addEventListener('mouseenter', () => {
+    }
+    
+    content.appendChild(iconSpan);
+    content.appendChild(textSpan);
+    content.appendChild(checkSpan);
+    button.appendChild(content);
+    
+    // Стили кнопки
+    button.style.cssText = `
+      display: block;
+      width: 100%;
+      padding: 10px 12px;
+      background: ${currentAlignment === option.value ? 'rgba(135, 206, 235, 0.25)' : 'rgba(255, 255, 255, 0.05)'};
+      border: ${currentAlignment === option.value ? '1px solid rgba(135, 206, 235, 0.4)' : '1px solid transparent'};
+      color: #e0f0ff;
+      text-align: left;
+      border-radius: 6px;
+      cursor: pointer;
+      margin: 4px 0;
+      transition: all 0.2s ease;
+      font-family: 'Montserrat', Helvetica, sans-serif;
+    `;
+    
+    // Эффекты при наведении
+    button.addEventListener('mouseenter', () => {
+      if (currentAlignment !== option.value) {
         button.style.background = 'rgba(135, 206, 235, 0.15)';
-      });
-      
-      button.addEventListener('mouseleave', () => {
-        button.style.background = currentAlignment === option.value 
-          ? 'rgba(135, 206, 235, 0.25)' 
-          : 'transparent';
-      });
-      
-      button.addEventListener('click', () => {
-        // Обновляем атрибут
-        carouselElement.setAttribute('data-alignment', option.value);
-        
-        // Применяем стили
-        switch (option.value) {
-          case 'left':
-            carouselElement.style.marginRight = 'auto';
-            carouselElement.style.marginLeft = '0';
-            break;
-          case 'right':
-            carouselElement.style.marginLeft = 'auto';
-            carouselElement.style.marginRight = '0';
-            break;
-          case 'center':
-            carouselElement.style.marginLeft = 'auto';
-            carouselElement.style.marginRight = 'auto';
-            break;
-        }
-        
-        // Удаляем меню
-        menu.remove();
-      });
-      
-      menu.appendChild(button);
+        button.style.borderColor = 'rgba(135, 206, 235, 0.3)';
+        iconSpan.style.color = '#87ceeb';
+        iconSpan.style.textShadow = '0 0 6px rgba(135, 206, 235, 0.5)';
+        textSpan.style.color = '#87ceeb';
+      }
     });
     
-    carouselElement.appendChild(menu);
-    
-    // Закрытие меню при клике вне его
-    const closeMenu = (e: MouseEvent) => {
-      if (!menu.contains(e.target as Node) && e.target !== carouselElement.querySelector('.carousel-settings-btn')) {
-        menu.remove();
-        document.removeEventListener('click', closeMenu);
+    button.addEventListener('mouseleave', () => {
+      if (currentAlignment !== option.value) {
+        button.style.background = 'rgba(255, 255, 255, 0.05)';
+        button.style.borderColor = 'transparent';
+        iconSpan.style.color = '#e0f0ff';
+        iconSpan.style.textShadow = 'none';
+        textSpan.style.color = '#e0f0ff';
       }
-    };
+    });
     
-    setTimeout(() => {
-      document.addEventListener('click', closeMenu);
-    }, 0);
-  }
+    button.addEventListener('click', (e) => {
+      e.stopPropagation();
+      
+      // Обновляем атрибут
+      carouselElement.setAttribute('data-alignment', option.value);
+      
+      // Применяем стили выравнивания
+      switch (option.value) {
+        case 'left':
+          carouselElement.style.marginRight = 'auto';
+          carouselElement.style.marginLeft = '0';
+          carouselElement.style.float = 'left';
+          carouselElement.style.clear = 'left';
+          break;
+        case 'right':
+          carouselElement.style.marginLeft = 'auto';
+          carouselElement.style.marginRight = '0';
+          carouselElement.style.float = 'right';
+          carouselElement.style.clear = 'right';
+          break;
+        case 'center':
+        default:
+          carouselElement.style.marginLeft = 'auto';
+          carouselElement.style.marginRight = 'auto';
+          carouselElement.style.float = 'none';
+          carouselElement.style.clear = 'both';
+          break;
+      }
+      
+      // Удаляем меню
+      menu.remove();
+      
+      // Показываем уведомление (опционально)
+      setTimeout(() => {
+        // Можно добавить небольшую анимацию изменения
+        carouselElement.style.transform = 'scale(1.02)';
+        setTimeout(() => {
+          carouselElement.style.transform = 'scale(1)';
+        }, 200);
+      }, 0);
+    });
+    
+    menu.appendChild(button);
+  });
+  
+  carouselElement.appendChild(menu);
+  
+  // Закрытие меню при клике вне его
+  const closeMenu = (e: MouseEvent) => {
+    if (!menu.contains(e.target as Node) && 
+        e.target !== carouselElement.querySelector('.carousel-settings-btn') &&
+        !(e.target as Element).closest('.carousel-settings-btn')) {
+      menu.remove();
+      document.removeEventListener('click', closeMenu);
+      document.removeEventListener('keydown', escapeHandler);
+    }
+  };
+  
+  const escapeHandler = (e: KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      menu.remove();
+      document.removeEventListener('click', closeMenu);
+      document.removeEventListener('keydown', escapeHandler);
+    }
+  };
+  
+  setTimeout(() => {
+    document.addEventListener('click', closeMenu);
+    document.addEventListener('keydown', escapeHandler);
+  }, 0);
+}
 
   static initializeResize(carouselElement: HTMLElement) {
     // Создаем resize handle
