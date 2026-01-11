@@ -426,7 +426,7 @@ private extractImagePathFromUrl(url: string): string | null {
   }
 
   // Инициализация Quill с правильными опциями
-  private initializeQuill(): void {
+private initializeQuill(): void {
   this.destroyQuill();
   
   if (!this.editorRef || !this.editorRef.nativeElement) {
@@ -522,7 +522,8 @@ private extractImagePathFromUrl(url: string): string | null {
         [{ 'font': [] }],
         [{ 'align': [] }],
         ['clean'],
-        ['link', 'image', 'video']
+        ['link', 'image', 'video'],
+        ['carousel']
       ],
       handlers: {
         image: () => { this.zone.run(() => this.handleImageUpload()); },
@@ -531,7 +532,8 @@ private extractImagePathFromUrl(url: string): string | null {
         if (value === '1') this.applyHeader1Styles();
         else if (value === false) this.applyNormalStyles();
         else this.quillInstance.format('header', value);
-        }
+        },
+        carousel: () => { this.zone.run(() => this.openCarouselImagePicker()); }
       }
     };
 
@@ -540,7 +542,7 @@ private extractImagePathFromUrl(url: string): string | null {
   this.zone.runOutsideAngular(() => {
     try {
       this.quillInstance = new Quill(this.editorRef.nativeElement, {
-        theme: this.isEditMode && this.isAdmin ? 'snow' : 'bubble', // Используем 'bubble' для режима просмотра
+        theme: this.isEditMode && this.isAdmin ? 'snow' : 'bubble',
         modules: modules,
         readOnly: !(this.isEditMode && this.isAdmin),
         placeholder: this.isEditMode ? 'Начните вводить текст...' : ''
@@ -553,11 +555,11 @@ private extractImagePathFromUrl(url: string): string | null {
           }
         }, 0);
 
-        setTimeout(() => {
+        /*setTimeout(() => {
           if (this.isEditMode && this.isAdmin) {
             this.injectCarouselButton();
             }
-        }, 0);
+        }, 0);*/
       }
       
       // СКРЫВАЕМ тулбар в режиме просмотра
@@ -594,6 +596,16 @@ private extractImagePathFromUrl(url: string): string | null {
       }, 50);
     });
   }
+
+  const icons = Quill.import('ui/icons');
+  icons['carousel'] = `
+    <svg viewBox="0 0 24 24" width="16" height="16">
+      <rect x="2" y="6" width="20" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="2"/>
+      <circle cx="7" cy="12" r="1.5" fill="currentColor"/>
+      <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
+      <circle cx="17" cy="12" r="1.5" fill="currentColor"/>
+    </svg>
+  `;
 
 }
 
@@ -713,7 +725,7 @@ private initializeSingleCarousel(carouselId: string): void {
   });
 }
 
-private injectCarouselButton(): void {
+/*private injectCarouselButton(): void {
   const container = this.editorRef.nativeElement.parentElement;
   if (!container) {
     console.warn('Quill container not found');
@@ -773,7 +785,7 @@ private injectCarouselButton(): void {
   
   // Вставляем после тулбара
   toolbar.insertAdjacentElement('afterend', btnWrapper);
-}
+}*/
 
 openCarouselImagePicker(): void {
   const input = document.createElement('input');

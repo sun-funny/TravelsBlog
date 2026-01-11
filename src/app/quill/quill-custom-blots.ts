@@ -5,6 +5,8 @@ const BlockEmbed = Quill.import('blots/block/embed');
 
 export interface QuillCarouselValue {
   images: string[];
+  alignment?: string;  // Добавляем выравнивание
+  width?: string;      // Ширина карусели
 }
 
 class CarouselBlot extends BlockEmbed {
@@ -18,7 +20,14 @@ class CarouselBlot extends BlockEmbed {
     const node = super.create() as HTMLElement;
     node.setAttribute('contenteditable', 'false');
     node.classList.add('ql-carousel');
+    
+    // Сохраняем все данные
     node.setAttribute('data-images', JSON.stringify(value.images));
+    node.setAttribute('data-alignment', value.alignment || 'center');
+    node.setAttribute('data-width', value.width || '100%');
+    
+    // Применяем выравнивание и размер
+    this.applyStyles(node, value);
     
     const wrapper = document.createElement('div');
     wrapper.className = 'carousel-wrapper';
@@ -60,7 +69,7 @@ class CarouselBlot extends BlockEmbed {
       transition: all 0.3s ease;
     `;
     
-    // Кнопка настроек (можно добавить позже)
+    // Кнопка настроек
     const settingsBtn = document.createElement('button');
     settingsBtn.className = 'carousel-settings-btn';
     settingsBtn.innerHTML = '⚙️';
@@ -136,6 +145,36 @@ class CarouselBlot extends BlockEmbed {
     return node;
   }
 
+  static applyStyles(node: HTMLElement, value: QuillCarouselValue) {
+    // Применяем выравнивание
+    switch (value.alignment) {
+      case 'left':
+        node.style.marginRight = 'auto';
+        node.style.marginLeft = '0';
+        break;
+      case 'right':
+        node.style.marginLeft = 'auto';
+        node.style.marginRight = '0';
+        break;
+      case 'center':
+      default:
+        node.style.marginLeft = 'auto';
+        node.style.marginRight = 'auto';
+        break;
+    }
+    
+    // Применяем ширину
+    if (value.width) {
+      node.style.width = value.width;
+      node.style.maxWidth = '100%';
+    }
+    
+    // Для resize handler
+    node.style.position = 'relative';
+    node.style.display = 'inline-block';
+    node.style.verticalAlign = 'middle';
+  }
+
   static initializeCarousel(carouselId: string) {
     const carousel = document.getElementById(carouselId);
     if (!carousel) return;
@@ -143,6 +182,7 @@ class CarouselBlot extends BlockEmbed {
     const carouselWrapper = carousel.closest('.ql-carousel') as HTMLElement;
     const controls = carousel.querySelector('.carousel-controls') as HTMLElement;
     const deleteBtn = carousel.querySelector('.carousel-delete-btn') as HTMLButtonElement;
+    const settingsBtn = carousel.querySelector('.carousel-settings-btn') as HTMLButtonElement;
     
     // Показываем кнопки управления при наведении
     if (carouselWrapper && controls) {
@@ -171,11 +211,19 @@ class CarouselBlot extends BlockEmbed {
             // Если нужно обновить состояние Quill
             const quillInstance = (window as any).currentQuillInstance;
             if (quillInstance) {
-              // Можно обновить контент Quill
               quillInstance.update();
             }
           }
         }
+      });
+    }
+    
+    // Обработчик настроек (выравнивание)
+    if (settingsBtn) {
+      settingsBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        this.openAlignmentMenu(carouselWrapper);
       });
     }
     
@@ -220,12 +268,188 @@ class CarouselBlot extends BlockEmbed {
     indicators.forEach((indicator, index) => {
       indicator.addEventListener('click', () => showSlide(index));
     });
+    
+    // Инициализация resize
+    this.initializeResize(carouselWrapper);
+  }
+
+  static openAlignmentMenu(carouselElement: HTMLElement) {
+    // Создаем меню выравнивания
+    const menu = document.createElement('div');
+    menu.className = 'carousel-alignment-menu';
+    menu.style.cssText = `
+      position: absolute;
+      top: 40px;
+      right: 0;
+      background: rgba(12, 38, 56, 0.98);
+      border: 1px solid rgba(135, 206, 235, 0.35);
+      border-radius: 8px;
+      padding: 8px;
+      z-index: 1000;
+      min-width: 120px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    `;
+    
+    const options = [
+      { value: 'left', icon: '◀', label: 'По левому краю' },
+      { value: 'center', icon: '●', label: 'По центру' },
+      { value: 'right', icon: '▶', label: 'По правому краю' }
+    ];
+    
+    const currentAlignment = carouselElement.getAttribute('data-alignment') || 'center';
+    
+    options.forEach(option => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.innerHTML = `${option.icon} ${option.label}`;
+      button.style.cssText = `
+        display: block;
+        width: 100%;
+        padding: 8px 12px;
+        background: ${currentAlignment === option.value ? 'rgba(135, 206, 235, 0.25)' : 'transparent'};
+        border: none;
+        color: #e0f0ff;
+        text-align: left;
+        border-radius: 4px;
+        cursor: pointer;
+        margin: 2px 0;
+        transition: all 0.2s ease;
+      `;
+      
+      button.addEventListener('mouseenter', () => {
+        button.style.background = 'rgba(135, 206, 235, 0.15)';
+      });
+      
+      button.addEventListener('mouseleave', () => {
+        button.style.background = currentAlignment === option.value 
+          ? 'rgba(135, 206, 235, 0.25)' 
+          : 'transparent';
+      });
+      
+      button.addEventListener('click', () => {
+        // Обновляем атрибут
+        carouselElement.setAttribute('data-alignment', option.value);
+        
+        // Применяем стили
+        switch (option.value) {
+          case 'left':
+            carouselElement.style.marginRight = 'auto';
+            carouselElement.style.marginLeft = '0';
+            break;
+          case 'right':
+            carouselElement.style.marginLeft = 'auto';
+            carouselElement.style.marginRight = '0';
+            break;
+          case 'center':
+            carouselElement.style.marginLeft = 'auto';
+            carouselElement.style.marginRight = 'auto';
+            break;
+        }
+        
+        // Удаляем меню
+        menu.remove();
+      });
+      
+      menu.appendChild(button);
+    });
+    
+    carouselElement.appendChild(menu);
+    
+    // Закрытие меню при клике вне его
+    const closeMenu = (e: MouseEvent) => {
+      if (!menu.contains(e.target as Node) && e.target !== carouselElement.querySelector('.carousel-settings-btn')) {
+        menu.remove();
+        document.removeEventListener('click', closeMenu);
+      }
+    };
+    
+    setTimeout(() => {
+      document.addEventListener('click', closeMenu);
+    }, 0);
+  }
+
+  static initializeResize(carouselElement: HTMLElement) {
+    // Создаем resize handle
+    const resizeHandle = document.createElement('div');
+    resizeHandle.className = 'carousel-resize-handle';
+    resizeHandle.style.cssText = `
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+      width: 15px;
+      height: 15px;
+      background: rgba(135, 206, 235, 0.7);
+      border-radius: 2px;
+      cursor: se-resize;
+      z-index: 100;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    `;
+    
+    carouselElement.appendChild(resizeHandle);
+    
+    // Показываем handle при наведении
+    carouselElement.addEventListener('mouseenter', () => {
+      resizeHandle.style.opacity = '1';
+    });
+    
+    carouselElement.addEventListener('mouseleave', () => {
+      resizeHandle.style.opacity = '0';
+    });
+    
+    // Реализация изменения размера
+    let isResizing = false;
+    let startWidth = 0;
+    let startHeight = 0;
+    let startX = 0;
+    let startY = 0;
+    
+    resizeHandle.addEventListener('mousedown', (e) => {
+      isResizing = true;
+      startWidth = carouselElement.offsetWidth;
+      startHeight = carouselElement.offsetHeight;
+      startX = e.clientX;
+      startY = e.clientY;
+      
+      e.preventDefault();
+      e.stopPropagation();
+    });
+    
+    const onMouseMove = (e: MouseEvent) => {
+      if (!isResizing) return;
+      
+      const deltaX = e.clientX - startX;
+      const deltaY = e.clientY - startY;
+      
+      // Изменяем ширину пропорционально
+      const newWidth = Math.max(200, startWidth + deltaX); // Минимальная ширина 200px
+      carouselElement.style.width = `${newWidth}px`;
+      
+      // Обновляем атрибут
+      carouselElement.setAttribute('data-width', `${newWidth}px`);
+    };
+    
+    const onMouseUp = () => {
+      isResizing = false;
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+    
+    resizeHandle.addEventListener('mousedown', () => {
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+    });
   }
 
   static value(node: HTMLElement): QuillCarouselValue {
     const imagesAttr = node.getAttribute('data-images');
+    const alignment = node.getAttribute('data-alignment');
+    const width = node.getAttribute('data-width');
+    
     return {
-      images: imagesAttr ? JSON.parse(imagesAttr) : []
+      images: imagesAttr ? JSON.parse(imagesAttr) : [],
+      alignment: alignment || 'center',
+      width: width || '100%'
     };
   }
 }
