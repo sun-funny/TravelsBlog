@@ -5,7 +5,7 @@ import { ITravel } from 'src/app/models/travel';
 import { TravelService } from 'src/app/services/travel/travel.service';
 import { TeamMock } from 'src/app/shared/mock/team.mock';
 import { CountryCoordinatesService } from 'src/app/services/coordinates/coordinates.sevice';
-import { latLng, MapOptions, marker, Marker, tileLayer, Map, icon, featureGroup, LatLngBounds, geoJSON, } from 'leaflet';
+import { latLng, MapOptions, marker, Marker, tileLayer, Map, icon, featureGroup, LatLngBounds, geoJSON, tooltip} from 'leaflet';
 
 @Component({
   selector: 'app-main',
@@ -110,7 +110,45 @@ export class MainComponent implements OnInit, OnDestroy {
       return;
     }
 
+    // Создаем текст для тултипа
+      const tooltipContent = `
+      <div style="
+        font-family: 'Montserrat', Helvetica, sans-serif;
+        text-align: center;
+        min-width: 120px;
+        padding: 4px 0;
+      ">
+        <div style="
+          color: #0a1f2d;
+          font-size: 14px;
+          font-weight: 700;
+          margin-bottom: 2px;
+          text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
+        ">${travel.country}</div>
+        ${travel.city ? `
+        <div style="
+          color: #000000;
+          font-size: 12px;
+          font-weight: 500;
+          margin-bottom: 2px;
+        ">${travel.city}</div>
+        ` : ''}
+        <div style="
+          color: #8B0000;
+          font-size: 11px;
+          font-weight: 600;
+        ">${travel.year}</div>
+      </div>
+    `;
+
     const newMarker = marker(coordinates, { icon: customIcon })
+      .bindTooltip(tooltipContent, {
+          permanent: false,      // Показывать только при наведении
+          direction: 'top',      // Направление тултипа
+          offset: [0, -25],      // Смещение относительно маркера
+          opacity: 1,          // Прозрачность
+          className: 'custom-tooltip' // Класс для кастомных стилей
+        })      
       .bindPopup(`
         <div style="text-align: center; min-width: 200px;">
           <h3 style="margin: 0 0 10px 0; color: #87ceeb;">${travel.country}</h3>
