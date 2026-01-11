@@ -615,6 +615,7 @@ static openAlignmentMenu(carouselElement: HTMLElement) {
     let startHeight = 0;
     let startX = 0;
     let startY = 0;
+    let currentCarouselId = '';
     
     resizeHandle.addEventListener('mousedown', (e) => {
       isResizing = true;
@@ -622,6 +623,10 @@ static openAlignmentMenu(carouselElement: HTMLElement) {
       startHeight = carouselElement.offsetHeight;
       startX = e.clientX;
       startY = e.clientY;
+      
+      // Получаем идентификатор карусели
+      const wrapper = carouselElement.querySelector('.carousel-wrapper');
+      currentCarouselId = wrapper?.id || '';
       
       e.preventDefault();
       e.stopPropagation();
@@ -631,20 +636,47 @@ static openAlignmentMenu(carouselElement: HTMLElement) {
       if (!isResizing) return;
       
       const deltaX = e.clientX - startX;
-      const deltaY = e.clientY - startY;
-      
-      // Изменяем ширину пропорционально
       const newWidth = Math.max(200, startWidth + deltaX); // Минимальная ширина 200px
-      carouselElement.style.width = `${newWidth}px`;
       
-      // Обновляем атрибут
-      carouselElement.setAttribute('data-width', `${newWidth}px`);
+      // Получаем все карусели с таким же идентификатором контента
+      const allCarousels = document.querySelectorAll('.ql-carousel');
+      
+      allCarousels.forEach(carousel => {
+        const carouselEl = carousel as HTMLElement;
+        
+        // Проверяем, имеет ли карусель тот же набор изображений
+        const currentImagesAttr = carouselElement.getAttribute('data-images');
+        const otherImagesAttr = carouselEl.getAttribute('data-images');
+        
+        if (currentImagesAttr && otherImagesAttr && 
+            currentImagesAttr === otherImagesAttr) {
+          // Применяем одинаковую ширину ко всем каруселям с теми же изображениями
+          carouselEl.style.width = `${newWidth}px`;
+          carouselEl.setAttribute('data-width', `${newWidth}px`);
+          
+          // Обновляем все дочерние элементы внутри карусели
+          const wrapper = carouselEl.querySelector('.carousel-wrapper');
+          if (wrapper) {
+            const images = carouselEl.querySelectorAll('.carousel-image');
+            images.forEach(img => {
+              (img as HTMLImageElement).style.maxWidth = '100%';
+              (img as HTMLImageElement).style.height = 'auto';
+            });
+          }
+        }
+      });
     };
     
     const onMouseUp = () => {
       isResizing = false;
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
+      
+      // Обновляем состояние Quill, чтобы изменения сохранились
+      const quillInstance = (window as any).currentQuillInstance;
+      if (quillInstance) {
+        quillInstance.update();
+      }
     };
     
     resizeHandle.addEventListener('mousedown', () => {

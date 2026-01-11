@@ -837,6 +837,54 @@
     }
   }
 
+  /* Стили для resize handle */
+.carousel-resize-handle {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  width: 15px;
+  height: 15px;
+  background: rgba(135, 206, 235, 0.7);
+  border-radius: 2px;
+  cursor: se-resize;
+  z-index: 100;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.carousel-resize-handle:hover {
+  opacity: 1 !important;
+  background: rgba(135, 206, 235, 0.9);
+}
+
+/* Убедитесь, что карусель имеет правильное позиционирование */
+.ql-carousel {
+  position: relative !important;
+  display: inline-block;
+  vertical-align: middle;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.carousel-wrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.carousel-slide {
+  width: 100%;
+  height: auto;
+}
+
+.carousel-image {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
   /* Стили для меню выравнивания карусели */
   .carousel-alignment-menu {
     button {

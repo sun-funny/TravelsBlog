@@ -597,6 +597,15 @@ private initializeQuill(): void {
     });
   }
 
+  // Добавляем обработчик для синхронизации каруселей
+  if (this.quillInstance) {
+      this.quillInstance.on('editor-change', () => {
+        setTimeout(() => {
+          this.syncCarouselSizes();
+        }, 50);
+      });
+    }
+
   const icons = Quill.import('ui/icons');
   icons['carousel'] = `
     <svg viewBox="0 0 24 24" width="16" height="16">
@@ -865,13 +874,31 @@ async insertCarouselIntoQuill(): Promise<void> {
     const range = this.quillInstance.getSelection(true);
     const index = range ? range.index : this.quillInstance.getLength();
 
+
+    // Получаем текущий размер из существующих каруселей с такими же изображениями
+      let carouselWidth = '100%';
+      const existingCarousels = this.quillInstance.root.querySelectorAll('.ql-carousel');
+      
+      existingCarousels.forEach((carousel: Element) => {
+        const carouselEl = carousel as HTMLElement;
+        const existingImagesAttr = carouselEl.getAttribute('data-images');
+        
+        if (existingImagesAttr && JSON.stringify(existingImagesAttr) === JSON.stringify(uploadedUrls)) {
+          const existingWidth = carouselEl.getAttribute('data-width');
+          if (existingWidth) {
+            carouselWidth = existingWidth;
+          }
+        }
+      });
+
     // Вставляем карусель как блок с возможностью изменения размера
     try {
       this.quillInstance.insertEmbed(index, 'carousel', { 
-        images: uploadedUrls 
+        images: uploadedUrls,
+        width: carouselWidth
       }, 'user');
       
-      console.log('Carousel inserted successfully');
+      console.log('Carousel inserted successfully with width:', carouselWidth);
       
       // Добавляем пустую строку после карусели для удобства
       this.quillInstance.insertText(index + 1, '\n\n');
@@ -890,6 +917,12 @@ async insertCarouselIntoQuill(): Promise<void> {
           }
         }
       }, 100);
+
+      // Синхронизируем размеры после вставки
+      setTimeout(() => {
+        this.syncCarouselSizes();
+      }, 100);
+
       
     } catch (error) {
       console.error('Error inserting carousel embed:', error);
@@ -913,6 +946,37 @@ async insertCarouselIntoQuill(): Promise<void> {
     this.cleanupCarouselTempImages();
   }
 }
+
+ // Метод для синхронизации размеров всех каруселей
+  private syncCarouselSizes(): void {
+    if (!this.quillInstance) return;
+    
+    const carousels = this.quillInstance.root.querySelectorAll('.ql-carousel');
+    const sizeMap = new Map<string, string>(); // Карта для хранения размеров по идентификаторам
+    
+    // Собираем размеры всех уникальных каруселей
+    carousels.forEach((carousel: Element) => {
+      const carouselEl = carousel as HTMLElement;
+      const imagesAttr = carouselEl.getAttribute('data-images');
+      const width = carouselEl.getAttribute('data-width') || carouselEl.style.width;
+      
+      if (imagesAttr && width) {
+        sizeMap.set(imagesAttr, width);
+      }
+    });
+    
+    // Применяем размеры ко всем каруселям
+    carousels.forEach((carousel: Element) => {
+      const carouselEl = carousel as HTMLElement;
+      const imagesAttr = carouselEl.getAttribute('data-images');
+      
+      if (imagesAttr && sizeMap.has(imagesAttr)) {
+        const width = sizeMap.get(imagesAttr);
+        carouselEl.style.width = width || '100%';
+        carouselEl.setAttribute('data-width', width || '100%');
+      }
+    });
+  }
 
 // Метод для загрузки изображений для карусели Quill
 private async uploadImagesForCarousel(): Promise<string[]> {
@@ -1098,6 +1162,9 @@ saveContent(): void {
   if (!this.isAdmin || !this.quillInstance) return;
 
   this.isSaving = true;
+
+  // Сначала синхронизируем размеры всех каруселей
+  this.syncCarouselSizes();
   
   // Получаем контент Quill
   const content = this.quillInstance.root.innerHTML;
