@@ -130,14 +130,84 @@ class CarouselBlot extends BlockEmbed {
     prev.className = 'carousel-btn prev';
     prev.textContent = '‹';
     prev.setAttribute('aria-label', 'Предыдущий слайд');
+    prev.style.cssText = `
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 50;
+  opacity: 0.8;
+  
+  &:hover {
+    background: rgba(0, 0, 0, 0.8);
+    opacity: 1;
+  }
+`;
+
     
     const next = document.createElement('button');
     next.className = 'carousel-btn next';
     next.textContent = '›';
     next.setAttribute('aria-label', 'Следующий слайд');
     
+    next.style.cssText = `
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 50;
+  opacity: 0.8;
+  
+  &:hover {
+    background: rgba(0, 0, 0, 0.8);
+    opacity: 1;
+  }
+`;
+
     wrapper.append(controls, prev, imagesContainer, next, indicators);
     node.appendChild(wrapper);
+
+    wrapper.style.cssText = `
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 8px;
+`;
+
+imagesContainer.style.cssText = `
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.1);
+`;
     
     // Добавляем обработчики событий
     setTimeout(() => this.initializeCarousel(carouselId), 0);
