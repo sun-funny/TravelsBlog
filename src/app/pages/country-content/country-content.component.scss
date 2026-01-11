@@ -734,6 +734,112 @@
 
 /* Дополнительные стили для улучшения контрастности */
 ::ng-deep {
+
+  /* Стили для кнопки карусели на тулбаре */
+  .ql-toolbar .ql-carousel {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+    
+    &::before {
+      content: '🎠'; // Или используйте свою иконку
+      font-size: 16px;
+    }
+    
+    &:hover {
+      background: rgba(135, 206, 235, 0.25);
+    }
+  }
+
+  /* Стили для меню выравнивания карусели */
+  .carousel-alignment-menu {
+    button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Montserrat', Helvetica, sans-serif;
+      font-size: 13px;
+      
+      &:hover {
+        background: rgba(135, 206, 235, 0.15) !important;
+      }
+    }
+  }
+  
+  /* Стили для resize handle */
+  .ql-carousel .carousel-resize-handle:hover {
+    opacity: 1 !important;
+    background: rgba(135, 206, 235, 0.9) !important;
+  }
+  
+  /* Стили для контейнера карусели с разными выравниваниями */
+  .ql-editor {
+    .ql-carousel[data-alignment="left"] {
+      float: left;
+      margin: 10px 20px 10px 0 !important;
+      clear: left;
+    }
+    
+    .ql-carousel[data-alignment="right"] {
+      float: right;
+      margin: 10px 0 10px 20px !important;
+      clear: right;
+    }
+    
+    .ql-carousel[data-alignment="center"] {
+      display: block;
+      margin: 20px auto !important;
+      clear: both;
+    }
+    
+    .ql-carousel {
+      transition: all 0.3s ease;
+      max-width: 100% !important;
+      
+      &:hover {
+        box-shadow: 0 0 0 2px rgba(135, 206, 235, 0.3);
+      }
+      
+      .carousel-wrapper {
+        transition: all 0.3s ease;
+      }
+    }
+  }
+  
+  /* Стили для кнопок управления на карусели */
+  .ql-carousel .carousel-controls {
+    button {
+      &:hover {
+        transform: scale(1.1);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      }
+      
+      &.carousel-delete-btn:hover {
+        background: rgba(220, 53, 69, 1) !important;
+      }
+      
+      &.carousel-settings-btn:hover {
+        background: rgba(135, 206, 235, 1) !important;
+      }
+    }
+  }
+}
+
+// Добавьте анимацию для изменения размера
+@keyframes resizeAnimation {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.01); }
+  100% { transform: scale(1); }
+}
+
+::ng-deep .ql-carousel.resizing {
+  animation: resizeAnimation 0.3s ease;
+
   /* Улучшение видимости активных состояний в тулбаре */
   .ql-toolbar button.ql-active {
     background: rgba(135, 206, 235, 0.4) !important;
@@ -1149,14 +1255,14 @@
     &:active {
       background: rgba(135, 206, 235, 0.4);
     }
-  }
-  }
-  // Стили для resize handler карусели
-.ql-image-resize {
-  .ql-carousel {
-    cursor: default;
+    }
+    }
+    // Стили для resize handler карусели
+    .ql-image-resize {
+      .ql-carousel {
+      cursor: default;
     
-    &::after {
+      &::after {
       content: '';
       position: absolute;
       bottom: 5px;
@@ -1167,9 +1273,9 @@
       border-radius: 2px;
       cursor: se-resize;
       z-index: 100;
+      }
     }
   }
-}
   }
   // ============ КОНЕЦ ВНУТРЕННЯЯ КАРУСЕЛЬ
 }
