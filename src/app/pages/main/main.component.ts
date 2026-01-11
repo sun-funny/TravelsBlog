@@ -52,7 +52,7 @@ export class MainComponent implements OnInit, OnDestroy {
       next: (travels) => {
         this.travels = travels;
         this.featuredTravels = travels
-          .filter(travel => travel.featured)
+          //.filter(travel => travel.featured)
           .slice(0, 10);
         this.updateMapMarkers();
       },
