@@ -391,6 +391,10 @@
       align-items: center;
       justify-content: center;
     }
+    .team-actions {
+    display: flex;
+    justify-content: flex-end;
+    }
   }
 }
 

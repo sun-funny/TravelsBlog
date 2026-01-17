@@ -38,6 +38,11 @@ const routes: Routes = [
     canActivate: [authGuardFunc] // Добавляем guard для комментариев
   },
   {
+    path: 'team',
+    loadChildren: () => import('./pages/team/team.module').then(m => m.TeamModule),
+    canActivate: [authGuardFunc]
+  },
+  {
     path: '**',
     redirectTo: 'main'
   },

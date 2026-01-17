@@ -1,0 +1,117 @@
+<div class="edit-container">
+  <div class="edit-card">
+    <h2>{{ isEditMode ? 'Редактирование участника' : 'Добавление участника' }}</h2>
+    
+    <form [formGroup]="teamForm" (ngSubmit)="onSubmit()">
+      <div class="form-grid">
+        <!-- Основная информация -->
+        <div class="form-section">
+          <h3>Основная информация</h3>
+          
+          <div class="form-group">
+            <label>Имя *</label>
+            <input pInputText formControlName="name" placeholder="Введите имя" />
+            <small *ngIf="teamForm.get('name')?.invalid && teamForm.get('name')?.touched">
+              Имя обязательно
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label>Приветствие *</label>
+            <textarea pInputTextarea 
+                      formControlName="greeting" 
+                      rows="2"
+                      placeholder="Приветственное сообщение"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Описание *</label>
+            <textarea pInputTextarea 
+                      formControlName="description" 
+                      rows="4"
+                      placeholder="Описание участника"></textarea>
+          </div>
+        </div>
+
+        <!-- Изображение -->
+        <div class="form-section">
+          <h3>Изображение</h3>
+          
+          <div class="image-upload">
+            <div class="image-preview" *ngIf="imagePreview">
+              <img [src]="imagePreview" alt="Preview" />
+            </div>
+            
+            <div class="upload-controls">
+              <input type="file" 
+                     accept="image/*" 
+                     (change)="onFileSelected($event)"
+                     #fileInput
+                     style="display: none" />
+              
+              <button pButton 
+                      type="button" 
+                      icon="pi pi-upload"
+                      label="Выбрать изображение"
+                      (click)="fileInput.click()">
+              </button>
+
+              <small *ngIf="!imagePreview && teamForm.get('image')?.touched">
+                Изображение обязательно
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Позиционирование -->
+        <div class="form-section">
+          <h3>Позиционирование</h3>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label>Top Position</label>
+              <input pInputText formControlName="position.top" placeholder="0" />
+            </div>
+
+            <div class="form-group">
+              <label>Left Position</label>
+              <input pInputText formControlName="position.left" placeholder="0" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Направление</label>
+            <p-dropdown [options]="directions" 
+                       formControlName="direction"
+                       placeholder="Выберите направление">
+            </p-dropdown>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button pButton 
+                type="button" 
+                label="Отмена"
+                class="p-button-secondary"
+                (click)="router.navigate(['/main'])">
+        </button>
+        
+        <button pButton 
+                type="submit" 
+                label="{{ isEditMode ? 'Обновить' : 'Создать' }}"
+                class="p-button-primary"
+                [disabled]="teamForm.invalid">
+        </button>
+        
+        <button pButton 
+                type="button" 
+                label="Удалить"
+                class="p-button-danger"
+                *ngIf="isEditMode"
+                (click)="onDelete()">
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

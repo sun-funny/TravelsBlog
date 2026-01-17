@@ -1,4 +1,5 @@
 export interface ITeam {
+  id: string;
   name: string;
   greeting: string;
   image: string;
@@ -7,6 +8,5 @@ export interface ITeam {
               left: string;
             };
   direction: string;
-  vectorSrc: string;
   description: string;
 }

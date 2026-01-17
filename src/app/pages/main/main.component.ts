@@ -3,9 +3,13 @@ import { Router } from '@angular/router';
 import { Observable, Subscription } from "rxjs";
 import { ITravel } from 'src/app/models/travel';
 import { TravelService } from 'src/app/services/travel/travel.service';
-import { TeamMock } from 'src/app/shared/mock/team.mock';
+//import { TeamMock } from 'src/app/shared/mock/team.mock';
+import { ITeam } from 'src/app/models/team';
+import { TeamService } from 'src/app/services/team/team.service';
 import { CountryCoordinatesService } from 'src/app/services/coordinates/coordinates.sevice';
 import { latLng, MapOptions, marker, Marker, tileLayer, Map, icon, featureGroup, LatLngBounds, geoJSON, tooltip} from 'leaflet';
+import { AuthService } from 'src/app/services/auth/auth.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-main',
@@ -15,14 +19,18 @@ import { latLng, MapOptions, marker, Marker, tileLayer, Map, icon, featureGroup,
 export class MainComponent implements OnInit, OnDestroy {
   constructor(
     private travelService: TravelService,
+    private teamService: TeamService,
     private countryCoordinatesService: CountryCoordinatesService,
+    private authService: AuthService,
     private router: Router
   ) {}
   
   private _destroyer: Subscription;
+  private _teamDestroyer: Subscription;
   travels: ITravel[] = [];
   featuredTravels: ITravel[] = [];
-  teamMembers = TeamMock;
+  teamMembers: ITeam[] = [];
+  isAdmin: boolean = false;
 
   mapOptions: MapOptions;
   mapMarkers: Marker[] = [];
@@ -31,6 +39,21 @@ export class MainComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.initializeMapOptions();
     this.initTravels();
+    this.initTeam();
+    this.checkAdminStatus();
+  }
+
+  private checkAdminStatus(): void {
+    // Проверяем через AuthService
+    this.authService.userBehavior$.subscribe(user => {
+      this.isAdmin = user?.login === 'admin';
+    });
+    
+    // Также можно проверить текущее состояние
+    const user = this.authService.getCurrentUser();
+    if (user) {
+      this.isAdmin = user.login === 'admin';
+    }
   }
 
   initializeMapOptions(): void {
@@ -58,6 +81,17 @@ export class MainComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         console.error('Error fetching travels:', err);
+      }
+    });
+  }
+
+  initTeam() {
+    this._teamDestroyer = this.teamService.getTeamMembers().subscribe({
+      next: (teamMembers) => {
+        this.teamMembers = teamMembers;
+      },
+      error: (err) => {
+        console.error('Error fetching team members:', err);
       }
     });
   }
@@ -189,9 +223,29 @@ export class MainComponent implements OnInit, OnDestroy {
   this.router.navigate(['/travels', countryId]).then(() => {
     window.scrollTo(0, 0);
   });
-}
+  }
+
+  editTeamMember(id: string): void {
+  this.router.navigate(['/team/edit', id]);
+  }
+
+  addTeamMember(): void {
+    this.router.navigate(['/team/add']);
+  }
+
+getImageUrl(path: string): string {
+    if (!path) return '';
+    if (path.startsWith('http')) {
+      return path;
+    }
+    if (path.startsWith('/')) {
+      return `${environment.apiUrl}${path}`;
+    }
+    return `${environment.apiUrl}/uploads/${path}`;
+  }
 
   ngOnDestroy() {
     this._destroyer?.unsubscribe();
+    this._teamDestroyer?.unsubscribe();
   }
 }

@@ -29,13 +29,31 @@
     <!-- Команда -->
     <div class="team-section">
       <h2 class="team-title">Кто мы такие?</h2>
+      <!-- Кнопка добавления для админа -->
+        <div class="team-card add-card" *ngIf="isAdmin" (click)="addTeamMember()">
+          <div class="add-content">
+            <i class="pi pi-plus" style="font-size: 2rem; color: #87ceeb;"></i>
+            <h3>Добавить участника</h3>
+          </div>
+        </div>
       <div class="team-grid">
         <div *ngFor="let member of teamMembers" class="team-card">
           <div class="card-header">
-            <img class="member-photo" [src]="member.image" [alt]="member.name">
+            <img class="member-photo" [src]="getImageUrl(member.image)" [alt]="member.name">
             <h3 class="member-name">{{ member.name }}</h3>
           </div>
           <p class="member-description">{{ member.description }}</p>
+
+          <!-- Кнопка редактирования для админа -->
+          <div class="team-actions" *ngIf="isAdmin">
+            <button pButton 
+                    type="button" 
+                    icon="pi pi-pencil" 
+                    class="p-button-rounded p-button-info"
+                    (click)="editTeamMember(member.id)">
+            </button>
+          </div>
+
         </div>
       </div>
     </div>
