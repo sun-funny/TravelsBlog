@@ -16,6 +16,7 @@
       
       <div class="country-title">
         <h1>{{ travel.country }}</h1>
+        <h3>{{ travel.city }}</h3>
         <div class="country-year">{{ travel.year }}</div>
       </div>
 
@@ -47,7 +48,6 @@
     <!-- Карусель изображений -->
     <div class="image-carousel-section">
       <div class="section-header">
-        <h3>Галерея</h3>
         <button pButton 
                 type="button" 
                 icon="pi pi-images" 
@@ -120,24 +120,12 @@
 
     <!-- Базовое описание -->
     <div class="basic-description">
-      <h3>О стране</h3>
-      <p>{{ travel.description }}</p>
+      <h3>{{ travel.description }}</h3>
     </div>
 
     <!-- Rich Content Editor/Viewer -->
     <div class="rich-content-section">
-      <h3>Подробнее</h3>
-      
-      <!-- Информация для админа в режиме просмотра -->
-      <div *ngIf="isAdmin && !isEditMode && countryContent?.updatedAt" 
-        class="content-meta">
-        <small>
-          Последнее обновление: {{ countryContent.updatedAt | date:'dd.MM.yyyy HH:mm' }}
-          <span *ngIf="countryContent.updatedBy"> пользователем {{ countryContent.updatedBy }}</span>
-        </small>
-      </div>
-
-      <!-- Редактор Quill -->
+            <!-- Редактор Quill -->
       <div class="quill-container glass-card" [class.editing]="isEditMode && isAdmin">
         <div #editor class="quill-editor"></div>
       </div>
