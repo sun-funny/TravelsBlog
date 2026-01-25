@@ -272,9 +272,6 @@
           min-height: 400px;
           padding: 1.5rem;
           color: #e0f0ff;
-          .ql-editor [style*="color"] {
-          color: unset !important;
-          }
           p {
             line-height: 1.7;
             margin-bottom: 1rem;
@@ -413,49 +410,42 @@
      ========================================================= */
   // Основной текст в редакторе
   .ql-editor {
-    color: #ffffff !important; // Белый цвет текста по умолчанию    
+    color: #ffffff; // Белый цвет текста по умолчанию    
     // Заголовки
     h1, h2, h3, h4, h5, h6 {
-      color: #ffffff !important; // Заголовки остаются голубыми
+      color: #ffffff; // Заголовки остаются голубыми
     }
     // Списки
     li {
-      color: inherit !important;
+      color: inherit;
     }
     // Цитаты
     blockquote {
-      color: #ffffff !important; // Светло-голубой для цитат
+      color: #ffffff; // Светло-голубой для цитат
     }
     // Код
     pre, code {
-      color: #e0f0ff !important; // Светлый цвет для кода
+      color: #e0f0ff; // Светлый цвет для кода
     }
     // Ссылки
     a {
-      color: #ffffff !important;
+      color: #ffffff;
       &:hover {
-        color: #ffffff !important;
+        color: #ffffff;
       }
     }
   }
   // Текст в placeholder (когда редактор пустой)
   .ql-editor.ql-blank::before {
-    color: rgba(255, 255, 255, 0.6) !important; 
+    color: rgba(255, 255, 255, 0.6); 
   }
   // Текст в режиме просмотра (без тулбара)
   .ql-container.ql-disabled .ql-editor {
-    color: #ffffff !important;
+    color: #ffffff;
   }
   /* =========================================================
      ОПРЕДЕЛЕНИЕ ЦВЕТА ДЛЯ РАЗНЫХ ФОРМАТОВ ТЕКСТА
      ========================================================= */
-  // Переопределение цветов, заданных через Quill
-  .ql-editor *[style*="color"] {
-    // Сохраняем кастомные цвета, кроме черного
-    &:not([style*="color: black"]):not([style*="color: #000"]):not([style*="color: #000000"]) {
-      color: inherit !important;
-    }
-  }
   /* =========================================================
      QUILL TOOLBAR ICONS - WHITE ICONS
      ========================================================= */ 
@@ -576,12 +566,7 @@
   .ql-snow .ql-background-picker .ql-picker-label.ql-active {
     color: #87ceeb !important;
   }
-  
-  /* Применить выбранный цвет текста в редакторе */
-  .ql-editor span[style*="color"] {
-    color: inherit !important; /* Наследовать заданный цвет */
-  }
-  
+    
   /* Переопределить черный цвет на белый для видимости */
   .ql-editor span[style*="color: black"],
   .ql-editor span[style*="color: #000"],

@@ -105,10 +105,6 @@ export class CountryContentComponent implements OnInit, OnDestroy {
   private dragEndHandlerRef: any;
   private panMoveHandlerRef: any;
   private panEndHandlerRef: any;
-
-  // Для сохранения позиции скрола на месте курсора
-  private scrollPosition: number = 0;
-  private isToolbarAction: boolean = false;
   
   constructor(
     private route: ActivatedRoute,
@@ -323,9 +319,6 @@ export class CountryContentComponent implements OnInit, OnDestroy {
 
   toggleEditMode(): void {
     if (this.isAdmin) {
-      // Сохраняем текущую позицию прокрутки
-      const scrollPosition = window.scrollY || document.documentElement.scrollTop;
-
       this.isEditMode = !this.isEditMode;   
     // Сохранить текущий контент перед переключением режима
       if (this.quillInstance && this.quillInstance.root) {
@@ -337,13 +330,7 @@ export class CountryContentComponent implements OnInit, OnDestroy {
       // Полностью пересоздать Quill с новыми параметрами
       setTimeout(() => {
         this.initializeQuill();
-
-        // Восстанавливаем позицию прокрутки
-      requestAnimationFrame(() => {
-        this.restoreScrollPosition();
-      });
-
-      }, 50);
+      }, 0);
     }
   }
 
@@ -636,7 +623,6 @@ export class CountryContentComponent implements OnInit, OnDestroy {
         ]
       },
       keyboard: {
-        preserveSelection: true,
         // Сохраняем стандартные биндинги и добавляем свои
         bindings: {
           // Стандартные биндинги Quill
@@ -743,15 +729,7 @@ export class CountryContentComponent implements OnInit, OnDestroy {
               this.quillInstance.root.innerHTML = this.countryContent.content;
             }
           }, 0);
-        }
-        
-        // Обработчик для toolbar кликов
-        this.addToolbarHandlers();
-         // Добавляем обработчик для сохранения позиции курсора
-        this.addSelectionPreservationHandler();
-        // Обработчик для сохранения позиции скролла
-        this.addScrollPreservationHandlers();
-
+        }     
         // СКРЫТЬ тулбар в режиме просмотра
         if (!(this.isEditMode && this.isAdmin)) {
           setTimeout(() => {
@@ -813,116 +791,9 @@ export class CountryContentComponent implements OnInit, OnDestroy {
       </svg>
     `;
   }
-  private addSelectionPreservationHandler(): void {
-    if (!this.quillInstance) return;
-  
-    // Сохраняем позицию курсора перед любыми действиями
-    this.quillInstance.on('editor-change', (
-      eventType: 'text-change' | 'selection-change', 
-      range: any, 
-      oldRange: any, 
-      source: string
-    ) => {
-      if (eventType === 'selection-change' && range) {
-        // Сохраняем текущую позицию курсора
-        this.saveCursorPosition(range);
-      }
-    });
-  
-    // Восстанавливаем позицию курсора после обновлений DOM
-    this.quillInstance.on('text-change', () => {
-      setTimeout(() => {
-        this.restoreCursorPosition();
-      }, 0);
-    });
-  }
-  private cursorPosition: any = null;
-  private saveCursorPosition(range: any): void {
-    if (range && this.quillInstance) {
-      this.cursorPosition = {
-        index: range.index,
-        length: range.length
-      };
-    }
-  }
-  private restoreCursorPosition(): void {
-    if (this.cursorPosition && this.quillInstance) {
-      this.zone.run(() => {
-        try {
-          this.quillInstance.setSelection(
-            this.cursorPosition.index,
-            this.cursorPosition.length,
-            'silent' // Используем 'silent' чтобы избежать циклических вызовов
-          );
-        } catch (error) {
-        console.warn('Could not restore cursor position:', error);
-        }
-      });
-    }
-  }
-
-  // Новый метод для добавления обработчиков тулбара
-  private addToolbarHandlers(): void {
-    if (!this.quillInstance || !this.isEditMode) return;
-    
-    // Сохраняем позицию скролла перед действиями на тулбаре
-    const toolbar = this.editorRef.nativeElement.querySelector('.ql-toolbar');
-    if (toolbar) {
-      toolbar.addEventListener('mousedown', () => {
-        this.isToolbarAction = true;
-        this.scrollPosition = window.scrollY || document.documentElement.scrollTop;
-      });
-      
-      toolbar.addEventListener('click', () => {
-        setTimeout(() => {
-          this.restoreScrollPosition();
-          this.isToolbarAction = false;
-        }, 0);
-      });
-    }
-  }
-  
-  // Новый метод для сохранения/восстановления скролла
-  private addScrollPreservationHandlers(): void {
-    if (!this.quillInstance) return;
-    
-    // Сохраняем позицию скролла при изменениях
-    this.quillInstance.on('selection-change', (range: any, oldRange: any, source: string) => {
-      if (source === 'user' && !this.isToolbarAction) {
-        this.scrollPosition = window.scrollY || document.documentElement.scrollTop;
-      }
-    });
-    
-    // Восстанавливаем позицию после изменений
-    this.quillInstance.on('text-change', () => {
-      if (this.isToolbarAction) {
-        setTimeout(() => {
-          this.restoreScrollPosition();
-        }, 0);
-      }
-    });
-  }
-  
-  // Метод для восстановления позиции скролла
-  private restoreScrollTimeout: any;
-  private restoreScrollPosition(): void {
-    // Отменяем предыдущий таймер
-    if (this.restoreScrollTimeout) {
-      clearTimeout(this.restoreScrollTimeout);
-    }
-    
-    // Устанавливаем новый таймер с небольшой задержкой
-    this.restoreScrollTimeout = setTimeout(() => {
-      this.zone.run(() => {
-        window.scrollTo({
-          top: this.scrollPosition,
-          behavior: 'auto'
-        });
-      });
-    }, 10); // 10ms задержка для гарантии, что DOM обновился
-  }
 
   // ВНУТРЕННЯЯ КАРУСЕЛЬ QUILL
+
   //Позиция курсора карусели
   private isCursorInCarousel(range: any): boolean {
     if (!range || !this.quillInstance) return false;
@@ -1224,13 +1095,6 @@ export class CountryContentComponent implements OnInit, OnDestroy {
     this.quillInstance.format('size', 'large');
     this.quillInstance.format('align', 'left');
     this.quillInstance.format('color', '#ffffff');
-    // Восстанавливаем курсор
-    setTimeout(() => {
-      if (range) {
-        this.quillInstance.setSelection(range.index, range.length, 'silent');
-      }
-      this.restoreScrollPosition();
-    }, 0);
   }
 
   private applyNormalStyles(): void {
@@ -1245,14 +1109,6 @@ export class CountryContentComponent implements OnInit, OnDestroy {
     this.quillInstance.format('color', '#ffffff'); 
     // Убедиться, что шрифт normal
     this.quillInstance.format('font', false); // Сброс кастомного шрифта
-
-     // Восстанавливаем курсор
-    setTimeout(() => {
-      if (range) {
-        this.quillInstance.setSelection(range.index, range.length, 'silent');
-      }
-      this.restoreScrollPosition();
-    }, 0);
   }
   //===========================================================================
   //  РАБОТА С ФАЙЛАМИ ИЗОБРАЖЕНИЙ
