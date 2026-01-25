@@ -601,6 +601,45 @@ export class CountryContentComponent implements OnInit, OnDestroy {
     }
   }
 
+  // ============== ЦВЕТОВОЙ СПЕКТР ДЛЯ ТЕКСТА И ФОНА =====================
+  // Обработчик изменения цвета
+  private handleColorChange(value: string, type: 'color' | 'background'): void {
+    // Значение будет null или undefined, когда выбирается custom
+    if (!value || value === 'custom') {
+      this.openColorPicker(type);
+    } else {
+      this.quillInstance.format(type, value);
+    }
+  }
+  // Открытие цветового пикера
+  private openColorPicker(type: 'color' | 'background'): void {
+  // Создаем скрытый input
+  const colorPickerId = `color-picker-${Date.now()}`;
+  const colorPicker = document.createElement('input');
+  colorPicker.id = colorPickerId;
+  colorPicker.type = 'color';
+  colorPicker.style.cssText = 'position: fixed; top: -100px; left: -100px; opacity: 0;';
+  
+  colorPicker.addEventListener('change', (event: any) => {
+    const color = event.target.value;
+    this.quillInstance.format(type, color);
+    
+    // Удаляем элемент
+    if (document.body.contains(colorPicker)) {
+      document.body.removeChild(colorPicker);
+    }
+  });
+  
+  document.body.appendChild(colorPicker);
+  
+  // Используем dispatchEvent вместо click
+  colorPicker.dispatchEvent(new MouseEvent('click', {
+    view: window,
+    bubbles: true,
+    cancelable: true
+  }));
+}
+  // =====================================
   // Инициализация Quill с правильными опциями
   private initializeQuill(): void {
     this.destroyQuill();
@@ -694,7 +733,22 @@ export class CountryContentComponent implements OnInit, OnDestroy {
           [{ 'indent': '-1'}, { 'indent': '+1' }],
           [{ 'direction': 'rtl' }],
           [{ 'size': ['small', false, 'large', 'huge'] }],
-          [{ 'color': [] }, { 'background': [] }],
+          [
+            { 
+              'color': [
+              '#000000', '#FFFFFF', '#FF0000', '#00FF00', '#0000FF', '#FFFF00', 
+              '#FF00FF', '#00FFFF', '#FFA500', '#800080', '#A52A2A', '#FFC0CB',
+              'custom' // Добавляем опцию "custom" в конец списка
+              ] 
+            }, 
+            { 
+              'background': [
+              '#000000', '#FFFFFF', '#FF0000', '#00FF00', '#0000FF', '#FFFF00', 
+              '#FF00FF', '#00FFFF', '#FFA500', '#800080', '#A52A2A', '#FFC0CB',
+              'custom'
+              ] 
+            }
+          ],
           [{ 'font': [] }],
           [{ 'align': [] }],
           ['clean'],
@@ -709,7 +763,13 @@ export class CountryContentComponent implements OnInit, OnDestroy {
           else if (value === false) this.applyNormalStyles();
           else this.quillInstance.format('header', value);
           },
-          carousel: () => { this.zone.run(() => this.openCarouselImagePicker()); }
+          carousel: () => { this.zone.run(() => this.openCarouselImagePicker()); },
+          color: (value: string) => { 
+            this.handleColorChange(value, 'color'); 
+          },
+          background: (value: string) => { 
+            this.handleColorChange(value, 'background'); 
+          }
         }
       };
     }
