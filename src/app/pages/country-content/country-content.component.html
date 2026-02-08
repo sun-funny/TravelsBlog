@@ -85,7 +85,7 @@ country-content.component.html:
         </button>
       </div>
       
-      <div class="carousel-container" *ngIf="carouselImages.length > 0">
+      <div class="carousel-container" *ngIf="carouselImages.length > 0 && countryContent">
         <!-- Контейнер с overflow: hidden -->
         <div class="image-viewport" [style]="getImageContainerStyle()">
           <!-- Изображение с возможностью перемещения -->

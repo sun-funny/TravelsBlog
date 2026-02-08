@@ -184,26 +184,50 @@ export class CountryContentComponent implements OnInit, OnDestroy {
     );
   }
 
-    // ЗАГРУЗКА КОНТЕНТА СТРАНЫ
-    private loadCountryContent(): void {
+  // ЗАГРУЗКА КОНТЕНТА СТРАНЫ
+  private loadCountryContent(): void {
     this.subscriptions.push(
       this.contentService.getContent(this.countryId).subscribe({
         next: (content) => {
-        this.countryContent = content;
+          console.log('📥 Loaded content for user:', this.isAdmin ? 'admin' : 'guest');
+          console.log('Content object:', content);
+          console.log('Carousel positions from DB:', content.carouselPositions);
+
+          this.countryContent = content;
+        
           // Загружаем изображения карусели из сохраненного контента
           if (content.carouselImages && content.carouselImages.length > 0) {
             this.carouselImages = content.carouselImages.map((url, index) => {
               const carouselImage = this.makeCarouselImage(this.getImageUrl(url));
+
+              setTimeout(() => {
+                this.applyImagePositions();
+              }, 100);
+            
               // ЗАГРУЖАЕМ СОХРАНЕННЫЕ ПОЗИЦИИ ЕСЛИ ЕСТЬ
               if (content.carouselPositions && content.carouselPositions[index]) {
-                carouselImage.offsetX = content.carouselPositions[index].x;
-                carouselImage.offsetY = content.carouselPositions[index].y;
-                carouselImage.scale = content.carouselPositions[index].scale;
-                carouselImage.originalWidth = content.carouselPositions[index].originalWidth;
-                carouselImage.originalHeight = content.carouselPositions[index].originalHeight;
+                const pos = content.carouselPositions[index];
+                carouselImage.offsetX = pos.x || 0;
+                carouselImage.offsetY = pos.y || 0;
+                carouselImage.scale = pos.scale || 1;
+                carouselImage.originalWidth = pos.originalWidth;
+                carouselImage.originalHeight = pos.originalHeight;
+              
+                console.log(`Loaded position for image ${index}:`, pos);
               }
+              else {
+              // Если позиций нет, устанавливаем значения по умолчанию
+              console.warn(`No position found for image ${index}, using defaults`);
+              carouselImage.offsetX = 0;
+              carouselImage.offsetY = 0;
+              carouselImage.scale = 1;
+            }
+            
               return carouselImage;
             });
+          
+            console.log('Loaded carousel positions:', content.carouselPositions);
+            console.log('Carousel images with positions:', this.carouselImages);
           } else if (this.travel?.img) {
             this.carouselImages = [
               this.makeCarouselImage(this.getImageUrl(this.travel.img))
@@ -214,10 +238,13 @@ export class CountryContentComponent implements OnInit, OnDestroy {
           setTimeout(() => this.initializeQuill(), 100);
         },
         error: (error) => {
+          console.error('Error loading content:', error);
           // Если контента нет, создаем пустой
           this.countryContent = {
             countryId: this.countryId,
-            content: ''
+            content: '',
+            carouselImages: [],
+            carouselPositions: []
           };
           // Основное изображение из travel
           if (this.travel?.img) {
@@ -231,16 +258,47 @@ export class CountryContentComponent implements OnInit, OnDestroy {
     );
   }
 
+  // В country-content.component.ts добавьте метод:
+  private applyImagePositions(): void {
+    if (!this.countryContent || !this.countryContent.carouselPositions) return;
+  
+    console.log('Applying image positions:', this.countryContent.carouselPositions);
+  
+    this.countryContent.carouselPositions.forEach((position, index) => {
+      if (this.carouselImages[index]) {
+        // Проверяем на null/undefined
+        this.carouselImages[index].offsetX = position.x !== undefined && position.x !== null ? position.x : 0;
+        this.carouselImages[index].offsetY = position.y !== undefined && position.y !== null ? position.y : 0;
+        this.carouselImages[index].scale = position.scale !== undefined && position.scale !== null ? position.scale : 1;
+        this.carouselImages[index].originalWidth = position.originalWidth;
+        this.carouselImages[index].originalHeight = position.originalHeight;
+      
+          console.log(`Applied to image ${index}:`, {
+          offsetX: this.carouselImages[index].offsetX,
+          offsetY: this.carouselImages[index].offsetY,
+          scale: this.carouselImages[index].scale
+        });
+      } 
+    });
+    // Принудительно запускаем обнаружение изменений
+    setTimeout(() => {
+      this.carouselImages = [...this.carouselImages];
+    }, 0);
+  }
+
   // СОХРАНИТЬ КОНТЕНТ
   saveContent(): void {
     if (!this.isAdmin || !this.quillInstance) return;
     this.isSaving = true;
+  
     // 1. Синхронизировать размеры всех каруселей
     this.syncCarouselSizes();
+  
     // 2. Получить контент Quill
     const content = this.quillInstance.root.innerHTML;
+  
     // 3. Проверить наличие blob URL в контенте
-   if (content.includes('blob:')) {
+    if (content.includes('blob:')) {
       this.messageService.add({
         severity: 'warn',
         summary: 'Внимание',
@@ -249,29 +307,30 @@ export class CountryContentComponent implements OnInit, OnDestroy {
       this.isSaving = false;
       return;
     }
+  
     // 4. Подготовить URL изображений карусели
     const carouselImageUrls = this.carouselImages
       .map(img => {
-      // Сохраняем оригинальный путь или преобразуем относительный
-      let urlPath = img.url;
-    
-      if (img.url.includes(environment.apiUrl)) {
-        const relative = img.url.replace(environment.apiUrl, '');
-        urlPath = relative.startsWith('/') ? relative : `/${relative}`;
-      }
-    
-      // Для изображений из travel (если они есть)
-      if (img.url.startsWith('blob:')) {
-        // Это временное изображение, которое будет загружено
-        // Вернем null, а потом отфильтруем
-        return null;
-      }
-    
-      return urlPath;
+        // Для временных blob URL возвращаем null
+        if (img.url.startsWith('blob:')) {
+          return null;
+        }
+      
+        // Сохраняем оригинальный путь или преобразуем относительный
+        let urlPath = img.url;
+      
+        if (img.url.includes(environment.apiUrl)) {
+          const relative = img.url.replace(environment.apiUrl, '');
+          urlPath = relative.startsWith('/') ? relative : `/${relative}`;
+        }
+      
+        return urlPath;
       })
       .filter(url => url !== null && !url.startsWith('blob:'));
-    // 5. СОХРАНИТЬ ПОЗИЦИИ ИЗОБРАЖЕНИЙ
+  
+    // 5. ПОДГОТОВИТЬ ПОЗИЦИИ ИЗОБРАЖЕНИЙ
     const carouselPositions = this.carouselImages.map((img, index) => {
+    // Используем текущие значения или значения по умолчанию
       const position = {
         x: img.offsetX || 0,
         y: img.offsetY || 0,
@@ -280,16 +339,16 @@ export class CountryContentComponent implements OnInit, OnDestroy {
         originalHeight: img.originalHeight
       };
     
-      console.log(`Position for image ${index}:`, position);
-      console.log(`Image URL ${index}:`, img.url);
+      console.log(`Saving position for image ${index}:`, position);
+      console.log(`Image ${index} URL:`, img.url);
     
       return position;
     });
   
-    console.log('Saving carouselImages:', carouselImageUrls);
-    console.log('Saving carouselPositions:', carouselPositions);
-    console.log('Carousel images count:', this.carouselImages.length);
-    console.log('Positions count:', carouselPositions.length); 
+    console.log('Total images to save:', this.carouselImages.length);
+    console.log('Total positions to save:', carouselPositions.length);
+    console.log('Positions:', carouselPositions);
+  
     // 6. Подготовить объект для сохранения
     const user = this.authService.getCurrentUser();
     const countryContent: ICountryContent = {
@@ -297,24 +356,43 @@ export class CountryContentComponent implements OnInit, OnDestroy {
       countryId: this.countryId,
       content: content,
       carouselImages: carouselImageUrls,
-      carouselPositions: carouselPositions, // 🔥 ПЕРЕДАЕМ ПОЗИЦИИ
+      carouselPositions: carouselPositions,
       updatedAt: new Date(),
       updatedBy: user?.login || 'admin'
-    }; 
+    };
+  
     // 7. Сначала загружаем изображения карусели
     this.uploadCarouselImages().then(() => {
       // 8. После загрузки сохраняем контент ВКЛЮЧАЯ ПОЗИЦИИ
       this.contentService.saveContent(countryContent).subscribe({
         next: (savedContent) => {
-          console.log('Контент сохранен с позициями:', savedContent);
+          console.log('Контент сохранен с позициями:', savedContent.carouselPositions);
+        
+          // Обновляем локальные данные с серверными
           this.countryContent = savedContent;
+        
+          // Обновляем позиции в локальном массиве изображений
+          if (savedContent.carouselPositions && savedContent.carouselPositions.length > 0) {
+            savedContent.carouselPositions.forEach((pos, index) => {
+              if (this.carouselImages[index]) {
+                this.carouselImages[index].offsetX = pos.x;
+                this.carouselImages[index].offsetY = pos.y;
+                this.carouselImages[index].scale = pos.scale;
+                this.carouselImages[index].originalWidth = pos.originalWidth;
+                this.carouselImages[index].originalHeight = pos.originalHeight;
+              }
+            });
+          }
+        
           this.isEditMode = false;
-          this.isSaving = false;  
+          this.isSaving = false;
+        
           this.messageService.add({
             severity: 'success',
             summary: 'Успех',
-            detail: `Контент и ${carouselImageUrls.length} изображений сохранены`
+            detail: `Контент и ${carouselImageUrls.length} изображений сохранены с позициями`
           });
+        
           // 9. Переинициализировать Quill
           setTimeout(() => this.initializeQuill(), 100);
         },
