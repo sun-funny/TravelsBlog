@@ -11,7 +11,7 @@ export interface ICountryContent {
   countryId: string;
   content: string;
   carouselImages?: string[];
-  carouselPositions?: CarouselPosition[]; // 🔥 ДОБАВИТЬ
+  carouselPositions?: CarouselPosition[];
   updatedAt?: Date;
   updatedBy?: string;
 }
