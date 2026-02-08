@@ -252,21 +252,44 @@ export class CountryContentComponent implements OnInit, OnDestroy {
     // 4. Подготовить URL изображений карусели
     const carouselImageUrls = this.carouselImages
       .map(img => {
-        if (img.url.includes(environment.apiUrl)) {
-          const relative = img.url.replace(environment.apiUrl, '');
-          return relative.startsWith('/') ? relative : `/${relative}`;
-        }
-       return img.url;
+      // Сохраняем оригинальный путь или преобразуем относительный
+      let urlPath = img.url;
+    
+      if (img.url.includes(environment.apiUrl)) {
+        const relative = img.url.replace(environment.apiUrl, '');
+        urlPath = relative.startsWith('/') ? relative : `/${relative}`;
+      }
+    
+      // Для изображений из travel (если они есть)
+      if (img.url.startsWith('blob:')) {
+        // Это временное изображение, которое будет загружено
+        // Вернем null, а потом отфильтруем
+        return null;
+      }
+    
+      return urlPath;
       })
-    .filter(url => url && !url.startsWith('blob:'));
+      .filter(url => url !== null && !url.startsWith('blob:'));
     // 5. СОХРАНИТЬ ПОЗИЦИИ ИЗОБРАЖЕНИЙ
-    const carouselPositions = this.carouselImages.map(img => ({
-      x: img.offsetX || 0,
-      y: img.offsetY || 0,
-      scale: img.scale || 1,
-      originalWidth: img.originalWidth,
-      originalHeight: img.originalHeight
-    })); 
+    const carouselPositions = this.carouselImages.map((img, index) => {
+      const position = {
+        x: img.offsetX || 0,
+        y: img.offsetY || 0,
+        scale: img.scale || 1,
+        originalWidth: img.originalWidth,
+        originalHeight: img.originalHeight
+      };
+    
+      console.log(`Position for image ${index}:`, position);
+      console.log(`Image URL ${index}:`, img.url);
+    
+      return position;
+    });
+  
+    console.log('Saving carouselImages:', carouselImageUrls);
+    console.log('Saving carouselPositions:', carouselPositions);
+    console.log('Carousel images count:', this.carouselImages.length);
+    console.log('Positions count:', carouselPositions.length); 
     // 6. Подготовить объект для сохранения
     const user = this.authService.getCurrentUser();
     const countryContent: ICountryContent = {
