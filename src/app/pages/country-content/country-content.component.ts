@@ -25,30 +25,8 @@ interface CarouselImage {
   rawUrl: string;  // 🔥 для Quill
   file?: File;
   isUploading?: boolean;
-  // Для перемещения внутри изображения
-  offsetX?: number;
-  offsetY?: number;
-  scale?: number;
   originalWidth?: number;
   originalHeight?: number;
-}
-
-// Для движения картинки (РУКА) внутри карусели
-interface DragState {
-  isDragging: boolean;
-  dragImageIndex: number | null;
-  dragStartX: number;
-  dragStartY: number;
-  dragOffsetX: number;
-  dragOffsetY: number;
-  dropTargetIndex: number | null;
-  // Для внутреннего перемещения
-  isPanning: boolean;
-  panStartX: number;
-  panStartY: number;
-  panImageIndex: number | null;
-  panOffsetX?: number;
-  panOffsetY?: number;
 }
 
 @Component({
@@ -74,21 +52,6 @@ export class CountryContentComponent implements OnInit, OnDestroy {
   isUploadingImages: boolean = false;
   showImageUploadModal: boolean = false;
 
-  // Drag & Drop для карусели
-  dragState: DragState = {
-    isDragging: false,
-    dragImageIndex: null,
-    dragStartX: 0,
-    dragStartY: 0,
-    dragOffsetX: 0,
-    dragOffsetY: 0,
-    dropTargetIndex: null,
-    isPanning: false,
-    panStartX: 0,
-    panStartY: 0,
-    panImageIndex: null
-  };
-
   // Отслеживание позиций изображений
   carouselPositions: Array<{x: number, y: number}> = [];
   // Свойство для отслеживания активности инструмента "Рука"
@@ -99,12 +62,6 @@ export class CountryContentComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   private pendingImages: PendingImage[] = [];
   private carouselTempImages: CarouselImage[] = []; // Для внутренней карусели Quill
-
-  // Для инструмента РУКА
-  private dragMoveHandlerRef: any;
-  private dragEndHandlerRef: any;
-  private panMoveHandlerRef: any;
-  private panEndHandlerRef: any;
   
   constructor(
     private route: ActivatedRoute,
@@ -189,45 +146,17 @@ export class CountryContentComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.contentService.getContent(this.countryId).subscribe({
         next: (content) => {
-          console.log('📥 Loaded content for user:', this.isAdmin ? 'admin' : 'guest');
+          console.log('Loaded content for user:', this.isAdmin ? 'admin' : 'guest');
           console.log('Content object:', content);
-          console.log('Carousel positions from DB:', content.carouselPositions);
-
           this.countryContent = content;
         
           // Загружаем изображения карусели из сохраненного контента
           if (content.carouselImages && content.carouselImages.length > 0) {
             this.carouselImages = content.carouselImages.map((url, index) => {
-              const carouselImage = this.makeCarouselImage(this.getImageUrl(url));
-
-              setTimeout(() => {
-                this.applyImagePositions();
-              }, 100);
-            
-              // ЗАГРУЖАЕМ СОХРАНЕННЫЕ ПОЗИЦИИ ЕСЛИ ЕСТЬ
-              if (content.carouselPositions && content.carouselPositions[index]) {
-                const pos = content.carouselPositions[index];
-                carouselImage.offsetX = pos.x || 0;
-                carouselImage.offsetY = pos.y || 0;
-                carouselImage.scale = pos.scale || 1;
-                carouselImage.originalWidth = pos.originalWidth;
-                carouselImage.originalHeight = pos.originalHeight;
-              
-                console.log(`Loaded position for image ${index}:`, pos);
-              }
-              else {
-              // Если позиций нет, устанавливаем значения по умолчанию
-              console.warn(`No position found for image ${index}, using defaults`);
-              carouselImage.offsetX = 0;
-              carouselImage.offsetY = 0;
-              carouselImage.scale = 1;
-            }
-            
+              const carouselImage = this.makeCarouselImage(this.getImageUrl(url));            
               return carouselImage;
             });
           
-            console.log('Loaded carousel positions:', content.carouselPositions);
-            console.log('Carousel images with positions:', this.carouselImages);
           } else if (this.travel?.img) {
             this.carouselImages = [
               this.makeCarouselImage(this.getImageUrl(this.travel.img))
@@ -244,7 +173,6 @@ export class CountryContentComponent implements OnInit, OnDestroy {
             countryId: this.countryId,
             content: '',
             carouselImages: [],
-            carouselPositions: []
           };
           // Основное изображение из travel
           if (this.travel?.img) {
@@ -260,26 +188,8 @@ export class CountryContentComponent implements OnInit, OnDestroy {
 
   // В country-content.component.ts добавьте метод:
   private applyImagePositions(): void {
-    if (!this.countryContent || !this.countryContent.carouselPositions) return;
-  
-    console.log('Applying image positions:', this.countryContent.carouselPositions);
-  
-    this.countryContent.carouselPositions.forEach((position, index) => {
-      if (this.carouselImages[index]) {
-        // Проверяем на null/undefined
-        this.carouselImages[index].offsetX = position.x !== undefined && position.x !== null ? position.x : 0;
-        this.carouselImages[index].offsetY = position.y !== undefined && position.y !== null ? position.y : 0;
-        this.carouselImages[index].scale = position.scale !== undefined && position.scale !== null ? position.scale : 1;
-        this.carouselImages[index].originalWidth = position.originalWidth;
-        this.carouselImages[index].originalHeight = position.originalHeight;
-      
-          console.log(`Applied to image ${index}:`, {
-          offsetX: this.carouselImages[index].offsetX,
-          offsetY: this.carouselImages[index].offsetY,
-          scale: this.carouselImages[index].scale
-        });
-      } 
-    });
+    if (!this.countryContent) return;
+ 
     // Принудительно запускаем обнаружение изменений
     setTimeout(() => {
       this.carouselImages = [...this.carouselImages];
@@ -332,9 +242,6 @@ export class CountryContentComponent implements OnInit, OnDestroy {
     const carouselPositions = this.carouselImages.map((img, index) => {
     // Используем текущие значения или значения по умолчанию
       const position = {
-        x: img.offsetX || 0,
-        y: img.offsetY || 0,
-        scale: img.scale || 1,
         originalWidth: img.originalWidth,
         originalHeight: img.originalHeight
       };
@@ -356,7 +263,6 @@ export class CountryContentComponent implements OnInit, OnDestroy {
       countryId: this.countryId,
       content: content,
       carouselImages: carouselImageUrls,
-      carouselPositions: carouselPositions,
       updatedAt: new Date(),
       updatedBy: user?.login || 'admin'
     };
@@ -366,24 +272,11 @@ export class CountryContentComponent implements OnInit, OnDestroy {
       // 8. После загрузки сохраняем контент ВКЛЮЧАЯ ПОЗИЦИИ
       this.contentService.saveContent(countryContent).subscribe({
         next: (savedContent) => {
-          console.log('Контент сохранен с позициями:', savedContent.carouselPositions);
+          console.log('Контент сохранен с позициями:');
         
           // Обновляем локальные данные с серверными
           this.countryContent = savedContent;
-        
-          // Обновляем позиции в локальном массиве изображений
-          if (savedContent.carouselPositions && savedContent.carouselPositions.length > 0) {
-            savedContent.carouselPositions.forEach((pos, index) => {
-              if (this.carouselImages[index]) {
-                this.carouselImages[index].offsetX = pos.x;
-                this.carouselImages[index].offsetY = pos.y;
-                this.carouselImages[index].scale = pos.scale;
-                this.carouselImages[index].originalWidth = pos.originalWidth;
-                this.carouselImages[index].originalHeight = pos.originalHeight;
-              }
-            });
-          }
-        
+                
           this.isEditMode = false;
           this.isSaving = false;
         
@@ -1376,153 +1269,6 @@ export class CountryContentComponent implements OnInit, OnDestroy {
     return true;
   }
 
-  //=======================================================
-  // ДЛЯ ИНСТРУМЕНТА РУКА
-  // Начало перетаскивания
-  startDrag(event: MouseEvent, index: number): void {
-    if (!this.isHandToolActive || !this.isEditMode) return;  
-    event.preventDefault();
-    event.stopPropagation();  
-    this.dragState = {
-      isDragging: true,
-      dragImageIndex: index,
-      dragStartX: event.clientX,
-      dragStartY: event.clientY,
-      dragOffsetX: 0,
-      dragOffsetY: 0,
-      dropTargetIndex: null,
-      isPanning: false,
-      panStartX: 0,
-      panStartY: 0,
-      panImageIndex: null,
-      panOffsetX: 0,
-      panOffsetY: 0
-    };
-    // Добавить обработчики событий
-    const dragMoveHandler = this.handleDragMove.bind(this);
-    const dragEndHandler = this.handleDragEnd.bind(this); 
-    document.addEventListener('mousemove', dragMoveHandler);
-    document.addEventListener('mouseup', dragEndHandler);  
-    // Сохранить ссылки на обработчики для удаления
-    this.dragMoveHandlerRef = dragMoveHandler;
-    this.dragEndHandlerRef = dragEndHandler;
-  }
-
-  // Перемещение мыши при перетаскивании
-  handleDragMove(event: MouseEvent): void {
-    if (!this.dragState.isDragging || this.dragState.dragImageIndex === null) return;  
-      this.dragState.dragOffsetX = event.clientX - this.dragState.dragStartX;
-      this.dragState.dragOffsetY = event.clientY - this.dragState.dragStartY;  
-      // Проверить, над каким элементом находимся
-      const elements = document.querySelectorAll('.carousel-image-container');
-      const dragRect = elements[this.dragState.dragImageIndex]?.getBoundingClientRect();  
-      if (!dragRect) return;  
-      // Позиция перетаскиваемого элемента
-      const dragX = dragRect.left + this.dragState.dragOffsetX;
-      const dragY = dragRect.top + this.dragState.dragOffsetY; 
-      // Найти целевой элемент
-      let newDropTarget: number | null = null;  
-      elements.forEach((element, index) => {
-      if (index === this.dragState.dragImageIndex) return;    
-      const rect = element.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;    
-      // Проверить, находится ли центр перетаскиваемого элемента над текущим элементом
-      if (dragX > rect.left && dragX < rect.right && 
-        dragY > rect.top && dragY < rect.bottom) {
-        newDropTarget = index;
-      }
-    });  
-    this.dragState.dropTargetIndex = newDropTarget;
-  }
-  
-  // Завершение перетаскивания
-  handleDragEnd(event: MouseEvent): void {
-    if (!this.dragState.isDragging || this.dragState.dragImageIndex === null) {
-      this.resetDragState();
-      return;
-    } 
-    // Если есть целевой элемент, меняем порядок
-    if (this.dragState.dropTargetIndex !== null && 
-      this.dragState.dragImageIndex !== this.dragState.dropTargetIndex) {
-        this.reorderCarouselImages(this.dragState.dragImageIndex, this.dragState.dropTargetIndex);
-    }  
-    this.resetDragState();
-  }
-
-  // Сброс состояния перетаскивания
-  resetDragState(): void {
-    // Удаляем обработчики событий
-    document.removeEventListener('mousemove', this.handleDragMove.bind(this));
-    document.removeEventListener('mouseup', this.handleDragEnd.bind(this));  
-    // Убедитесь, что все поля интерфейса DragState присутствуют
-    this.dragState = {
-      isDragging: false,
-      dragImageIndex: null,
-      dragStartX: 0,
-      dragStartY: 0,
-      dragOffsetX: 0,
-      dragOffsetY: 0,
-      dropTargetIndex: null,
-      // Добавьте эти обязательные поля:
-      isPanning: false,
-      panStartX: 0,
-      panStartY: 0,
-      panImageIndex: null,
-      panOffsetX: 0,  // Если это поле есть в интерфейсе
-      panOffsetY: 0   // Если это поле есть в интерфейсе
-    };
-  }
-
-  // Переупорядочивание изображений в карусели
-  reorderCarouselImages(fromIndex: number, toIndex: number): void {
-    if (fromIndex === toIndex) return; 
-    // Создать копию массива
-    const images = [...this.carouselImages]; 
-    // Удалить элемент из старой позиции
-    const [movedImage] = images.splice(fromIndex, 1);  
-    // Вставить в новую позицию
-    images.splice(toIndex, 0, movedImage);  
-    // Обновить карусель
-    this.carouselImages = images;  
-    // Обновить выбранный индекс, если нужно
-    if (this.selectedImageIndex === fromIndex) {
-      this.selectedImageIndex = toIndex;
-    } else if (this.selectedImageIndex > fromIndex && this.selectedImageIndex <= toIndex) {
-      this.selectedImageIndex--;
-    } else if (this.selectedImageIndex < fromIndex && this.selectedImageIndex >= toIndex) {
-      this.selectedImageIndex++;
-    }
-  
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Изображение перемещено',
-      detail: 'Порядок изображений сохранен'
-    });
-  }
-  // Метод для получения стилей перетаскиваемого элемента
-  getDragStyle(index: number): any {
-    if (this.dragState.isDragging && this.dragState.dragImageIndex === index) {
-      return {
-        transform: `translate(${this.dragState.dragOffsetX}px, ${this.dragState.dragOffsetY}px)`,
-        zIndex: 1000,
-        opacity: 0.8,
-        cursor: 'grabbing'
-      };
-    }
-  
-    if (this.dragState.isDragging && this.dragState.dropTargetIndex === index) {
-      return {
-        transform: 'scale(1.05)',
-        backgroundColor: 'rgba(135, 206, 235, 0.2)',
-        border: '2px dashed #87ceeb'
-      };
-    }  
-    return {
-      cursor: this.isHandToolActive ? 'grab' : 'default'
-    };
-  }
-
   // Автоматическое размещение изображения в карусели Quill
   autoPositionImageInQuill(imageUrl: string, quillInstance?: any): void {
     const editor = quillInstance || this.quillInstance;
@@ -1538,168 +1284,6 @@ export class CountryContentComponent implements OnInit, OnDestroy {
       summary: 'Изображение размещено',
       detail: 'Изображение добавлено в редактор'
     });
-  }
-
-  // Переключение между режимами инструмента "Рука"
-  toggleHandTool(): void {
-    this.isHandToolActive = !this.isHandToolActive;  
-    if (this.isHandToolActive) {
-      this.messageService.add({
-        severity: 'info',
-        summary: 'Инструмент "Рука" активирован',
-        detail: 'Кликните и перетаскивайте изображение для выбора области отображения'
-      });
-    } 
-    else {
-      this.messageService.add({
-        severity: 'info',
-        summary: 'Инструмент "Рука" деактивирован',
-        detail: 'Обычный режим просмотра'
-      });
-    }
-  }
-
-  // Начало перемещения внутри изображения
-  startPan(event: MouseEvent, index: number): void {
-    if (!this.isHandToolActive || !this.isEditMode) return;  
-    event.preventDefault();
-    event.stopPropagation();  
-    const image = this.carouselImages[index];  
-    // Инициализируем значения, если они не существуют
-    if (image.offsetX === undefined) {
-      // Рассчитываем начальное смещение для центрирования
-      const viewport = (event.target as HTMLElement).parentElement;
-      if (viewport && image.originalWidth && image.originalHeight) {
-        const viewportWidth = viewport.clientWidth;
-        const viewportHeight = viewport.clientHeight;     
-        // Если изображение меньше контейнера, центрируем
-        if (image.originalWidth < viewportWidth) {
-          image.offsetX = (viewportWidth - image.originalWidth) / 2;
-        } else {
-          image.offsetX = 0;
-        }     
-        if (image.originalHeight < viewportHeight) {
-          image.offsetY = (viewportHeight - image.originalHeight) / 2;
-        } else {
-          image.offsetY = 0;
-        }
-      } else {
-        image.offsetX = 0;
-        image.offsetY = 0;
-      }
-    } 
-    if (image.scale === undefined) image.scale = 1;  
-    this.dragState = {
-      ...this.dragState,
-      isPanning: true,
-      panImageIndex: index,
-      panStartX: event.clientX,
-      panStartY: event.clientY,
-      panOffsetX: image.offsetX || 0,
-      panOffsetY: image.offsetY || 0
-    };  
-    // Добавляем класс для отключения transition во время перетаскивания
-    const imgElement = event.target as HTMLElement;
-    imgElement.classList.add('panning');  
-    // Добавляем обработчики
-    const panMoveHandler = this.handlePan.bind(this);
-    const panEndHandler = (e: MouseEvent) => {
-      this.handlePanEnd(e);
-      imgElement.classList.remove('panning');
-    };  
-    document.addEventListener('mousemove', panMoveHandler);
-    document.addEventListener('mouseup', panEndHandler);  
-    // Сохраняем ссылки на обработчики
-    this. panMoveHandlerRef = panMoveHandler;
-    this.panEndHandlerRef = panEndHandler;
-  }
-
-  // Обработка перемещения мыши при панорамировании
-  handlePan(event: MouseEvent): void {
-    if (!this.dragState.isPanning || this.dragState.panImageIndex === null) return;  
-    const index = this.dragState.panImageIndex;
-    const image = this.carouselImages[index];  
-    // Вычисляем смещение
-    const deltaX = event.clientX - this.dragState.panStartX;
-    const deltaY = event.clientY - this.dragState.panStartY;  
-    // Обновляем позицию
-    if (image.offsetX !== undefined && image.offsetY !== undefined) {
-      image.offsetX += deltaX;
-      image.offsetY += deltaY;
-    }  
-    // Обновляем начальную позицию для следующего движения
-    this.dragState.panStartX = event.clientX;
-    this.dragState.panStartY = event.clientY;
-  }
-
-  // Завершение панорамирования
-  handlePanEnd(event: MouseEvent): void {
-    this.dragState.isPanning = false;
-    this.dragState.panImageIndex = null; 
-    // Удаляем обработчики
-    document.removeEventListener('mousemove', this.handlePan.bind(this));
-    document.removeEventListener('mouseup', this.handlePanEnd.bind(this));
-  }
-
-  // Сброс положения изображения
-  resetImagePosition(index: number): void {
-    const image = this.carouselImages[index];
-    const viewport = document.querySelector('.image-viewport');  
-    if (viewport && image.originalWidth && image.originalHeight) {
-      const viewportWidth = viewport.clientWidth;
-      const viewportHeight = viewport.clientHeight;   
-      // Если изображение меньше контейнера, центрируем
-      if (image.originalWidth < viewportWidth) {
-        image.offsetX = (viewportWidth - image.originalWidth) / 2;
-      } else {
-        image.offsetX = 0;
-      }   
-      if (image.originalHeight < viewportHeight) {
-        image.offsetY = (viewportHeight - image.originalHeight) / 2;
-      } else {
-        image.offsetY = 0;
-      }
-    } else {
-      image.offsetX = 0;
-      image.offsetY = 0;
-    } 
-    image.scale = 1;  
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Положение сброшено',
-      detail: 'Изображение возвращено в исходное положение'
-    });
-  }
-
-  // Получение стилей для изображения с учетом позиции
-  getPanStyle(index: number): any {
-    const image = this.carouselImages[index]; 
-    if (!image) {
-      return {
-        cursor: this.isHandToolActive ? 'grab' : 'default'
-      };
-    }  
-    const style: any = {
-      cursor: this.isHandToolActive ? (this.dragState.isPanning ? 'grabbing' : 'grab') : 'default'
-    };  
-    // Применить смещение, если оно есть
-    if (image.offsetX !== undefined && image.offsetY !== undefined) {
-      style.transform = `translate(${image.offsetX}px, ${image.offsetY}px)`;
-    }  
-    // Если у изображения есть оригинальные размеры, сохраняем их
-    if (image.originalWidth && image.originalHeight) {
-      style.width = image.originalWidth + 'px';
-      style.height = image.originalHeight + 'px';
-    }  
-  return style;
-  }
-
-  // Получение стилей для контейнера изображения
-  getImageContainerStyle(): any {
-    return {
-      overflow: 'hidden',
-      cursor: this.isHandToolActive ? (this.dragState.isPanning ? 'grabbing' : 'grab') : 'default'
-    };
   }
 
   // Добавьте обработчики изменения размера изображений
@@ -1720,23 +1304,12 @@ export class CountryContentComponent implements OnInit, OnDestroy {
   // Обработчик загрузки изображения
   onImageLoad(event: Event, index: number): void {
     const img = event.target as HTMLImageElement;
-    const image = this.carouselImages[index];  
-    // Сохраняем оригинальные размеры
+    const image = this.carouselImages[index];
+  
+    // Сохраняем оригинальные размеры (может пригодиться для информации)
     if (img.naturalWidth > 0 && img.naturalHeight > 0) {
       image.originalWidth = img.naturalWidth;
-      image.originalHeight = img.naturalHeight;    
-      // Если изображение меньше контейнера, центрируем его
-      const viewport = img.parentElement;
-      if (viewport) {
-        const viewportWidth = viewport.clientWidth;
-        const viewportHeight = viewport.clientHeight;      
-        // Если изображение меньше контейнера по обоим размерам
-        if (img.naturalWidth < viewportWidth && img.naturalHeight < viewportHeight) {
-          // Центрируем изображение
-          image.offsetX = (viewportWidth - img.naturalWidth) / 2;
-          image.offsetY = (viewportHeight - img.naturalHeight) / 2;
-        }
-      }
+      image.originalHeight = img.naturalHeight;
     }
   }
   // ===========================================================

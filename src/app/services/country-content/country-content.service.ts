@@ -3,7 +3,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { Observable, throwError, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { ICountryContent, CarouselPosition } from 'src/app/models/country-content';
+import { ICountryContent} from 'src/app/models/country-content';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +21,6 @@ export class CountryContentService {
             countryId: countryId,
             content: '',
             carouselImages: [],
-            carouselPositions: [] // 🔥 ДОБАВИТЬ
           };
           return of(emptyContent);
         }
@@ -98,7 +97,6 @@ export class CountryContentService {
       countryId: content.countryId,
       content: processedContent,
       carouselImages: content.carouselImages || [],
-      carouselPositions: content.carouselPositions || [], // 🔥 ВАЖНО!
       updatedBy: content.updatedBy
     };
   }
