@@ -24,6 +24,136 @@
               </div>
             </div>
 
+            <!-- Блок координат с возможностью редактирования -->
+            <div class="coordinates-block">
+              <!-- Отображение существующих координат -->
+              <div *ngIf="existingCoordinates && !isEditingCoordinates" class="coordinates-display">
+                <div class="coordinates-header">
+                  <i class="pi pi-map-marker"></i>
+                  <span class="coordinates-label">Координаты страны:</span>
+                  <span class="coordinates-value">
+                    {{existingCoordinates.latitude | number:'1.4-4'}}, 
+                    {{existingCoordinates.longitude | number:'1.4-4'}}
+                  </span>
+                </div>
+                <div class="coordinates-actions">
+                  <button 
+                    type="button" 
+                    class="btn-icon btn-edit"
+                    (click)="enableCoordinatesEdit()"
+                    pTooltip="Редактировать координаты"
+                    tooltipPosition="top"
+                  >
+                    <i class="pi pi-pencil"></i>
+                  </button>
+                  <button 
+                    type="button" 
+                    class="btn-icon btn-delete-coord"
+                    (click)="deleteCoordinates()"
+                    pTooltip="Удалить координаты"
+                    tooltipPosition="top"
+                  >
+                    <i class="pi pi-trash"></i>
+                  </button>
+                  <button 
+                    type="button" 
+                    class="btn-icon btn-refresh"
+                    (click)="getCoordinatesHint()"
+                    pTooltip="Получить подсказку"
+                    tooltipPosition="top"
+                    [disabled]="isLoading"
+                  >
+                    <i class="pi pi-refresh" [class.pi-spin]="isLoading"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Форма редактирования/добавления координат -->
+              <div *ngIf="showCoordinatesForm" class="coordinates-section" formGroupName="coordinates">
+                <h3 class="coordinates-title">
+                  {{ existingCoordinates ? 'Редактирование координат' : 'Добавление координат' }}
+                </h3>
+                
+                <div class="coordinates-form">
+                  <div class="form-field">
+                    <label for="latitude">
+                      Широта * 
+                      <span class="coord-hint">(от -90 до 90)</span>
+                    </label>
+                    <input 
+                      id="latitude" 
+                      type="number" 
+                      step="any"
+                      pInputText 
+                      formControlName="latitude"
+                      placeholder="Например: 55.7558"
+                      [class.invalid]="travelForm.get('coordinates.latitude')?.invalid && submitted"
+                    />
+                    <div class="error-message" *ngIf="travelForm.get('coordinates.latitude')?.invalid && submitted">
+                      Некорректное значение широты
+                    </div>
+                  </div>
+
+                  <div class="form-field">
+                    <label for="longitude">
+                      Долгота * 
+                      <span class="coord-hint">(от -180 до 180)</span>
+                    </label>
+                    <input 
+                      id="longitude" 
+                      type="number" 
+                      step="any"
+                      pInputText 
+                      formControlName="longitude"
+                      placeholder="Например: 37.6176"
+                      [class.invalid]="travelForm.get('coordinates.longitude')?.invalid && submitted"
+                    />
+                    <div class="error-message" *ngIf="travelForm.get('coordinates.longitude')?.invalid && submitted">
+                      Некорректное значение долготы
+                    </div>
+                  </div>
+
+                  <div class="coordinates-actions-form">
+                    <button 
+                      type="button" 
+                      class="btn btn-save-coordinates"
+                      (click)="saveCoordinates()"
+                      [disabled]="!travelForm.get('coordinates.latitude')?.value || !travelForm.get('coordinates.longitude')?.value"
+                    >
+                      <i class="pi pi-save"></i>
+                      <span>{{ existingCoordinates ? 'Обновить' : 'Сохранить' }}</span>
+                    </button>
+                    
+                    <button 
+                      type="button" 
+                      class="btn btn-cancel-coordinates"
+                      (click)="cancelCoordinatesEdit()"
+                    >
+                      <i class="pi pi-times"></i>
+                      <span>Отмена</span>
+                    </button>
+
+                    <button 
+                      *ngIf="existingCoordinates && originalCoordinates"
+                      type="button" 
+                      class="btn btn-reset-coordinates"
+                      (click)="resetCoordinates()"
+                      pTooltip="Сбросить к исходным значениям"
+                      tooltipPosition="top"
+                    >
+                      <i class="pi pi-undo"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Индикатор загрузки -->
+              <div *ngIf="isLoading" class="loading-indicator">
+                <i class="pi pi-spin pi-spinner"></i>
+                <span>Загрузка...</span>
+              </div>
+            </div>
+
             <!-- Город -->
             <div class="form-field">
               <label for="city">Город *</label>
@@ -145,6 +275,7 @@
               <button 
                 type="submit" 
                 class="btn btn-save"
+                [disabled]="!travelForm.valid"
               >
                 <i class="pi" [ngClass]="isEditMode ? 'pi-sync' : 'pi-save'"></i>
                 <span>{{ isEditMode ? 'Обновить' : 'Сохранить' }}</span>
