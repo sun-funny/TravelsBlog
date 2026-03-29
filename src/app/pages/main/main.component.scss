@@ -134,6 +134,7 @@
 // Карта
 .map-container {
   width: 100%;
+  position: relative;
   
   .map-wrapper {
     background: rgba(255, 255, 255, 0.05);
@@ -144,6 +145,8 @@
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
     height: 100%;
     min-height: 400px;
+    position: relative;
+    overflow: hidden; // Добавлено для предотвращения выхода за пределы
 
     .world-map {
       width: 100%;
@@ -151,17 +154,25 @@
       min-height: 350px;
       border-radius: 10px;
       overflow: hidden;
+      position: relative;
 
       // Стилизация карты
       :host ::ng-deep {
         .leaflet-container {
           background-color: #0a1f2d !important;
           height: 100% !important;
+          width: 100% !important;
+          
+          // Добавлено для плавного масштабирования
+          .leaflet-zoom-animated {
+            transition: transform 0.25s cubic-bezier(0,0,0.25,1);
+          }
           
           .leaflet-tile {
             filter: hue-rotate(180deg) saturate(0.8) brightness(0.7) contrast(1.2);
           }
 
+          // Остальные стили остаются без изменений...
           .leaflet-control-container {
             .leaflet-control-zoom {
               border: none;
@@ -247,7 +258,6 @@
             background: rgba(17, 73, 103, 0.95);
           }
 
-          // Стили для тултипов
           .leaflet-tooltip {
             background: rgba(17, 73, 103, 0.95);
             border: 1px solid rgba(135, 206, 235, 0.3);
@@ -291,7 +301,6 @@
               border-top-color: rgba(135, 206, 235, 0.4);
             }
           }
-          
         }
       }
     }
@@ -763,6 +772,126 @@
     .team-card {
       min-height: 160px;
       padding: 0.8rem;
+    }
+  }
+}
+
+// Мобильная адаптация карты
+@media (max-width: 768px) {
+  .map-container {
+    .map-wrapper {
+      .world-map {
+        :host ::ng-deep {
+          .leaflet-container {
+            // Улучшаем плавность масштабирования
+            .leaflet-zoom-animated {
+              transition: transform 0.2s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
+            }
+            
+            // Увеличиваем область клика для маркеров
+            .leaflet-marker-icon {
+              cursor: pointer;
+              -webkit-tap-highlight-color: transparent;
+              transition: transform 0.1s ease;
+              
+              &:active {
+                transform: scale(1.15);
+              }
+            }
+            
+            // Оптимизируем зум контролы для мобильных
+            .leaflet-control-zoom {
+              a {
+                width: 40px;
+                height: 40px;
+                line-height: 40px;
+                font-size: 20px;
+                font-weight: bold;
+              }
+            }
+            
+            // Улучшаем читаемость тултипов
+            .leaflet-tooltip {
+              font-size: 12px;
+              padding: 6px 10px;
+              white-space: nowrap;
+              
+              @media (max-width: 480px) {
+                font-size: 10px;
+                padding: 4px 8px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Дополнительная оптимизация для маленьких экранов
+@media (max-width: 480px) {
+  .map-container {
+    .map-wrapper {
+      .world-map {
+        :host ::ng-deep {
+          .leaflet-container {
+            .leaflet-control-zoom {
+              a {
+                width: 36px;
+                height: 36px;
+                line-height: 36px;
+                font-size: 18px;
+              }
+            }
+            
+            .leaflet-tooltip {
+              max-width: 150px;
+              white-space: normal;
+              word-break: break-word;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Для устройств с сенсорным экраном
+@media (hover: none) and (pointer: coarse) {
+  .map-container {
+    .map-wrapper {
+      .world-map {
+        :host ::ng-deep {
+          .leaflet-container {
+            .leaflet-marker-icon {
+              transition: transform 0.1s ease;
+            }
+            
+            // Увеличиваем область попапа для удобного закрытия
+            .leaflet-popup-close-button {
+              width: 32px;
+              height: 32px;
+              font-size: 22px;
+              line-height: 32px;
+              right: 8px;
+              top: 8px;
+            }
+            
+            .leaflet-popup-content {
+              margin: 12px 16px;
+              
+              button {
+                padding: 10px 20px;
+                font-size: 14px;
+                
+                &:active {
+                  transform: scale(0.96);
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
