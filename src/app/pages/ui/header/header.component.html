@@ -1,11 +1,20 @@
 <nav class="header">
-  <div class="nav-list">
+  <!-- Бургер-кнопка для мобильной версии -->
+  <button class="burger-menu" (click)="toggleMobileMenu()" [class.active]="mobileMenuOpen">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <!-- Десктопная навигация -->
+  <div class="nav-list" [class.mobile-open]="mobileMenuOpen">
     <a 
       *ngFor="let item of navItems"
       class="nav-link"
       [style.width]="item.width"
       [routerLink]="item.route"
       routerLinkActive="active"
+      (click)="closeMobileMenu()"
     >
       {{item.text}}
     </a>
@@ -24,3 +33,6 @@
     </div>
   </div>
 </nav>
+
+<!-- Оверлей для закрытия меню при клике вне его -->
+<div *ngIf="mobileMenuOpen" class="menu-overlay" (click)="closeMobileMenu()"></div>

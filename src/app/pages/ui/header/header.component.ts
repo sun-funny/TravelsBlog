@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { Router } from '@angular/router';
 
@@ -17,6 +17,7 @@ export class HeaderComponent implements OnInit {
   isAuthenticated = false;
   userName = '';
   showTooltip = false;
+  mobileMenuOpen = false;
 
   constructor(
     private authService: AuthService,
@@ -32,10 +33,32 @@ export class HeaderComponent implements OnInit {
 
   onAuthClick(): void {
     if (!this.isAuthenticated) {
-      // Сохраняем текущий URL как URL возврата
       const currentUrl = this.router.url;
       this.authService.saveReturnUrl(currentUrl || '/main');
       this.router.navigate(['/auth']);
+    }
+  }
+
+  toggleMobileMenu(): void {
+    this.mobileMenuOpen = !this.mobileMenuOpen;
+    // Блокируем скролл body при открытом меню
+    if (this.mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+  }
+
+  closeMobileMenu(): void {
+    this.mobileMenuOpen = false;
+    document.body.style.overflow = '';
+  }
+
+  // Закрываем меню при изменении размера окна (если стало десктопным)
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any): void {
+    if (window.innerWidth > 768 && this.mobileMenuOpen) {
+      this.closeMobileMenu();
     }
   }
 }
