@@ -363,8 +363,8 @@
       flex-shrink: 0;
 
       .member-photo {
-        width: 60px;
-        height: 60px;
+        width: 240px;
+        height: 240px;
         border-radius: 50%;
         object-fit: cover;
         border: 2px solid rgba(135, 206, 235, 0.3);
@@ -390,6 +390,21 @@
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+
+    .member-greeting {
+      color: #8B0000;  // Темно-красный цвет
+      font-size: 1.1rem;
+      font-style: italic;
+      margin: 1rem 0;
+      padding: 0.8rem;
+      background: rgba(139, 0, 0, 0.1);  // Полупрозрачный темно-красный фон
+      border-radius: 8px;
+      border-left: 3px solid #8B0000;
+      text-align: center;
+      font-weight: 500;
+      line-height: 1.4;
+      word-break: break-word;
     }
     .team-actions {
     display: flex;
@@ -449,8 +464,8 @@
       
       .card-header {
         .member-photo {
-          width: 65px;
-          height: 65px;
+          width: 260px;
+          height: 260px;
         }
         
         .member-name {
@@ -487,8 +502,8 @@
       
       .card-header {
         .member-photo {
-          width: 70px;
-          height: 70px;
+          width: 280px;
+          height: 280px;
         }
         
         .member-name {
@@ -609,8 +624,8 @@
         gap: 0.8rem;
 
         .member-photo {
-          width: 55px;
-          height: 55px;
+          width: 220px;
+          height: 220px;
         }
 
         .member-name {

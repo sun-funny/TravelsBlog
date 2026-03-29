@@ -82,6 +82,21 @@ export class AddTravelComponent implements OnInit {
     });
   }
 
+  checkFormValidity() {
+    console.log('Form valid:', this.travelForm.valid);
+    console.log('Form errors:', this.travelForm.errors);
+    console.log('Country valid:', this.travelForm.get('country')?.valid);
+    console.log('City valid:', this.travelForm.get('city')?.valid);
+    console.log('Short desc valid:', this.travelForm.get('short_description')?.valid);
+    console.log('Description valid:', this.travelForm.get('description')?.valid);
+    console.log('Img valid:', this.travelForm.get('img')?.valid);
+    console.log('Year valid:', this.travelForm.get('year')?.valid);
+    console.log('Coordinates valid:', this.travelForm.get('coordinates')?.valid);
+    console.log('Latitude valid:', this.travelForm.get('coordinates.latitude')?.valid);
+    console.log('Longitude valid:', this.travelForm.get('coordinates.longitude')?.valid);
+    console.log('Form values:', this.travelForm.value);
+  }
+
   checkCoordinates(country: string) {
     this.coordinatesService.getCoordinatesByCountry(country).subscribe({
       next: (coord) => {

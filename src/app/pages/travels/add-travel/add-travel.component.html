@@ -7,6 +7,26 @@
             {{ isEditMode ? 'Редактировать путешествие' : 'Добавить новое путешествие' }}
           </h2>
           
+
+          <div class="debug-buttons" style="margin-bottom: 20px; padding: 10px; background: #f0f0f0; border-radius: 5px;">
+            <button 
+              type="button" 
+              class="btn btn-info" 
+              (click)="checkFormValidity()"
+              style="background: #17a2b8; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;"
+            >
+              <i class="pi pi-info-circle"></i> 
+              Проверить форму (отладка)
+            </button>
+            <!-- Дополнительно: показать статус формы -->
+            <div style="margin-top: 10px; font-size: 14px;">
+              <span style="font-weight: bold;">Статус формы:</span> 
+              <span [style.color]="travelForm.valid ? 'green' : 'red'">
+                {{ travelForm.valid ? '✅ Валидна' : '❌ Невалидна' }}
+              </span>
+            </div>
+          </div>
+
           <form [formGroup]="travelForm" (ngSubmit)="onSubmit()" class="travel-form">
             <!-- Страна -->
             <div class="form-field">

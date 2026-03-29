@@ -73,8 +73,7 @@ export class MainComponent implements OnInit, OnDestroy {
     this._destroyer = this.travelService.getTravel().subscribe({
       next: (travels) => {
         this.travels = travels;
-        this.featuredTravels = travels
-          .slice(0, 10);
+        this.featuredTravels = travels;
         this.updateMapMarkers();
       },
       error: (err) => {
